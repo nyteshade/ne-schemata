@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "deepmerge": "^2.1.0",
-    "ne-tag-fns": "^0.6.1"
+    "ne-tag-fns": "^0.6.1",
+    "babel-runtime": "^6"
   }
 }
