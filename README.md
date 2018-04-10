@@ -1,8 +1,6 @@
-# ne-schemata [![Build Status](https://travis-ci.org/nyteshade/ne-schemata.svg?branch=master)](https://travis-ci.org/nyteshade/ne-schemata) [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/) ![package version](https://img.shields.io/badge/dynamic/json.svg?label=version&uri=https%3A%2F%2Fraw.githubusercontent.com%2Fnyteshade%2Fne-schemata%2Fmaster%2Fpackage.json&query=version&colorB=1d7ebe)
+# ne-schemata [![Build Status](https://travis-ci.org/nyteshade/ne-schemata.svg?branch=master)](https://travis-ci.org/nyteshade/ne-schemata) [![Greenkeeper badge](https://badges.greenkeeper.io/nyteshade/ne-schemata.svg)](https://greenkeeper.io/) [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/) ![package version](https://img.shields.io/badge/dynamic/json.svg?label=version&uri=https%3A%2F%2Fraw.githubusercontent.com%2Fnyteshade%2Fne-schemata%2Fmaster%2Fpackage.json&query=version&colorB=1d7ebe)
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/nyteshade/ne-schemata.svg)](https://greenkeeper.io/)
-
-![getter](https://github.com/nyteshade/ne-schemata/raw/master/assets/graphql-logo.png)
+![Logo](https://github.com/nyteshade/ne-schemata/raw/master/assets/graphql-logo.png)
 
 GraphQL IDL/Schemata String class to make working with GraphQL easier
 
