@@ -10,7 +10,8 @@
     ]
   ],
   "plugins": [
-    "transform-class-properties",
-    "transform-runtime"
+    "transform-async-to-generator",
+    "transform-runtime",
+    "transform-class-properties"
   ]
 }
