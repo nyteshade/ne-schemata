@@ -5,7 +5,29 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.forEachField = exports.forEachOf = exports.TypeMap = exports.HIDDEN = exports.INPUT_TYPES = exports.ROOT_TYPES = exports.SCALARS = exports.UNIONS = exports.ENUMS = exports.INTERFACES = exports.TYPES = exports.ALL = undefined;
 
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _defineProperties = require('babel-runtime/core-js/object/define-properties');
+
+var _defineProperties2 = _interopRequireDefault(_defineProperties);
+
+var _toStringTag = require('babel-runtime/core-js/symbol/to-string-tag');
+
+var _toStringTag2 = _interopRequireDefault(_toStringTag);
+
+var _getOwnPropertySymbols = require('babel-runtime/core-js/object/get-own-property-symbols');
+
+var _getOwnPropertySymbols2 = _interopRequireDefault(_getOwnPropertySymbols);
+
+var _map = require('babel-runtime/core-js/map');
+
+var _map2 = _interopRequireDefault(_map);
+
 var _graphql = require('graphql');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Create constants for each of the types allowed, over which one might
 // iterate. These can be bitmasked to include multiple types; i.e. for both
@@ -24,7 +46,7 @@ const HIDDEN = 256;
 const Masks = [ALL, TYPES, INTERFACES, UNIONS, ENUMS, SCALARS, ROOT_TYPES, INPUT_TYPES];
 
 // Create a mapping from the constant to the GraphQL type class.
-const TypeMap = new Map();
+const TypeMap = new _map2.default();
 TypeMap.set(TYPES, _graphql.GraphQLObjectType);
 TypeMap.set(ROOT_TYPES, _graphql.GraphQLObjectType);
 TypeMap.set(INTERFACES, _graphql.GraphQLInterfaceType);
@@ -73,9 +95,9 @@ function forEachOf(schema, fn, context, types = ALL) {
   [_graphql.GraphQLObjectType, _graphql.GraphQLInterfaceType, _graphql.GraphQLEnumType, _graphql.GraphQLUnionType, _graphql.GraphQLScalarType].forEach(t => {
     if (!t) return;
 
-    if (!Object.getOwnPropertySymbols(t.prototype).includes(Symbol.toStringTag)) {
-      Object.defineProperties(t.prototype, {
-        [Symbol.toStringTag]: { get() {
+    if (!(0, _getOwnPropertySymbols2.default)(t.prototype).includes(_toStringTag2.default)) {
+      (0, _defineProperties2.default)(t.prototype, {
+        [_toStringTag2.default]: { get() {
             return this.constructor.name;
           } }
       });
@@ -84,7 +106,7 @@ function forEachOf(schema, fn, context, types = ALL) {
 
   const typeMap = schema.getTypeMap();
 
-  Object.keys(typeMap).forEach(typeName => {
+  (0, _keys2.default)(typeMap).forEach(typeName => {
     const type = typeMap[typeName];
     const hidden = (0, _graphql.getNamedType)(type).name.startsWith('__');
     const showHidden = (types & HIDDEN) === HIDDEN;
@@ -156,7 +178,7 @@ function forEachField(schema, fn, context, types = ALL) {
       return;
     }
 
-    Object.keys(type._fields).forEach(fieldName => {
+    (0, _keys2.default)(type._fields).forEach(fieldName => {
       let field = type._fields[fieldName];
       let fieldDirectives = field.astNode && field.astNode.directives || [];
       let fieldArgs = field.args || [];
