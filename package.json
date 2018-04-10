@@ -1,0 +1,52 @@
+{
+  "name": "ne-schemata",
+  "version": "1.5.0",
+  "description": "GraphQL IDL/Schemata String class to make working with GraphQL easier",
+  "repository": "https://github.com/nyteshade/ne-schemata",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest --no-cache",
+    "build": "rm -rf dist/* ; babel -s --source-root src src/ -d dist/"
+  },
+  "keywords": [
+    "SDL",
+    "IDL",
+    "AST",
+    "utility",
+    "GraphQLSchema",
+    "GraphQL"
+  ],
+  "author": "Brielle Harrison",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-jest": "^22.4.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
+    "graphql": "^0.13.2",
+    "jest": "^22.4.3",
+    "jest-environment-node-debug": "^2.0.0"
+  },
+  "peerDependencies": {
+    "graphql": "^0.13.2"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "graphql",
+      "json",
+      "jsx"
+    ],
+    "verbose": true,
+    "transform": {
+      "^.+\\.graphql": "<rootDir>/jestTransformer",
+      "^.+\\.jsx?o?n?$": "babel-jest"
+    }
+  },
+  "dependencies": {
+    "deepmerge": "^2.1.0",
+    "ne-tag-fns": "^0.6.1"
+  }
+}

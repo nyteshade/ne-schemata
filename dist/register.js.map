@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/register.js"],"names":["require","register"],"mappings":";;eAAqBA,QAAQ,oBAAR,C;;MAAbC,Q,YAAAA,Q;;;AAERA,SAAS,UAAT","file":"register.js","sourceRoot":"src","sourcesContent":["const { register } = require('./GraphQLExtension')\n\nregister('.graphql')\n\n"]}

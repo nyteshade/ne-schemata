@@ -1,0 +1,20 @@
+enum Gender {
+  Male,
+  Female,
+  TransFemale,
+  TransMale,
+  NonBinary
+}
+
+type Person {
+  name: String
+  gender: Gender
+}
+
+type Query {
+  peeps: [Person]
+}
+
+type Mutation {
+  setPeep(name: String!, gender: Gender!): Person
+}
