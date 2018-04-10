@@ -1,5 +1,5 @@
 import { gql, Schemata, TYPEDEFS_KEY } from '..'
-import { parse, buildSchema, printSchema } from 'graphql'
+import { parse, buildSchema, printSchema, GraphQLScalarType } from 'graphql'
 import { sdl, schema } from './gql/person.graphql'
 
 describe('testing Schemata', async () => {
@@ -247,6 +247,72 @@ describe('testing Schemata', async () => {
     expect(field).toBeTruthy()
     expect(field.args.length).toBeTruthy()
     expect(field.args[0].name).toBe('color')
+  })
+
+  it('should be able to take a custom conflict resolver', () => {
+    let ccr = {
+      fieldMergeResolver(leftType, leftField, rightType, rightField) {
+        return leftField
+      }
+    }
+    let left = Schemata.from('type Box { name: String } type Query { box: Box }')
+    let right = Schemata.from('type Query { box(color: String): Box }')
+    let merged = left.mergeSDL(right, ccr)
+    let field = merged.schemaFieldByName('Query', 'box')
+
+    expect(field).toBeTruthy()
+    expect(field.args.length).not.toBeTruthy()
+    expect(() => {expect(field.args[0].name).toBe('color')}).toThrow()
+  })
+
+  it('should be able to merge custom scalars with resolvers', () => {
+    let lScalarFn = new GraphQLScalarType({
+      name: 'ContrivedScalar',
+      description: 'Left hand scalar',
+      serialize(value) { return value },
+      parseValue(value) { return 24 },
+      parseLiteral(ast) { return ast }
+    })
+
+    let rScalarFn = new GraphQLScalarType({
+      name: 'ContrivedScalar',
+      description: 'Right hand scalar',
+      serialize(value) { return value },
+      parseValue(value) { return 42 },
+      parseLiteral(ast) { return ast }
+    })
+
+    let lSchemata = Schemata.from(`
+      scalar ContrivedScalar
+
+      type ContrivedType {
+        value: ContrivedScalar
+      }
+
+      type Query {
+        contrivances: ContrivedType
+      }
+    `, { ContrivedType: lScalarFn })
+
+    let rSchemata = Schemata.from(`
+      scalar ContrivedScalar
+
+      type Query {
+        moreContrivances: ContrivedScalar
+      }
+    `, { ContrivedType: rScalarFn })
+
+    lSchemata.mergeSDL(rSchemata, { scalarMergeResolver(lS,lC,rS,rC) {
+      expect(lS).toBeTruthy()
+      expect(lC).toBeTruthy()
+      expect(rS).toBeTruthy()
+      expect(rC).toBeTruthy()
+
+      expect(lC).toBe(lScalarFn)
+      expect(rC).toBe(rScalarFn)
+
+      return rC
+    }})
   })
 
   it('should be able to pare down Schemata given Schemata as a guide', () => {

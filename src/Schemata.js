@@ -8,9 +8,11 @@ import type {
   ExecutionResult,
   FieldNode,
   GraphQLFieldResolver,
+  GraphQLScalarTypeConfig,
   NamedTypeNode,
   ObjMap,
   ParseOptions,
+  ScalarTypeDefinitionNode,
   Source,
 } from 'graphql'
 
@@ -166,6 +168,37 @@ export type UnionMergeResolver = (
 ) => NamedTypeNode
 
 /**
+ * A callback for to resolve merge conflicts with custom scalar types defined
+ * by the user.
+ *
+ * @param {ScalarTypeDefinitionNode} leftScalar the definition node found when
+ * parsing ASTNodes. This is the existing value that conflicts with the to be
+ * merged value
+ * @param {GraphQLScalarTypeConfig} leftConfig *if* there is a resolver defined
+ * for the existing ScalarTypeDefinitionNode it will be provided here. If this
+ * value is null, there is no availabe config with serialize(), parseValue() or
+ * parseLiteral() to work with.
+ * @param {ScalarTypeDefinitionNode} rightScalar the definition node found when
+ * parsing ASTNodes. This is to be merged value that conflicts with the
+ * existing value
+ * @param {GraphQLScalarTypeConfig} rightConfig *if* there is a resolver
+ * defined for the existing ScalarTypeDefinitionNode it will be provided here.
+ * If this value is null, there is no availabe config with serialize(),
+ * parseValue() or parseLiteral() to work with.
+ * @return {GraphQLScalarTypeConfig} whichever type config or resolver was
+ * desired should be returned here.
+ *
+ * @see https://www.apollographql.com/docs/graphql-tools/scalars.html
+ * @see http://graphql.org/graphql-js/type/#graphqlscalartype
+ */
+export type ScalarMergeResolver = (
+  leftScalar: ScalarTypeDefinitionNode,
+  leftConfig: GraphQLScalarTypeConfig,
+  rightScalar: ScalarTypeDefinitionNode,
+  rightConfig: GraphQLScalarTypeConfig
+) => GraphQLScalarTypeConfig
+
+/**
  * An object that specifies the various types of resolvers that might occur
  * during a given conflict resolution
  */
@@ -180,7 +213,10 @@ export type ConflictResolvers = {
   enumValueMergeResolver?: EnumMergeResolver,
 
   /** A handler for resolving type values in unions */
-  typeValueMergeResolver?: UnionMergeResolver
+  typeValueMergeResolver?: UnionMergeResolver,
+
+  /** A handler for resolving scalar config conflicts in custom scalars */
+  scalarMergeResolver?: ScalarMergeResolver
 }
 
 /** @type {Symbol} a unique symbol used as a key to all instance sdl strings */
@@ -282,6 +318,38 @@ export function DefaultUnionMergeResolver(
 }
 
 /**
+ * The default scalar merge resolver returns the right config when there is
+ * one, otherwise the left one or null will be the default result. This is
+ * slightly different behavior since resolvers for scalars are not always
+ * available.
+ *
+ * @param {GraphQLScalarTypeConfig} leftConfig *if* there is a resolver defined
+ * for the existing ScalarTypeDefinitionNode it will be provided here. If this
+ * value is null, there is no availabe config with serialize(), parseValue() or
+ * parseLiteral() to work with.
+ * @param {ScalarTypeDefinitionNode} rightScalar the definition node found when
+ * parsing ASTNodes. This is to be merged value that conflicts with the
+ * existing value
+ * @param {GraphQLScalarTypeConfig} rightConfig *if* there is a resolver
+ * defined for the existing ScalarTypeDefinitionNode it will be provided here.
+ * If this value is null, there is no availabe config with serialize(),
+ * parseValue() or parseLiteral() to work with.
+ * @return {GraphQLScalarTypeConfig} whichever type config or resolver was
+ * desired should be returned here.
+ *
+ * @see https://www.apollographql.com/docs/graphql-tools/scalars.html
+ * @see http://graphql.org/graphql-js/type/#graphqlscalartype
+ */
+export function DefaultScalarMergeResolver(
+  leftScalar: ScalarTypeDefinitionNode,
+  leftConfig: GraphQLScalarTypeConfig,
+  rightScalar: ScalarTypeDefinitionNode,
+  rightConfig: GraphQLScalarTypeConfig
+): GraphQLScalarTypeConfig {
+  return rightConfig ? rightConfig : (leftConfig || null)
+}
+
+/**
  * In order to facilitate merging, there needs to be some contingency plan
  * for what to do when conflicts arise. This object specifies one of each
  * type of resolver. Each simply takes the right-hand value.
@@ -299,7 +367,10 @@ export const DefaultConflictResolvers: ConflictResolvers = {
   enumValueMergeResolver: DefaultEnumMergeResolver,
 
   /** A handler for resolving type values in unions */
-  typeValueMergeResolver: DefaultUnionMergeResolver
+  typeValueMergeResolver: DefaultUnionMergeResolver,
+
+  /** A handler for resolving scalar configs in custom scalars */
+  scalarMergeResolver: DefaultScalarMergeResolver
 };
 
 const subTypeResolverMap: Map<string, Function> = new Map()
@@ -307,6 +378,7 @@ subTypeResolverMap.set('fields', 'fieldMergeResolver')
 subTypeResolverMap.set('directives', 'directiveMergeResolver')
 subTypeResolverMap.set('values', 'enumValueMergeResolver')
 subTypeResolverMap.set('types', 'typeValueMergeResolver')
+subTypeResolverMap.set('scalars', 'scalarMergeResolver')
 
 /**
  * Compares and combines a subset of ASTNode fields. Designed to work on all
@@ -327,23 +399,25 @@ function combineTypeAndSubType(
   rType: ASTNode,
   conflictResolvers: ConflictResolvers = DefaultConflictResolvers
 ): void {
-  for (let rSubType of rType[subTypeName]) {
-    let lSubType = lType[subTypeName].find(
-      f => f.name.value == rSubType.name.value
-    )
+  if (rType[subTypeName]) {
+    for (let rSubType of rType[subTypeName]) {
+      let lSubType = lType[subTypeName].find(
+        f => f.name.value == rSubType.name.value
+      )
 
-    if (!lSubType) {
-      lType[subTypeName].push(rSubType)
-      continue
+      if (!lSubType) {
+        lType[subTypeName].push(rSubType)
+        continue
+      }
+
+      let resolver = subTypeResolverMap.get(subTypeName) || 'fieldMergeResolver'
+      let resultingSubType = conflictResolvers[resolver](
+        lType, lSubType, rType, rSubType
+      )
+      let index = lType.fields.indexOf(lSubType)
+
+      lType[subTypeName].splice(index, 1, resultingSubType)
     }
-
-    let resolver = subTypeResolverMap.get(subTypeName) || 'fieldMergeResolver'
-    let resultingSubType = conflictResolvers[resolver](
-      lType, lSubType, rType, rSubType
-    )
-    let index = lType.fields.indexOf(lSubType)
-
-    lType[subTypeName].splice(index, 1, resultingSubType)
   }
 }
 
@@ -649,13 +723,13 @@ export class Schemata extends String {
   get typeDefs(): string { return this.sdl }
 
   /**
-   * A synonym or alias for `.resolvers`. Placed here for the express purpose
-   * of destructuing when used with express-graphql or other libraries
-   * expecting values of the same name to map to the resolvers function
+   * An internal call to buildResolvers(true), thereby requesting a flattened
+   * resolver map with Query, Mutation and Subscription fields exposed as root
+   * objects the way the Facebook reference implementation expects
    *
-   * @return {Object} an object of functions or null if one is not set
+   * @return {Object} an object of functions or an empty object otherwise
    */
-  get rootValue(): Object { return this.resolvers }
+  get rootValue(): Object { return this.buildResolvers(true) }
 
   /**
    * Returns any resolvers function object associated with this instance.
@@ -811,6 +885,14 @@ export class Schemata extends String {
 
     let lAST = this.ast
     let rAST = source.ast
+    let _scalarFns = {}
+
+    // Ensure we have default behavior with any custom behavior assigned
+    // atop the default ones should only a partial custom be supplied.
+    conflictResolvers = Object.assign(
+      DefaultConflictResolvers,
+      conflictResolvers
+    )
 
     for (let rType of rAST.definitions) {
       let lType = lAST.definitions.find(a => a.name.value == rType.name.value)
@@ -851,10 +933,45 @@ export class Schemata extends String {
           combineTypeAndSubType('directives', lType, rType, conflictResolvers)
           combineTypeAndSubType('types', lType, rType, conflictResolvers)
           break;
+
+        case 'ScalarTypeDefinitionNode':
+          let lScalar, lScalarConfig, rScalar, rScalarConfig, resolver
+
+          combineTypeAndSubType('directives', lType, rType, conflictResolvers)
+
+          if (this.schema) {
+            lScalar = this.schema.getType(lType.name.value)
+            lScalarConfig = lScalar && lScalar._scalarConfig || null
+          }
+
+          if (source.schema) {
+            rScalar = source.schema.getType(rType.name.value)
+            rScalarConfig = rScalar && rScalar._scalarConfig || null
+          }
+
+          resolver = (
+            conflictResolvers.scalarMergeResolver
+            || DefaultConflictResolvers.scalarMergeResolver
+          )(lType, lScalarConfig, rType, rScalarConfig)
+
+          if (resolver) {
+            _scalarFns[lType.name.value] = _scalarFns[lType.name.value] || {}
+            _scalarFns[lType.name.value] = resolver
+          }
+
+          break;
       }
     }
 
-    return Schemata.from(this.constructor.gql.print(lAST))
+    let merged = Schemata.from(this.constructor.gql.print(lAST))
+
+    if (Object.keys(_scalarFns).length) {
+      for (let typeName of Object.keys(_scalarFns)) {
+        merged.schema.getType(typeName)._scalarConfig = _scalarConfig[typeName]
+      }
+    }
+
+    return merged
   }
 
   /**
@@ -922,8 +1039,10 @@ export class Schemata extends String {
         case 'InputObjectTypeDefinitionExtension':
           pareTypeAndSubType('directives', lType, rType, resolvers)
           pareTypeAndSubType('fields', lType, rType, resolvers)
+
           if (!lType.fields.length) {
             let index = lAST.definitions.indexOf(lType)
+
             if (index !== -1) {
               lAST.definitions.splice(index, 1)
             }
@@ -933,8 +1052,10 @@ export class Schemata extends String {
         case 'EnumTypeDefinition':
           pareTypeAndSubType('directives', lType, rType, resolvers)
           pareTypeAndSubType('values', lType, rType, resolvers)
+
           if (!lType.values.length) {
             let index = lAST.definitions.indexOf(lType)
+
             if (index !== -1) {
               lAST.definitions.splice(index, 1)
             }
@@ -944,11 +1065,21 @@ export class Schemata extends String {
         case 'UnionTypeDefinition':
           pareTypeAndSubType('directives', lType, rType, resolvers)
           pareTypeAndSubType('types', lType, rType, resolvers)
+
           if (!lType.types.length) {
             let index = lAST.definitions.indexOf(lType)
+
             if (index !== -1) {
               lAST.definitions.splice(index, 1)
             }
+          }
+          break;
+
+        case 'ScalarTypeDefinitionNode':
+          let index = lAST.definitions.indexOf(lType)
+
+          if (index !== -1) {
+            lAST.definitions.splice(index, 1)
           }
           break;
       }
@@ -1603,7 +1734,7 @@ export class Schemata extends String {
     sdl: string | Source | Schemata | GraphQLSchema,
     showError: boolean = false,
     schemaOpts: BuildSchemaOptions & ParseOptions = undefined
-  ): GraphQLSchema {
+  ): ?GraphQLSchema {
     try {
       let source = normalizeSource(sdl)
 
@@ -1630,7 +1761,7 @@ export class Schemata extends String {
   static parse(
     sdl: string | Schemata | Source | GraphQLSchema,
     showError: boolean = false
-  ) {
+  ): ?ASTNode {
     try {
       let source = normalizeSource(sdl)
 
