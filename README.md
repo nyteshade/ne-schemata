@@ -223,8 +223,8 @@ Even this example has difficulty explaining properly what is happening and why i
   - [.graphiql](#inst-graphiql): `boolean`
   - [.hasAnExecutableSchema](#inst-has-an-executable-schema): `boolean`
   - [.hasFlattenedResolvers](#inst-has-flattened-resolvers): `boolean`
-  - [.resolvers](#inst-resolvers): `?Object`
-  - [.rootValue](#inst-root-value): `?Object`
+  - [.resolvers](#inst-resolvers): `?ResolverMap`
+  - [.rootValue](#inst-root-value): `?ResolverMap`
   - [.schema](#inst-schema): [`?GraphQLSchema`](https://github.com/graphql/graphql-js/blob/master/src/type/schema.js#L48)
   - [.sdl](#inst-sdl): `string`
   - [.typeDefs](#inst-type-defs): `string`
@@ -233,6 +233,7 @@ Even this example has difficulty explaining properly what is happening and why i
   - [.validSDL](#inst-valid-sdl): `boolean`
 - [Instance methods](#instance-methods)
   - [buildResolvers](#build-resolvers)
+  - [buildResolverForEachField](#build-resolver-for-each-field)
   - [clearResolvers](#clear-resolvers)
   - [clearSchema](#clear-schema)
   - [forEachEnum](#for-each-enum)
@@ -278,6 +279,7 @@ Even this example has difficulty explaining properly what is happening and why i
   - [MergeOptionsConfig](#type-merge-options-config)
   - [ResolverArgs](#type-resolver-args)
   - [ResolverArgsTransformer](#type-resolver-args-transformer)
+  - [ResolverMap](#type-resolver-map)
   - [ScalarMergeResolver](#type-scalar-merge-resolver)
   - [UnionMergeResolver](#type-union-enum-merge-resolver)
 - [External Functions](#external-functions)
@@ -289,11 +291,11 @@ Even this example has difficulty explaining properly what is happening and why i
 ## <a name="instance-constructor"></a>Constructor [✯](#contents)
 ```js
 constructor(
-  typeDefs: string | Source | Schemata | GraphQLSchema | ASTNode,
+  typeDefs: string | Class<Source> | Class<Schemata> | Class<GraphQLSchema> | ASTNode,
   resolvers: ?{ [string]: Function } = null,
   buildResolvers: boolean = false,
   flattenResolvers: boolean = false
-): Schemata
+): Class<Schemata>
 ```
 Schemata instances are versatile and can be created through a variety of sources. Typically anything that can be converted to a string of SDL can be used to create a new Schemata instance. Everything from a GraphQL `Source` instance, previously instantiated `Schemata` instance, a `GraphQLSchema` object or even an `ASTNode`. Of course, basic strings of SDL can also be used.
 
@@ -363,11 +365,22 @@ The final two parameters are for the case where the Schemata instance is initial
 #### <a name="build-resolvers"></a>buildResolvers [✯](#contents)
 ```js
 buildResolvers(
-  flattenRootResolversOrFirstParam: boolean|Object,
-  ...extendWith: Array<Object>
-): Object
+  flattenRootResolversOrFirstParam: boolean | ResolverMap,
+  ...extendWith: Array<ResolverMap>
+): ResolverMap
 ```
 In the case where Schemata instance was created with a GraphQLSchema, especially one that is an executableSchema or somehow has resolvers in it already, `buildResolvers()` will walk the schema fields and build up a resolvers object of those `resolve()` functions on each field. If true is supplied as the first parameter, the resolver functions from Query, Mutation and Subscription will appear in the root of the returned object rather than under their aforementioned parent types.
+
+#### <a name="build-resolver-for-each-field"></a>buildResolverForEachField [✯](#contents)
+```js
+buildResolverForEachField(
+  flattenRootResolversOrFirstParam: boolean | ResolverMap,
+  ...extendWith: Array<ResolverMap>
+): ResolverMap
+```
+From time to time it makes more sense to wrap every possible resolver mapping in given schema. Getting a handle to each fields resolver and or substituting missing ones with GraphQL's defaultFieldResolver can be a tiresome affair. This method walks the schema for you and returns any previously defined resolvers alongside defaultFieldResolvers for each possible field of every type in the schema.
+
+*If a schema cannot be generated from the SDL represented by the instance of Schemata, then an error is thrown.*
 
 #### <a name="clear-resolvers"></a>clearResolvers [✯](#contents)
 ```js
@@ -388,7 +401,7 @@ forEachOf(
   context: mixed,
   types: number = Schemata.TYPES,
   suppliedSchema: ?GraphQLSchema = null
-): GraphQLSchema
+): Class<GraphQLSchema>
 ```
 Iterates over the type map of either the internal schema or one created from the SDL string this instance represents and then stored for later use. See above for the definition of the [`ForEachOfResolver`](#type-for-each-of-resolver) callback signature. `types` is a bitmask made up of at least one of the constant properties on Schemata such as `Schemata.ALL` or `Schemata.TYPES` and optionally augmented with `Schemata.HIDDEN`
 
@@ -400,7 +413,7 @@ forEachType(
   fn: ForEachOfResolver,
   context: mixed,
   suppliedSchema: ?GraphQLSchema
-): GraphQLSchema
+): Class<GraphQLSchema>
 ```
 
 Iterates over all types on either the internal schema or one created from the SDL string this instance represents and then stored for later use
@@ -413,7 +426,7 @@ forEachInputObjectType(
   fn: ForEachOfResolver,
   context: mixed,
   suppliedSchema: ?GraphQLSchema
-): GraphQLSchema
+): Class<GraphQLSchema>
 ```
 
 Iterates over all input types on either the internal schema or one created from the SDL string this instance represents and then stored for later use
@@ -541,9 +554,9 @@ Iterates over all input object fields on all types on either the internal schema
 #### <a name="merge-sdl"></a>mergeSDL [✯](#contents)
 ```js
 mergeSDL(
-  schemaLanguage: string | Schemata | Source | GraphQLSchema,
+  schemaLanguage: string | Class<Schemata> | Class<Source> | Class<GraphQLSchema>,
   conflictResolvers: ?ConflictResolvers = DefaultConflictResolvers
-): Schemata
+): Class<Schemata>
 ```
 
 Given a string of Schema Definition Language (or SDL) or a Schemata instance itself or any of the other initialization sources, the function will proceed to blend the derived SDL with the one of the instance. In the case of conflicts, either the default resolver, which simply takes the newer right hand value, or a function of your own devising will be called to decide. See the [`ConflictResolvers`](#type-conflict-resolvers) type for more info
@@ -551,9 +564,9 @@ Given a string of Schema Definition Language (or SDL) or a Schemata instance its
 #### <a name="pare-sdl"></a>pareSDL [✯](#contents)
 ```js
 pareSDL(
-  schemaLanguage: string | Schemata | Source | GraphQLSchema,
-  resolverMap: ?Object = null
-): Schemata
+  schemaLanguage: string | Class<Schemata> | Class<Source> | Class<GraphQLSchema>,
+  resolverMap: ?ResolverMap = null
+): Class<Schemata>
 ```
 
 Given a string of Schema Definition Language (or SDL) or a Schemata instance itself or any of the other initialization sources, the function will proceed to remove the items using the derived SDL as a guide. If the internal instance has resolvers set or one can be built from the Schema stored on the instance, or if a set is supplied as the second parameter, the resolvers will also be pared down for any removed types and fields. Types stripped of all fields will themselves be removed.
@@ -561,9 +574,9 @@ Given a string of Schema Definition Language (or SDL) or a Schemata instance its
 #### <a name="merge-sdl"></a>mergeSchema [✯](#contents)
 ```js
 mergeSchema(
-  schema: GraphQLSchema,
+  schema: Class<GraphQLSchema>,
   conflictResolvers: ?ConflictResolvers = DefaultConflictResolvers
-): Schemata
+): Class<Schemata>
 ```
 
 This process stores the resolvers of the internal schema as well as those of the supplied schema. The supplied schema is then converted to Schemata and the mergeSDL() function is applied. Post merge, the previously stored and merged resolvers map are are applied and a new executable schema is built from the ashes of the old. See the [`ConflictResolvers`](#type-conflict-resolvers) type for more info
@@ -571,7 +584,7 @@ This process stores the resolvers of the internal schema as well as those of the
 #### <a name="run"></a>run [✯](#contents)
 ```js
 run (
-  query: string | Source,
+  query: string | Class<Source>,
   contextValue?: mixed,
   variableValues?: ?ObjMap<mixed>,
   rootValue?: mixed,
@@ -585,7 +598,7 @@ A convenient pass-thru to `graphqlSync()` to query the schema in a synchronous m
 #### <a name="run-async"></a>runAsync [✯](#contents)
 ```js
 async runAsync(
-  query: string | Source,
+  query: string | Class<Source>,
   contextValue?: mixed,
   variableValues?: ?ObjMap<mixed>,
   rootValue?: mixed,
@@ -642,7 +655,7 @@ A convenient pass-thru to `graphql()` to query the schema in an asynchronous man
 #### <a name="fn-buildSchema"></a>buildSchema [✯](#contents)
 ```js
 static buildSchema(
-  sdl: string | Source | Schemata | GraphQLSchema,
+  sdl: string | Class<Source> | Class<Schemata> | Class<GraphQLSchema>,
   showError: boolean = false,
   schemaOpts: BuildSchemaOptions & ParseOptions = undefined
 ): ?GraphQLSchema
@@ -653,7 +666,7 @@ schemaOpts is the optional second parameter taken by `require('graphql').buildSc
 #### <a name="fn-parse"></a>parse [✯](#contents)
 ```js
 static parse(
-  sdl: string | Schemata | Source | GraphQLSchema,
+  sdl: string | Class<Schemata> | Class<Source> | Class<GraphQLSchema>,
   showError: boolean = false
 ): ?ASTNode
 ```
@@ -677,9 +690,15 @@ SDL will be returned.
 #### <a name="fn-from"></a>from [✯](#contents)
 ```js
 static from(
-  typeDefs: string | Source | Schemata | GraphQLSchema,
-  resolvers: ?Object
-): Schemata
+  typeDefs: string
+    | Class<Source>
+    | Class<Schemata>
+    | Class<GraphQLSchema>
+    | ASTNode,
+  resolvers: ?ResolverMap = null,
+  buildResolvers: boolean | string = false,
+  flattenResolvers: boolean = false,
+): Class<Schemata>
 ```
 An alterate way of creating a new instance of `Schemata`. Effectively equivalent to `new Schemata(...)`
 
@@ -749,7 +768,7 @@ export type ForEachFieldResolver = (
   fieldName: string,
   fieldArgs: Array<GraphQLArgument>,
   fieldDirectives: Array<GraphQLDirective>,
-  schema: GraphQLSchema,
+  schema: Class<GraphQLSchema>,
   context: mixed
 ) => void
 ```
@@ -761,7 +780,7 @@ export type ForEachOfResolver = (
   type: mixed,
   typeName: string,
   typeDirectives: Array<GraphQLDirective>,
-  schema: GraphQLSchema,
+  schema: Class<GraphQLSchema>,
   context: mixed
 ) => void
 ```
@@ -783,6 +802,12 @@ Resolver functions receive four arguments when they execute. This type represent
 export type ResolverArgsTransformer = (args: ResolverArgs) => ResolverArgs
 ```
 A function that takes a [`ResolverArgs`](#type-resolver-args) object and returns a [`ResolverArgs`](#type-resolver-args)
+
+#### <a name="type-resolver-map"></a>ResolverMap [✯](#contents)
+```js
+export type ResolverMap = { [string]: Function | ResolverMap }
+```
+A resolver map is either a flat string/Function mapping or nested version of itself. Each string key should either point to a object map of string/Function pairs or Function.
 
 #### <a name="type-merge-options-config"></a>MergeOptionsConfig [✯](#contents)
 ```js
@@ -819,9 +844,9 @@ The `ScalarMergeResolver` is a function that takes both left and right scalars t
 #### <a name="etype-normalize-source"></a>normalizeSource() [✯](#contents)
 ```js
 export function normalizeSource(
-  typeDefs: string | Source | Schemata | GraphQLSchema | ASTNode,
+  typeDefs: string | Class<Source> | Class<Schemata> | Class<GraphQLSchema> | ASTNode,
   wrap: boolean = false
-): (string | Schemata)
+): (string | Class<Schemata>)
 ```
 A function that takes the various types of input that `Schemata` takes as a constructor and converts the results into either a `string` or `Schemata` instance if `wrap` is set to true.
 
@@ -837,7 +862,7 @@ Given an initial set of arguments passed to a resolver function and a [`MergeOpt
 #### <a name="etype-schema-injector-config"></a>SchemaInjectorConfig() [✯](#contents)
 ```js
 export function SchemaInjectorConfig(
-  schema: GraphQLSchema,
+  schema: Class<GraphQLSchema>,
   extraConfig?: MergeOptionsConfig
 ): MergeOptionsConfig
 ```
@@ -848,7 +873,7 @@ This function takes a schema to inject into the info object, or fourth parameter
 #### <a name="etype-strip-resolvers-from-schema"></a>stripResolversFromSchema() [✯](#contents)
 ```js
 export function stripResolversFromSchema(
-  schema: GraphQLSchema
-): ?Object
+  schema: Class<GraphQLSchema>
+): ?ResolverMap
 ```
 Walk the supplied GraphQLSchema instance and retrieve the resolvers stored on it. These values are then returned with a `[typeName][fieldName]` pathing

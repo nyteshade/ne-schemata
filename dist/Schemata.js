@@ -25,10 +25,6 @@ var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
 
 var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
 
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
-
 var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
@@ -41,9 +37,9 @@ var _toStringTag = require('babel-runtime/core-js/symbol/to-string-tag');
 
 var _toStringTag2 = _interopRequireDefault(_toStringTag);
 
-var _iterator12 = require('babel-runtime/core-js/symbol/iterator');
+var _iterator13 = require('babel-runtime/core-js/symbol/iterator');
 
-var _iterator13 = _interopRequireDefault(_iterator12);
+var _iterator14 = _interopRequireDefault(_iterator13);
 
 var _species = require('babel-runtime/core-js/symbol/species');
 
@@ -67,9 +63,9 @@ exports.DefaultUnionMergeResolver = DefaultUnionMergeResolver;
 exports.DefaultScalarMergeResolver = DefaultScalarMergeResolver;
 exports.normalizeSource = normalizeSource;
 
-var _ExtendedResolverMap = require('./ExtendedResolverMap');
-
 var _graphql = require('graphql');
+
+var _ExtendedResolverMap = require('./ExtendedResolverMap');
 
 var _neTagFns = require('ne-tag-fns');
 
@@ -80,6 +76,9 @@ var _deepmerge2 = _interopRequireDefault(_deepmerge);
 var _forEachOf = require('./forEachOf');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const debug_log = require('debug')('schemata:normal');
+const debug_trace = require('debug')('schemata:trace');
 
 /**
  * A small `String` extension that makes working with SDL/IDL text far easier
@@ -98,14 +97,16 @@ class Schemata extends String {
    * @constructor
    * @memberOf Schemata
    *
-   * @param {string|Schemata|Source|GraphQLSchema|ASTNode} typeDefs an instance
-   * of Schemata, a string of SDL, a Source instance of SDL, a GraphQLSchema or
-   * ASTNode that can be printed as an SDL string
-   * @param {Object} resolvers an object containing field resolvers for
+   * @param {string|Schemata|Source|Class<GraphQLSchema>|ASTNode} typeDefs
+   * an instance of Schemata, a string of SDL, a Source instance of SDL, a
+   * GraphQLSchema or ASTNode that can be printed as an SDL string
+   * @param {ResolverMap} resolvers an object containing field resolvers for
    * for the schema represented with this string. [Optional]
    * @param {boolean} buildResolvers if this flag is set to true, build a set
    * of resolvers after the rest of the instance is initialized and set the
-   * results on the `.resolvers` property of the newly created instance
+   * results on the `.resolvers` property of the newly created instance. If
+   * buildResolvers is the string "all", then a resolver for each field not
+   * defined will be returned with a `defaultFieldResolver` as its value
    * @param {boolean} flattenResolvers if true, and if `buildResolvers` is true,
    * then make an attempt to flatten the root types to the base of the
    * resolver map object.
@@ -133,7 +134,11 @@ class Schemata extends String {
     // If buildResolvers is true, after the rest is already set and done, go
     // ahead and build a new set of resolver functions for this instance
     if (buildResolvers) {
-      this.resolvers = this.buildResolvers(flattenResolvers);
+      if (buildResolvers === "all") {
+        this.resolvers = this.buildResolverForEachField(flattenResolvers);
+      } else {
+        this.resolvers = this.buildResolvers(flattenResolvers);
+      }
     }
   }
 
@@ -156,7 +161,7 @@ class Schemata extends String {
    *
    * @type {Function}
    */
-  get [_iterator13.default]() {
+  get [_iterator14.default]() {
     return function* () {
       yield this.toString();
     }.bind(this);
@@ -217,17 +222,22 @@ class Schemata extends String {
    */
   get schema() {
     if (this[MAP].get(wmkSchema)) {
+      debug_log('[get .schema] retrieving existing schema');
       return this[MAP].get(wmkSchema);
     }
 
     try {
       if (this.resolvers && (0, _keys2.default)(this.resolvers).length) {
+        debug_log('[get .schema] creating executable schema instead');
         return this.executableSchema;
       } else {
+        debug_log('[get .schema] building new schema');
         this[MAP].set(wmkSchema, this.constructor.buildSchema(this.sdl, true));
         this[MAP].get(wmkSchema)[EXE] = false;
       }
     } catch (error) {
+      debug_log('[get .schema] failed to build schema!!');
+      debug_trace('[get .schema] ', error);
       return null;
     }
 
@@ -242,6 +252,8 @@ class Schemata extends String {
    * by methods that do so.
    */
   set schema(schema) {
+    debug_log('[set .schema]: ', schema ? 'truthy' : 'falsey');
+    debug_trace('[set .schema] ', schema);
     this[MAP].set(wmkSchema, schema);
   }
 
@@ -300,8 +312,11 @@ class Schemata extends String {
     }
 
     try {
+      debug_log('[get .executableSchema] creating schema from SDL');
       this[MAP].set(wmkSchema, schema = Class.buildSchema(this.sdl, true));
     } catch (error) {
+      debug_log('[get .executableSchema] failed to create schema');
+      debug_trace('[get .executableSchema] ERROR!', error);
       return null;
     }
 
@@ -403,7 +418,7 @@ class Schemata extends String {
    * @return {FieldNode} the field reference in the type and field supplied
    */
   schemaFieldByName(type, field) {
-    if (!this.validSchema) {
+    if (!this.validSchema || !this.schema) {
       return null;
     }
 
@@ -521,9 +536,9 @@ class Schemata extends String {
    * supports merging of types, extended types, interfaces, enums, unions,
    * input object types and directives for all of the above.
    *
-   * @param {string|Schemata|Source|GraphQLSchema|ASTNode} schemaLanguage an
-   * instance of Schemata, a string of SDL, a Source instance of SDL, a
-   * GraphQLSchema or ASTNode that can be printed as an SDL string
+   * @param {string|Class<Schemata>|Class<Source>|Class<GraphQLSchema>|ASTNode}
+   * schemaLanguage an instance of Schemata, a string of SDL, a Source instance
+   * of SDL, a GraphQLSchema or ASTNode that can be printed as an SDL string
    * @param {ConflictResolvers} conflictResolvers an object containing up to
    * four methods, each describing how to handle a conflict when an associated
    * type of conflict occurs. If no object or method are supplied, the right
@@ -547,7 +562,7 @@ class Schemata extends String {
 
     // Ensure we have default behavior with any custom behavior assigned
     // atop the default ones should only a partial custom be supplied.
-    conflictResolvers = (0, _assign2.default)(DefaultConflictResolvers, conflictResolvers);
+    conflictResolvers = (0, _deepmerge2.default)(DefaultConflictResolvers, conflictResolvers);
 
     var _iteratorNormalCompletion2 = true;
     var _didIteratorError2 = false;
@@ -560,7 +575,7 @@ class Schemata extends String {
         let lType = lAST.definitions.find(a => a.name.value == rType.name.value);
 
         if (rType.kind && rType.kind.endsWith && rType.kind.endsWith('Extension')) {
-          rType = (0, _assign2.default)({}, rType);
+          rType = (0, _deepmerge2.default)({}, rType);
           rType.kind = rType.kind.substring(0, rType.kind.length - 9) + 'Definition';
         }
 
@@ -669,11 +684,11 @@ class Schemata extends String {
    * a copy of the SDL in this Schemata instance represents and the resolver
    * map passed in.
    *
-   * @param {string|Schemata|Source|GraphQLSchema|ASTNode} schemaLanguage an
-   * instance of Schemata, a string of SDL, a Source instance of SDL, a
+   * @param {string|Schemata|Source|Class<GraphQLSchema>|ASTNode} schemaLanguage
+   * an instance of Schemata, a string of SDL, a Source instance of SDL, a
    * GraphQLSchema or ASTNode that can be printed as an SDL string
-   * @param {Object} resolverMap an object containing resolver functions, from
-   * either those set on this instance or those in the resolverMap added in
+   * @param {ResolverMap} resolverMap an object containing resolver functions,
+   * from either those set on this instance or those in the resolverMap added in
    * @return {Schemata} a new Schemata instance with the changed values set
    * on it
    */
@@ -690,7 +705,7 @@ class Schemata extends String {
       resolverMap = stripResolversFromSchema(schemaLanguage);
     }
 
-    let resolvers = (0, _assign2.default)({}, resolverMap || this.resolvers || {});
+    let resolvers = (0, _deepmerge2.default)({}, resolverMap || this.resolvers || {});
     let lAST = this.ast;
     let rAST = source.ast;
 
@@ -707,7 +722,7 @@ class Schemata extends String {
         if (rType.kind && rType.kind.endsWith && rType.kind.endsWith('Extension')) {
           let len = 'Extension'.length;
 
-          rType = (0, _assign2.default)({}, rType);
+          rType = (0, _deepmerge2.default)({}, rType);
           rType.kind = rType.kind.substring(0, rType.kind.length - len) + 'Definition';
         }
 
@@ -819,19 +834,20 @@ class Schemata extends String {
       `);
     }
 
-    let left = Schemata.from(this, undefined, true);
-    let right = Schemata.from(schema, undefined, true);
+    let left = Schemata.from(this, undefined, "all");
+    let right = Schemata.from(schema, undefined, "all");
 
     let exResolverMaps = right.prevResolverMaps || [];
     let mergeResolvers;
     let schemata;
 
+    // Previous resolver maps should only consist of defined resolvers
     if (left.prevResolverMaps && left.prevResolverMaps.length) {
       exResolverMaps = exResolverMaps.concat(left.prevResolverMaps);
     } else {
-      exResolverMaps.push(_ExtendedResolverMap.ExtendedResolverMap.from(left));
+      exResolverMaps.push(_ExtendedResolverMap.ExtendedResolverMap.from(Schemata.from(this, undefined, true)));
     }
-    exResolverMaps.push(_ExtendedResolverMap.ExtendedResolverMap.from(right));
+    exResolverMaps.push(_ExtendedResolverMap.ExtendedResolverMap.from(Schemata.from(schema, undefined, true)));
 
     // Walk through the list of
     if (exResolverMaps && exResolverMaps.length) {
@@ -898,7 +914,7 @@ class Schemata extends String {
     };
 
     // Set the resolvers on the result
-    schemata.resolvers = wrapResolvers(mergeResolvers);
+    schemata.resolvers = wrapResolvers((0, _deepmerge2.default)(left.resolvers, (0, _deepmerge2.default)(right.resolvers, mergeResolvers)));
 
     // Trigger a new schema creation
     schemata.executableSchema;
@@ -912,18 +928,18 @@ class Schemata extends String {
    * object. It will be empty if there are either no resolvers to be found
    * in the schema or if a valid schema cannot be created.
    *
-   * @param {boolean|Object} flattenRootResolversOrFirstParam if this value is
-   * boolean, and if this value is true, the resolvers from Query, Mutation
-   * and Subscription types will be flattened to the root of the object. If
-   * the first parametr is an Object, it will be merged in normally with
-   * Object.assign.
-   * @param {Array<Object>} ...extendWith an unlimited array of objects that
-   * can be used to extend the built resolver map.
-   * @return {Object} a resolver map; i.e. an object of resolver functions
+   * @param {boolean|ResolverMap} flattenRootResolversOrFirstParam if this
+   * value is boolean, and if this value is true, the resolvers from Query,
+   * Mutation and Subscription types will be flattened to the root of the
+   * object. If the first parametr is an Object, it will be merged in normally
+   * with merge.
+   * @param {Array<ResolverMap>} ...extendWith an unlimited array of objects
+   * that can be used to extend the built resolver map.
+   * @return {ResolverMap} a resolver map; i.e. an object of resolver functions
    */
   buildResolvers(flattenRootResolversOrFirstParam, ...extendWith) {
     let schemata = Schemata.from(this.sdl, this.resolvers);
-    let resolvers = (0, _assign2.default)({}, stripResolversFromSchema(schemata.executableSchema) || schemata.resolvers || {});
+    let resolvers = (0, _deepmerge2.default)({}, stripResolversFromSchema(schemata.executableSchema) || schemata.resolvers || {});
 
     // Next check to see if we are flattening or simply extending
     if (typeof flattenRootResolversOrFirstParam === 'boolean') {
@@ -970,10 +986,26 @@ class Schemata extends String {
             for (var _iterator7 = (0, _getIterator3.default)((0, _keys2.default)(resolvers)), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
               let field = _step7.value;
 
-              if (schemata.schemaFieldByName(rootType, field)) {
-                resolvers[rootType] = resolvers[rootType] || {};
-                resolvers[rootType][field] = resolvers[field];
-                delete resolvers[field];
+              try {
+                debug_log('[buildResolvers()] finding field in schema');
+                if (schemata.schemaFieldByName(rootType, field)) {
+                  resolvers[rootType] = resolvers[rootType] || {};
+                  resolvers[rootType][field] = resolvers[field];
+                  delete resolvers[field];
+                }
+              } catch (error) {
+                debug_log(_neTagFns.inline`
+                [buildResolvers()] Falling back to \`astFieldByName()\`
+              `);
+                debug_trace(_neTagFns.inline`
+                [buildResolvers()] Falling back to \`astFieldByName()\` due to
+              `, error);
+
+                if (schemata.astFieldByName(rootType, field)) {
+                  resolvers[rootType] = resolvers[rootType] || {};
+                  resolvers[rootType][field] = resolvers[field];
+                  delete resolvers[field];
+                }
               }
             }
           } catch (err) {
@@ -993,15 +1025,83 @@ class Schemata extends String {
         }
       }
     } else {
-      (0, _assign2.default)(resolvers, flattenRootResolversOrFirstParam);
+      resolvers = (0, _deepmerge2.default)(resolvers || {}, flattenRootResolversOrFirstParam || {});
     }
 
     // Finally extend with any remaining arguments
     if (extendWith.length) {
-      (0, _assign2.default)(resolvers, ...extendWith);
+      var _iteratorNormalCompletion8 = true;
+      var _didIteratorError8 = false;
+      var _iteratorError8 = undefined;
+
+      try {
+        for (var _iterator8 = (0, _getIterator3.default)(extendWith), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+          let item = _step8.value;
+
+          resolvers = (0, _deepmerge2.default)(resolvers || {}, item || {});
+        }
+      } catch (err) {
+        _didIteratorError8 = true;
+        _iteratorError8 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion8 && _iterator8.return) {
+            _iterator8.return();
+          }
+        } finally {
+          if (_didIteratorError8) {
+            throw _iteratorError8;
+          }
+        }
+      }
     }
 
     return resolvers;
+  }
+
+  /**
+   * From time to time it makes more sense to wrap every possible resolver
+   * mapping in given schema. Getting a handle to each fields resolver and
+   * or substituting missing ones with GraphQL's defaultFieldResolver can
+   * be a tiresome affair. This method walks the schema for you and returns
+   * any previously defined resolvers alongside defaultFieldResolvers for
+   * each possible field of every type in the schema.
+   *
+   * If a schema cannot be generated from the SDL represented by the instance
+   * of Schemata, then an error is thrown.
+   *
+   * @param {boolean|ResolverMap} flattenRootResolversOrFirstParam if this
+   * value is boolean, and if this value is true, the resolvers from Query,
+   * Mutation and Subscription types will be flattened to the root of the
+   * object. If the first parametr is an ResolverMap, it will be merged in
+   * normally with merge.
+   * @param {Array<ResolverMap>} ...extendWith an unlimited array of objects
+   * that can be used to extend the built resolver map.
+   * @return {ResolverMap} a resolver map; i.e. an object of resolver functions
+   */
+  buildResolverForEachField(flattenRootResolversOrFirstParam, ...extendWith) {
+    if (!this.schema) {
+      throw new Error(_neTagFns.inline`
+        buildResolverForEachField() cannot be called unless there is enough
+        valid SDL in the instance to construct a schema. Please check your
+        code!
+      `);
+    }
+
+    let interim = Schemata.from(this.schema);
+    let r = {};
+
+    interim.forEachField((type, typeName, typeDirectives, field, fieldName, fieldArgs, fieldDirectives, schema, context) => {
+      // Ensure the path to the type in question exists before continuing
+      // onward
+      (r[typeName] = r[typeName] || {})[fieldName] = r[typeName][fieldName] || {};
+
+      r[typeName][fieldName] = field.resolve || _graphql.defaultFieldResolver;
+    });
+
+    interim.resolvers = r;
+
+    return interim.buildResolvers(flattenRootResolversOrFirstParam, ...extendWith);
   }
 
   /**
@@ -1025,8 +1125,11 @@ class Schemata extends String {
   get validSDL() {
     try {
       this.constructor.gql.parse(this.sdl);
+      debug_log('[get .validSDL] true');
       return true;
     } catch (e) {
+      debug_log('[get .validSDL] false');
+      debug_trace('[get .validSDL] ', e);
       return false;
     }
   }
@@ -1042,8 +1145,11 @@ class Schemata extends String {
   get validSchema() {
     try {
       this.schema;
+      debug_log('[get .validSchema] true');
       return true;
     } catch (e) {
+      debug_log('[get .validSchema] false');
+      debug_trace('[get .validSchema] ', e);
       return false;
     }
   }
@@ -1065,8 +1171,8 @@ class Schemata extends String {
    * to removing any stored value. Finally the contents are stored in a weak
    * map so its contents are not guaranteed over a long period of time.
    *
-   * @param {Object} resolvers an object containing field resolvers for this
-   * string instance.
+   * @param {ResolverMap} resolvers an object containing field resolvers for
+   * this string instance.
    */
   set resolvers(resolvers) {
     this[MAP].set(wmkResolvers, resolvers);
@@ -1129,7 +1235,7 @@ class Schemata extends String {
    *   type: mixed,
    *   typeName: string,
    *   typeDirectives: Array<GraphQLDirective>
-   *   schema: GraphQLSchema,
+   *   schema: Class<GraphQLSchema>,
    *   context: mixed,
    * ) => void
    *
@@ -1299,7 +1405,7 @@ class Schemata extends String {
    *   fieldName: string,
    *   fieldArgs: Array<GraphQLArgument>,
    *   fieldDirectives: Array<GraphQLDirective>,
-   *   schema: GraphQLSchema,
+   *   schema: Class<GraphQLSchema>,
    *   context: mixed
    * ) => void
    *
@@ -1405,8 +1511,8 @@ class Schemata extends String {
    * @param {mixed} contextValue a bit of shared context to pass to resolvers
    * @param {Object} variableValues A mapping of variable name to runtime value
    * to use for all variables defined in the requestString.
-   * @param {Object|null} The value provided as the first argument to resolver
-   * functions on the top level type (e.g. the query object type).
+   * @param {ResolverMap|null} rootValue provided as the first argument to
+   * resolver functions on the top level type (e.g. the query object type).
    * @param {string} operationName The name of the operation to use if
    * requestString contains multiple possible operations. Can be omitted if
    * requestString contains only one operation.
@@ -1430,8 +1536,8 @@ class Schemata extends String {
    * @param {mixed} contextValue a bit of shared context to pass to resolvers
    * @param {Object} variableValues A mapping of variable name to runtime value
    * to use for all variables defined in the requestString.
-   * @param {Object|null} The value provided as the first argument to resolver
-   * functions on the top level type (e.g. the query object type).
+   * @param {ResolverMap|null} The value provided as the first argument to
+   * resolver functions on the top level type (e.g. the query object type).
    * @param {string} operationName The name of the operation to use if
    * requestString contains multiple possible operations. Can be omitted if
    * requestString contains only one operation.
@@ -1454,7 +1560,7 @@ class Schemata extends String {
    * A little wrapper used to catch any errors thrown when building a schema
    * from the string SDL representation of a given instance.
    *
-   * @param {string|Schemata|Source|GraphQLSchema|ASTNode} sdl an
+   * @param {string|Schemata|Source|Class<GraphQLSchema>|ASTNode} sdl an
    * instance of Schemata, a string of SDL, a Source instance of SDL, a
    * GraphQLSchema or ASTNode that can be printed as an SDL string
    * @param {boolean} showError true if the error should be thrown, false if
@@ -1466,10 +1572,14 @@ class Schemata extends String {
    */
   static buildSchema(sdl, showError = false, schemaOpts = undefined) {
     try {
+      debug_log('[static buildSchema()] normalizing source');
       let source = normalizeSource(sdl);
 
+      debug_log('[static buildSchema()] building schema');
       return this.gql.buildSchema(source, schemaOpts);
     } catch (e) {
+      debug_log('[static buildSchema()] failed to build!');
+      debug_trace('[static buildSchema()] ', e);
       if (showError) {
         throw e;
       }
@@ -1481,9 +1591,9 @@ class Schemata extends String {
    * A little wrapper used to catch any errors thrown when parsing Schemata for
    * ASTNodes. If showError is true, any caught errors are thrown once again.
    *
-   * @param {string|Schemata|Source|GraphQLSchema|ASTNode} sdl an instance of
-   * Schemata, a string of SDL, a Source instance of SDL, a GraphQLSchema or
-   * ASTNode that can be printed as an SDL string
+   * @param {string|Schemata|Source|Class<GraphQLSchema>|ASTNode} sdl an
+   * instance of Schemata, a string of SDL, a Source instance of SDL, a
+   * GraphQLSchema or ASTNode that can be printed as an SDL string
    * @param {boolean} showError if true, any caught errors will be thrown once
    * again
    * @param {boolean} enhance a generator keyed with `Symbol.iterator` is set
@@ -1496,32 +1606,36 @@ class Schemata extends String {
    */
   static parse(sdl, showError = false, enhance = true) {
     try {
+      debug_log('[static parse()] normalizing source');
       let source = normalizeSource(sdl);
+
+      debug_log('[static parse()] parsing');
       let node = this.gql.parse(source);
 
       if (enhance) {
-        node[_iterator13.default] = function* () {
-          var _iteratorNormalCompletion8 = true;
-          var _didIteratorError8 = false;
-          var _iteratorError8 = undefined;
+        debug_log('[static parse()] enhancing');
+        node[_iterator14.default] = function* () {
+          var _iteratorNormalCompletion9 = true;
+          var _didIteratorError9 = false;
+          var _iteratorError9 = undefined;
 
           try {
-            for (var _iterator8 = (0, _getIterator3.default)(this.definitions), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-              let node = _step8.value;
+            for (var _iterator9 = (0, _getIterator3.default)(this.definitions), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+              let node = _step9.value;
 
               yield node;
             }
           } catch (err) {
-            _didIteratorError8 = true;
-            _iteratorError8 = err;
+            _didIteratorError9 = true;
+            _iteratorError9 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion8 && _iterator8.return) {
-                _iterator8.return();
+              if (!_iteratorNormalCompletion9 && _iterator9.return) {
+                _iterator9.return();
               }
             } finally {
-              if (_didIteratorError8) {
-                throw _iteratorError8;
+              if (_didIteratorError9) {
+                throw _iteratorError9;
               }
             }
           }
@@ -1530,6 +1644,8 @@ class Schemata extends String {
 
       return node;
     } catch (e) {
+      debug_log('[static parse()] failed to parse');
+      debug_trace('[static parse()] ', e);
       if (showError) {
         throw e;
       }
@@ -1547,8 +1663,10 @@ class Schemata extends String {
    *
    * @since 1.7
    *
-   * @param {ASTNode} ast an ASTNode, usually a DocumentNode generated with
-   * some version of `require('graphql').parse()`
+   * @param {ASTNode|Class<GraphQLSchema>} ast an ASTNode, usually a
+   * DocumentNode generated with some version of `require('graphql').parse()`.
+   * If an instance of GraphQLSchema is supplied, `printSchema()` is used
+   * instead of `print()`
    * @param {boolean} showError if true, any caught errors will be thrown once
    * again
    * @return {Schemata|null} null if an error occurs (and showError is false)
@@ -1557,10 +1675,21 @@ class Schemata extends String {
    */
   static print(ast, showError = false) {
     try {
-      let source = this.gql.print(ast);
+      let source;
 
+      if (ast instanceof _graphql.GraphQLSchema) {
+        debug_log('[static print()] printing schema');
+        source = this.gql.printSchema(ast);
+      } else {
+        debug_log('[static print()] printing ASTNode');
+        source = this.gql.print(ast);
+      }
+
+      debug_log('[static print()] creating new Schemata from print');
       return Schemata.from(source);
     } catch (e) {
+      debug_log('[static print()] failed to print');
+      debug_trace('[static print()] ', e);
       if (showError) {
         throw e;
       }
@@ -1579,16 +1708,25 @@ class Schemata extends String {
   }
 
   /**
-   * Shorthand way of invoking `new Schemata(typeDefs, resolvers)`
+   * Shorthand way of invoking `new Schemata()`
    *
-   * @param {string|Source|Schemata|GraphQLSchema|ASTNode} typeDefs usually a
-   * String or other `toString`'able item
-   * @param {Object} resolvers an object containing field resolvers for
+   * @param {string|Schemata|Source|Class<GraphQLSchema>|ASTNode} typeDefs an
+   * instance of Schemata, a string of SDL, a Source instance of SDL, a
+   * GraphQLSchema or ASTNode that can be printed as an SDL string
+   * @param {ResolverMap} resolvers an object containing field resolvers for
    * for the schema represented with this string. [Optional]
+   * @param {boolean} buildResolvers if this flag is set to true, build a set
+   * of resolvers after the rest of the instance is initialized and set the
+   * results on the `.resolvers` property of the newly created instance. If
+   * buildResolvers is the string "all", then a resolver for each field not
+   * defined will be returned with a `defaultFieldResolver` as its value
+   * @param {boolean} flattenResolvers if true, and if `buildResolvers` is true,
+   * then make an attempt to flatten the root types to the base of the
+   * resolver map object.
    * @return {Schemata} an instance of Schemata
    */
-  static from(typeDefs, resolvers) {
-    return new this(typeDefs, resolvers);
+  static from(typeDefs, resolvers = null, buildResolvers = false, flattenResolvers = false) {
+    return new this(typeDefs, resolvers, buildResolvers, flattenResolvers);
   }
 
   /**
@@ -1686,11 +1824,19 @@ class Schemata extends String {
 }
 
 exports.Schemata = Schemata; /**
-                              * All resolvers are passed four parameters. This object contains all four
-                              * of those parameters.
+                              * To complete the ResolverMap type, we define a string key mapped to either
+                              * a function or a nested `ResolverMap`.
                               *
-                              * @type {ResolverArgs}
+                              * @type {ResolverMap}
                               */
+
+
+/**
+ * All resolvers are passed four parameters. This object contains all four
+ * of those parameters.
+ *
+ * @type {ResolverArgs}
+ */
 
 
 /**
@@ -1742,27 +1888,27 @@ const DefaultMergeOptions = exports.DefaultMergeOptions = {
     config.resolverInjectors = [config.resolverInjectors];
   }
 
-  var _iteratorNormalCompletion9 = true;
-  var _didIteratorError9 = false;
-  var _iteratorError9 = undefined;
+  var _iteratorNormalCompletion10 = true;
+  var _didIteratorError10 = false;
+  var _iteratorError10 = undefined;
 
   try {
-    for (var _iterator9 = (0, _getIterator3.default)(config.resolverInjectors), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-      let injector = _step9.value;
+    for (var _iterator10 = (0, _getIterator3.default)(config.resolverInjectors), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+      let injector = _step10.value;
 
       args = injector(resolverArgs);
     }
   } catch (err) {
-    _didIteratorError9 = true;
-    _iteratorError9 = err;
+    _didIteratorError10 = true;
+    _iteratorError10 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion9 && _iterator9.return) {
-        _iterator9.return();
+      if (!_iteratorNormalCompletion10 && _iterator10.return) {
+        _iterator10.return();
       }
     } finally {
-      if (_didIteratorError9) {
-        throw _iteratorError9;
+      if (_didIteratorError10) {
+        throw _iteratorError10;
       }
     }
   }
@@ -1812,8 +1958,9 @@ function SchemaInjectorConfig(schema, extraConfig) {
  * on it. These values are then returned with a [typeName][fieldName] pathing
  *
  * @param {GraphQLSchema} schema an instance of GraphQLSchema
- * @return {Object} an object containing a mapping of typeName.fieldName that
- * links to the resolve() function it is associated within the supplied schema
+ * @return {ResolverMap} an object containing a mapping of typeName.fieldName
+ * that links to the resolve() function it is associated within the supplied
+ * schema
  */
 function stripResolversFromSchema(schema) {
   let resolvers = {};
@@ -2105,13 +2252,13 @@ subTypeResolverMap.set('scalars', 'scalarMergeResolver');
  */
 function combineTypeAndSubType(subTypeName, lType, rType, conflictResolvers = DefaultConflictResolvers) {
   if (rType[subTypeName]) {
-    var _iteratorNormalCompletion10 = true;
-    var _didIteratorError10 = false;
-    var _iteratorError10 = undefined;
+    var _iteratorNormalCompletion11 = true;
+    var _didIteratorError11 = false;
+    var _iteratorError11 = undefined;
 
     try {
-      for (var _iterator10 = (0, _getIterator3.default)(rType[subTypeName]), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
-        let rSubType = _step10.value;
+      for (var _iterator11 = (0, _getIterator3.default)(rType[subTypeName]), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
+        let rSubType = _step11.value;
 
         let lSubType = lType[subTypeName].find(f => f.name.value == rSubType.name.value);
 
@@ -2127,16 +2274,16 @@ function combineTypeAndSubType(subTypeName, lType, rType, conflictResolvers = De
         lType[subTypeName].splice(index, 1, resultingSubType);
       }
     } catch (err) {
-      _didIteratorError10 = true;
-      _iteratorError10 = err;
+      _didIteratorError11 = true;
+      _iteratorError11 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion10 && _iterator10.return) {
-          _iterator10.return();
+        if (!_iteratorNormalCompletion11 && _iterator11.return) {
+          _iterator11.return();
         }
       } finally {
-        if (_didIteratorError10) {
-          throw _iteratorError10;
+        if (_didIteratorError11) {
+          throw _iteratorError11;
         }
       }
     }
@@ -2157,13 +2304,13 @@ function combineTypeAndSubType(subTypeName, lType, rType, conflictResolvers = De
  * named union type
  */
 function pareTypeAndSubType(subTypeName, lType, rType, resolvers = {}) {
-  var _iteratorNormalCompletion11 = true;
-  var _didIteratorError11 = false;
-  var _iteratorError11 = undefined;
+  var _iteratorNormalCompletion12 = true;
+  var _didIteratorError12 = false;
+  var _iteratorError12 = undefined;
 
   try {
-    for (var _iterator11 = (0, _getIterator3.default)(rType[subTypeName]), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
-      let rSubType = _step11.value;
+    for (var _iterator12 = (0, _getIterator3.default)(rType[subTypeName]), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
+      let rSubType = _step12.value;
 
       let lSubType = lType[subTypeName].find(f => f.name.value == rSubType.name.value);
 
@@ -2181,16 +2328,16 @@ function pareTypeAndSubType(subTypeName, lType, rType, resolvers = {}) {
       }
     }
   } catch (err) {
-    _didIteratorError11 = true;
-    _iteratorError11 = err;
+    _didIteratorError12 = true;
+    _iteratorError12 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion11 && _iterator11.return) {
-        _iterator11.return();
+      if (!_iteratorNormalCompletion12 && _iterator12.return) {
+        _iterator12.return();
       }
     } finally {
-      if (_didIteratorError11) {
-        throw _iteratorError11;
+      if (_didIteratorError12) {
+        throw _iteratorError12;
       }
     }
   }
@@ -2201,9 +2348,9 @@ function pareTypeAndSubType(subTypeName, lType, rType, resolvers = {}) {
  * any one of a Schemata instance, GraphQLSchema instance, Source instance or a
  * string.
  *
- * @param {string|Source|Schemata|GraphQLSchema|ASTNode} typeDefs an instance
- * of Schemata, a string of SDL, a Source instance of SDL, a GraphQLSchema or
- * ASTNode that can be printed as an SDL string
+ * @param {string|Source|Schemata|Class<GraphQLSchema>|ASTNode} typeDefs an
+ * instance of Schemata, a string of SDL, a Source instance of SDL, a
+ * GraphQLSchema or ASTNode that can be printed as an SDL string
  * @return {string} a string representing the thing supplied as typeDefs
  */
 function normalizeSource(typeDefs, wrap = false) {

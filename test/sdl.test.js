@@ -233,9 +233,35 @@ describe('testing Schemata', async () => {
 
     let merged = sdlA.mergeSchema(sdlB.executableSchema)
     let schema = merged.schema
+    let isFn = f => typeof f === 'function'
 
+    expect(schema.getType('Box').getFields().faces).toBeTruthy()
+    expect(schema.getType('Box').getFields().color).toBeTruthy()
+    expect(schema.getType('Chest').getFields().goldBars).toBeTruthy()
     expect(schema.getQueryType().getFields().box).toBeTruthy()
     expect(schema.getQueryType().getFields().pirateTreasure).toBeTruthy()
+
+    expect(isFn(merged.resolvers.Query.box)).toBe(true)
+    expect(isFn(merged.resolvers.Query.pirateTreasure)).toBe(true)
+    expect(merged.prevResolverMaps.length).not.toBe(0)
+
+    let prevMap0 = merged.prevResolverMaps[0]
+    let prevMap1 = merged.prevResolverMaps[1]
+
+    expect(prevMap0.resolvers.Query).toBeTruthy()
+    expect(isFn(prevMap0.resolvers.Query.box)).toBe(true)
+    expect(prevMap0.resolvers.Box).not.toBeTruthy()
+    expect(prevMap1.resolvers.Query).toBeTruthy()
+    expect(isFn(prevMap1.resolvers.Query.pirateTreasure)).toBe(true)
+
+    expect(merged.resolvers.Query).toBeTruthy()
+    expect(isFn(merged.resolvers.Query.pirateTreasure)).toBe(true)
+    expect(isFn(merged.resolvers.Query.box)).toBe(true)
+    expect(merged.resolvers.Chest).toBeTruthy()
+    expect(isFn(merged.resolvers.Chest.goldBars)).toBe(true)
+    expect(merged.resolvers.Box).toBeTruthy()
+    expect(isFn(merged.resolvers.Box.faces)).toBe(true)
+    expect(isFn(merged.resolvers.Box.color)).toBe(true)
   })
 
   it('should be able to work with the default conflict resolver', () => {
@@ -322,5 +348,32 @@ describe('testing Schemata', async () => {
 
     expect(pared.astFieldByName('Query', 'box')).toBeTruthy()
     expect(pared.astFieldByName('Query', 'boxes')).not.toBeTruthy()
+  })
+
+  it('should have a resolver for each and every field defined', () => {
+    let peep = (r,a,c,i) => { return { name: 'Brie', id: 5 } }
+    let resolvers
+    let schemata = Schemata.from(gql`
+      type Person {
+        name: String
+        id: ID
+      }
+
+      type Query {
+        peep: Person
+      }
+    `, {Query: { peep } })
+
+    resolvers = schemata.buildResolverForEachField()
+
+    expect(resolvers.Person.name).toBeTruthy()
+    expect(resolvers.Person.id).toBeTruthy()
+    expect(resolvers.Query.peep).toBeTruthy()
+
+    resolvers = schemata.buildResolverForEachField(true)
+
+    expect(resolvers.Person.name).toBeTruthy()
+    expect(resolvers.Person.id).toBeTruthy()
+    expect(resolvers.peep).toBeTruthy()
   })
 })
