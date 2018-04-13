@@ -8,6 +8,7 @@ import type {
   ExecutionResult,
   FieldNode,
   GraphQLFieldResolver,
+  GraphQLResolveInfo,
   GraphQLScalarTypeConfig,
   NamedTypeNode,
   ObjMap,
@@ -16,6 +17,7 @@ import type {
   Source,
 } from 'graphql'
 
+import { ExtendedResolverMap } from './ExtendedResolverMap'
 import { GraphQLSchema, GraphQLObjectType, printSchema } from 'graphql'
 import { inline } from 'ne-tag-fns'
 import merge from 'deepmerge'
@@ -36,465 +38,6 @@ import {
 
 import type { ForEachOfResolver, ForEachFieldResolver } from './forEachOf'
 
-/**
- * Walk the supplied GraphQLSchema instance and retrieve the resolvers stored
- * on it. These values are then returned with a [typeName][fieldName] pathing
- *
- * @param {GraphQLSchema} schema an instance of GraphQLSchema
- * @return {Object} an object containing a mapping of typeName.fieldName that
- * links to the resolve() function it is associated within the supplied schema
- */
-export function stripResolversFromSchema(
-  schema: GraphQLSchema
-): ?Object {
-  let resolvers = {}
-
-  if (!schema) {
-    return null
-  }
-
-  forEachField(schema, (
-    type,
-    typeName,
-    typeDirectives,
-    field,
-    fieldName,
-    fieldArgs,
-    fieldDirectives,
-    _schema,
-    context
-  ) => {
-    if (field.resolve) {
-      resolvers[typeName] = resolvers[typeName] || {}
-      resolvers[typeName][fieldName] = resolvers[typeName][fieldName] || {}
-      resolvers[typeName][fieldName] = field.resolve
-    }
-  })
-
-  return resolvers
-}
-
-/**
- * The callback for collision when a field is trying to be merged with an
- * existing field.
- *
- * @param {ASTNode} leftType the ASTNode, usually denoting a type, that will
- * receive the merged type's field from the right
- * @param {FieldNode} leftField the FieldNode denoting the value that should
- * be modified or replaced
- * @param {ASTNode} rightType the ASTNode containing the field to be merged
- * @param {FieldNode} rightField the FieldNode requesting to be merged and
- * finding a conflicting value already present
- * @return {FieldNode} the field to merge into the existing schema layout. To
- * ignore changes, returning the leftField is sufficient enough. The default
- * behavior is to always take the right hand value, overwriting new with old
- */
-export type FieldMergeResolver = (
-  leftType: ASTNode,
-  leftField: FieldNode,
-  rightType: ASTNode,
-  rightField: FieldNode
-) => FieldNode
-
-/**
- * The callback for collision when a directive is trying to be merged with an
- * existing directive.
- *
- * @param {ASTNode} leftType the ASTNode, usually denoting a type, that will
- * receive the merged type's directive from the right
- * @param {DirectiveNode} leftDirective the DirectiveNode denoting the value
- * that should be modified or replaced
- * @param {ASTNode} rightType the ASTNode containing the directive to be merged
- * @param {DirectiveNode} rightDirective the DirectiveNode requesting to be
- * merged and finding a conflicting value already present
- * @return {DirectiveNode} the directive to merge into the existing schema
- * layout. To ignore changes, returning the leftDirective is sufficient enough.
- * The default behavior is to always take the right hand value, overwriting
- * new with old
- */
-export type DirectiveMergeResolver = (
-  leftType: ASTNode,
-  leftDirective: DirectiveNode,
-  rightType: ASTNode,
-  rightDirective: DirectiveNode
-) => DirectiveNode
-
-/**
- * The callback for collision when a enum value is trying to be merged with an
- * existing enum value of the same name.
- *
- * @param {ASTNode} leftType the ASTNode, usually denoting a type, that will
- * receive the merged type's enum value from the right
- * @param {EnumValueNode} leftValue the EnumValueNode denoting the value
- * that should be modified or replaced
- * @param {ASTNode} rightType the ASTNode containing the enum value to be
- * merged
- * @param {EnumValueNode} rightValue the EnumValueNode requesting to be
- * merged and finding a conflicting value already present
- * @return {EnumValueNode} the enum value to merge into the existing schema
- * layout. To ignore changes, returning the leftValue is sufficient enough.
- * The default behavior is to always take the right hand value, overwriting
- * new with old
- */
-export type EnumMergeResolver = (
-  leftType: ASTNode,
-  leftValue: EnumValueNode,
-  rightType: ASTNode,
-  rightValue: EnumValueNode
-) => EnumValueNode
-
-/**
- * The callback for collision when a union type is trying to be merged with an
- * existing union type of the same name.
- *
- * @param {ASTNode} leftType the ASTNode, usually denoting a type, that will
- * receive the merged type's union type from the right
- * @param {NamedTypeNode} leftValue the NamedTypeNode denoting the value
- * that should be modified or replaced
- * @param {ASTNode} rightType the ASTNode containing the union type to be
- * merged
- * @param {NamedTypeNode} rightValue the NamedTypeNode requesting to be
- * merged and finding a conflicting value already present
- * @return {NamedTypeNode} the union type to merge into the existing schema
- * layout. To ignore changes, returning the leftUnion is sufficient enough.
- * The default behavior is to always take the right hand value, overwriting
- * new with old
- */
-export type UnionMergeResolver = (
-  leftType: ASTNode,
-  leftUnion: NamedTypeNode,
-  rightType: ASTNode,
-  rightUnion: NamedTypeNode
-) => NamedTypeNode
-
-/**
- * A callback for to resolve merge conflicts with custom scalar types defined
- * by the user.
- *
- * @param {ScalarTypeDefinitionNode} leftScalar the definition node found when
- * parsing ASTNodes. This is the existing value that conflicts with the to be
- * merged value
- * @param {GraphQLScalarTypeConfig} leftConfig *if* there is a resolver defined
- * for the existing ScalarTypeDefinitionNode it will be provided here. If this
- * value is null, there is no availabe config with serialize(), parseValue() or
- * parseLiteral() to work with.
- * @param {ScalarTypeDefinitionNode} rightScalar the definition node found when
- * parsing ASTNodes. This is to be merged value that conflicts with the
- * existing value
- * @param {GraphQLScalarTypeConfig} rightConfig *if* there is a resolver
- * defined for the existing ScalarTypeDefinitionNode it will be provided here.
- * If this value is null, there is no availabe config with serialize(),
- * parseValue() or parseLiteral() to work with.
- * @return {GraphQLScalarTypeConfig} whichever type config or resolver was
- * desired should be returned here.
- *
- * @see https://www.apollographql.com/docs/graphql-tools/scalars.html
- * @see http://graphql.org/graphql-js/type/#graphqlscalartype
- */
-export type ScalarMergeResolver = (
-  leftScalar: ScalarTypeDefinitionNode,
-  leftConfig: GraphQLScalarTypeConfig,
-  rightScalar: ScalarTypeDefinitionNode,
-  rightConfig: GraphQLScalarTypeConfig
-) => GraphQLScalarTypeConfig
-
-/**
- * An object that specifies the various types of resolvers that might occur
- * during a given conflict resolution
- */
-export type ConflictResolvers = {
-  /** A handler for resolving fields in matching types */
-  fieldMergeResolver?: FieldMergeResolver,
-
-  /** A handler for resolving directives in matching types */
-  directiveMergeResolver?: DirectiveMergeResolver,
-
-  /** A handler for resolving conflicting enum values */
-  enumValueMergeResolver?: EnumMergeResolver,
-
-  /** A handler for resolving type values in unions */
-  typeValueMergeResolver?: UnionMergeResolver,
-
-  /** A handler for resolving scalar config conflicts in custom scalars */
-  scalarMergeResolver?: ScalarMergeResolver
-}
-
-/** @type {Symbol} a unique symbol used as a key to all instance sdl strings */
-export const TYPEDEFS_KEY = Symbol()
-
-/** @type {Symbol} a constant symbol used as a key to a flag for express-gql */
-export const GRAPHIQL_FLAG = Symbol.for('superfluous graphiql flag')
-
-/** @type {Symbol} a unique symbol used as a key to all instance `WeakMap`s */
-export const MAP = Symbol()
-
-/** @type {Symbol} a key used to store the __executable__ flag on a schema */
-export const EXE = Symbol()
-
-/** @type {Object} a key used to store a resolver object in a WeakMap */
-const wmkResolvers = Object(Symbol())
-
-/** @type {Object} a key used to store an internal schema in a WeakMap */
-const wmkSchema = Object(Symbol())
-
-/**
- * The default field resolver blindly takes returns the right field. This
- * resolver is used when one is not specified.
- *
- * @param {ASTNode} leftType The matching left type indicating conflict
- * @param {FieldNode} leftField The field causing the conflict
- * @param {ASTNode} rightType The matching right type indicating conflict
- * @param {FieldNode} rightField the field cause the conflict
- *
- * @return {FieldNode} the field that should be used after resolution
- */
-export function DefaultFieldMergeResolver(
-  leftType: ASTNode,
-  leftField: FieldNode,
-  rightType: ASTNode,
-  rightField: FieldNode
-): FieldNode {
-  return rightField
-}
-
-/**
- * The default directive resolver blindly takes returns the right field. This
- * resolver is used when one is not specified.
- *
- * @param {ASTNode} leftType The matching left type indicating conflict
- * @param {DirectiveNode} leftDirective The field causing the conflict
- * @param {ASTNode} rightType The matching right type indicating conflict
- * @param {DirectiveNode} rightDirective the field cause the conflict
- *
- * @return {DirectiveNode} the directive that should be used after resolution
- */
-export function DefaultDirectiveMergeResolver(
-  leftType: ASTNode,
-  leftDirective: DirectiveNode,
-  rightType: ASTNode,
-  rightDirective: DirectiveNode
-): DirectiveNode {
-  return rightDirective
-}
-
-/**
- * The default field resolver blindly takes returns the right field. This
- * resolver is used when one is not specified.
- *
- * @param {ASTNode} leftType The matching left type indicating conflict
- * @param {DirectiveNode} leftDirective The field causing the conflict
- * @param {ASTNode} rightType The matching right type indicating conflict
- * @param {DirectiveNode} rightDirective the field cause the conflict
- *
- * @return {DirectiveNode} the directive that should be used after resolution
- */
-export function DefaultEnumMergeResolver(
-  leftType: ASTNode,
-  leftValue: EnumValueNode,
-  rightType: ASTNode,
-  rightValue: EnumValueNode
-): EnumValueNode {
-  return rightValue
-}
-
-/**
- * The default union resolver blindly takes returns the right type. This
- * resolver is used when one is not specified.
- *
- * @param {ASTNode} leftType The matching left type indicating conflict
- * @param {NamedTypeNode} leftUnion The named node causing the conflict
- * @param {ASTNode} rightType The matching right type indicating conflict
- * @param {NamedTypeNode} rightUnion the named node cause the conflict
- *
- * @return {NamedTypeNode} the directive that should be used after resolution
- */
-export function DefaultUnionMergeResolver(
-  leftType: ASTNode,
-  leftUnion: NamedTypeNode,
-  rightType: ASTNode,
-  rightUnion: NamedTypeNode
-): NamedTypeNode {
-  return rightUnion
-}
-
-/**
- * The default scalar merge resolver returns the right config when there is
- * one, otherwise the left one or null will be the default result. This is
- * slightly different behavior since resolvers for scalars are not always
- * available.
- *
- * @param {GraphQLScalarTypeConfig} leftConfig *if* there is a resolver defined
- * for the existing ScalarTypeDefinitionNode it will be provided here. If this
- * value is null, there is no availabe config with serialize(), parseValue() or
- * parseLiteral() to work with.
- * @param {ScalarTypeDefinitionNode} rightScalar the definition node found when
- * parsing ASTNodes. This is to be merged value that conflicts with the
- * existing value
- * @param {GraphQLScalarTypeConfig} rightConfig *if* there is a resolver
- * defined for the existing ScalarTypeDefinitionNode it will be provided here.
- * If this value is null, there is no availabe config with serialize(),
- * parseValue() or parseLiteral() to work with.
- * @return {GraphQLScalarTypeConfig} whichever type config or resolver was
- * desired should be returned here.
- *
- * @see https://www.apollographql.com/docs/graphql-tools/scalars.html
- * @see http://graphql.org/graphql-js/type/#graphqlscalartype
- */
-export function DefaultScalarMergeResolver(
-  leftScalar: ScalarTypeDefinitionNode,
-  leftConfig: GraphQLScalarTypeConfig,
-  rightScalar: ScalarTypeDefinitionNode,
-  rightConfig: GraphQLScalarTypeConfig
-): GraphQLScalarTypeConfig {
-  return rightConfig ? rightConfig : (leftConfig || null)
-}
-
-/**
- * In order to facilitate merging, there needs to be some contingency plan
- * for what to do when conflicts arise. This object specifies one of each
- * type of resolver. Each simply takes the right-hand value.
- *
- * @type {Object}
- */
-export const DefaultConflictResolvers: ConflictResolvers = {
-  /** A handler for resolving fields in matching types */
-  fieldMergeResolver: DefaultFieldMergeResolver,
-
-  /** A handler for resolving directives in matching types */
-  directiveMergeResolver: DefaultDirectiveMergeResolver,
-
-  /** A handler for resolving conflicting enum values */
-  enumValueMergeResolver: DefaultEnumMergeResolver,
-
-  /** A handler for resolving type values in unions */
-  typeValueMergeResolver: DefaultUnionMergeResolver,
-
-  /** A handler for resolving scalar configs in custom scalars */
-  scalarMergeResolver: DefaultScalarMergeResolver
-};
-
-const subTypeResolverMap: Map<string, Function> = new Map()
-subTypeResolverMap.set('fields', 'fieldMergeResolver')
-subTypeResolverMap.set('directives', 'directiveMergeResolver')
-subTypeResolverMap.set('values', 'enumValueMergeResolver')
-subTypeResolverMap.set('types', 'typeValueMergeResolver')
-subTypeResolverMap.set('scalars', 'scalarMergeResolver')
-
-/**
- * Compares and combines a subset of ASTNode fields. Designed to work on all
- * the various types that might have a merge conflict.
- *
- * @param {string} subTypeName the name of the field type; one of the following
- * values: 'fields', 'directives', 'values', 'types'
- * @param {ASTNode} lType the lefthand type containing the subtype to compare
- * @param {ASTNode} lSubType the lefthand subtype; fields, directive, value or
- * named union type
- * @param {ASTNode} rType the righthand type containing the subtype to compare
- * @param {ASTNode} rSubType the righthand subtype; fields, directive, value or
- * named union type
- */
-function combineTypeAndSubType(
-  subTypeName: string,
-  lType: ASTNode,
-  rType: ASTNode,
-  conflictResolvers: ConflictResolvers = DefaultConflictResolvers
-): void {
-  if (rType[subTypeName]) {
-    for (let rSubType of rType[subTypeName]) {
-      let lSubType = lType[subTypeName].find(
-        f => f.name.value == rSubType.name.value
-      )
-
-      if (!lSubType) {
-        lType[subTypeName].push(rSubType)
-        continue
-      }
-
-      let resolver = subTypeResolverMap.get(subTypeName) || 'fieldMergeResolver'
-      let resultingSubType = conflictResolvers[resolver](
-        lType, lSubType, rType, rSubType
-      )
-      let index = lType.fields.indexOf(lSubType)
-
-      lType[subTypeName].splice(index, 1, resultingSubType)
-    }
-  }
-}
-
-/**
- * Compares a subset of ASTNode fields. Designed to work on all the various
- * types that might have a merge conflict.
- *
- * @param {string} subTypeName the name of the field type; one of the following
- * values: 'fields', 'directives', 'values', 'types'
- * @param {ASTNode} lType the lefthand type containing the subtype to compare
- * @param {ASTNode} lSubType the lefthand subtype; fields, directive, value or
- * named union type
- * @param {ASTNode} rType the righthand type containing the subtype to compare
- * @param {ASTNode} rSubType the righthand subtype; fields, directive, value or
- * named union type
- */
-function pareTypeAndSubType(
-  subTypeName: string,
-  lType: ASTNode,
-  rType: ASTNode,
-  resolvers: Object = {}
-): void {
-  for (let rSubType of rType[subTypeName]) {
-    let lSubType = lType[subTypeName].find(
-      f => f.name.value == rSubType.name.value
-    )
-
-    if (!lSubType) {
-      continue
-    }
-
-    let index = lType.fields.indexOf(lSubType)
-    lType[subTypeName].splice(index, 1)
-
-    if (
-      resolvers[lType.name.value]
-      && resolvers[lType.name.value][lSubType.name.value]
-    ) {
-      delete resolvers[lType.name.value][lSubType.name.value]
-    }
-    else if (resolvers[lSubType.name.value]) {
-      delete resolvers[lSubType.name.value]
-    }
-  }
-}
-
-/**
- * Small function that sorts through the typeDefs value supplied which can be
- * any one of a Schemata instance, GraphQLSchema instance, Source instance or a
- * string.
- *
- * @param {string|Source|Schemata|GraphQLSchema} typeDefs the input source from
- * which to create a Schemata string
- * @return {string} a string representing the thing supplied as typeDefs
- */
-export function normalizeSource(
-  typeDefs: string | Source | Schemata | GraphQLSchema,
-  wrap: boolean = false
-): (string | Schemata) {
-  if (!typeDefs) {
-    throw new Error(inline`
-      normalizeSource(typeDefs): typeDefs was invalid when passed to the
-      function \`normalizeSource\`. Please check your code and try again.
-
-      (received: ${typeDefs})
-    `)
-  }
-
-  let source = typeDefs.body
-    || typeDefs.sdl
-    || (typeof typeDefs === 'string' && typeDefs)
-    || (typeDefs instanceof GraphQLSchema
-      ? printSchema(typeDefs)
-      : typeDefs.toString())
-
-  return wrap ? Schemata.from(source) : source;
-}
 
 /**
  * A small `String` extension that makes working with SDL/IDL text far easier
@@ -513,15 +56,23 @@ export class Schemata extends String {
    * @constructor
    * @memberOf Schemata
    *
-   * @param {string|Schemata|Source|GraphQLSchema} typeDefs an instance
-   * of Schemata, a string of SDL, a Source instance of SDL or a GraphQLSchema
-   * that can be printed as an SDL string
+   * @param {string|Schemata|Source|GraphQLSchema|ASTNode} typeDefs an instance
+   * of Schemata, a string of SDL, a Source instance of SDL, a GraphQLSchema or
+   * ASTNode that can be printed as an SDL string
    * @param {Object} resolvers an object containing field resolvers for
    * for the schema represented with this string. [Optional]
+   * @param {boolean} buildResolvers if this flag is set to true, build a set
+   * of resolvers after the rest of the instance is initialized and set the
+   * results on the `.resolvers` property of the newly created instance
+   * @param {boolean} flattenResolvers if true, and if `buildResolvers` is true,
+   * then make an attempt to flatten the root types to the base of the
+   * resolver map object.
    */
   constructor(
-    typeDefs: string | Source | Schemata | GraphQLSchema,
-    resolvers: ?Object = null
+    typeDefs: string | Source | Schemata | GraphQLSchema | ASTNode,
+    resolvers: ?Object = null,
+    buildResolvers: boolean = false,
+    flattenResolvers: boolean = false
   ) {
     super(normalizeSource(typeDefs))
 
@@ -540,6 +91,10 @@ export class Schemata extends String {
       typeDefs instanceof GraphQLSchema ? typeDefs : null
     )
     this[MAP].set(wmkResolvers, resolvers)
+    this[MAP].set(
+      wmkPreboundResolvers,
+      typeDefs instanceof Schemata ? typeDefs.prevResolverMaps : []
+    )
 
     // Mark a schema passed to use in the constructor as an executable schema
     // to prevent any replacement of the value by getters that generate a
@@ -547,6 +102,12 @@ export class Schemata extends String {
     if (this[MAP].get(wmkSchema)) {
       this[MAP].get(wmkSchema)[EXE] = true
       this[MAP].get(wmkSchema)[Symbol.for('constructor-supplied-schema')] = true
+    }
+
+    // If buildResolvers is true, after the rest is already set and done, go
+    // ahead and build a new set of resolver functions for this instance
+    if (buildResolvers) {
+      this.resolvers = this.buildResolvers(flattenResolvers)
     }
   }
 
@@ -560,6 +121,18 @@ export class Schemata extends String {
    * @type {Function}
    */
   static get [Symbol.species](): Function { return Schemata }
+
+  /**
+   * Redefine the iterator for Schemata instances so that they simply show the
+   * contents of the SDL/typeDefs.
+   *
+   * @type {Function}
+   */
+  get [Symbol.iterator](): Function {
+    return (function *() {
+      yield this.toString()
+    }).bind(this)
+  }
 
   /**
    * Ensures that instances of Schemata report internally as Schemata object.
@@ -579,7 +152,8 @@ export class Schemata extends String {
 
   /**
    * Retrieves the `graphiql` flag, which defaults to true. This flag can
-   * make setting up an endpoint from a Schemata instance easier with express-graphql
+   * make setting up an endpoint from a Schemata instance easier with
+   * express-graphql
    *
    * @type {boolean}
    */
@@ -635,6 +209,30 @@ export class Schemata extends String {
    */
   set schema(schema: ?GraphQLSchema): void {
     this[MAP].set(wmkSchema, schema)
+  }
+
+  /**
+   * When a Schemata instance is merged with another GraphQLSchema, its
+   * resolvers get stored before they are wrapped in a function that updates
+   * the schema object it receives. This allows them to be wrapped safely at
+   * a later date should this instance be merged with another.
+   *
+   * @return {Array<ExtendedResolverMap>} an array of `ExtendedResolverMap`
+   * object instances
+   */
+  get prevResolverMaps(): Array<ExtendedResolverMap> {
+    return this[MAP].get(wmkPreboundResolvers)
+  }
+
+  /**
+   * Sets the pre-bound resolver map objects as an array of
+   * `ExtendedResolverMap` object instances on this instance of Schemata
+   *
+   * @param {Array<ExtendedResolverMap>} maps an array of `ExtendedResolverMap`
+   * object instances
+   */
+  set prevResolverMaps(maps: Array<ExtendedResolverMap>): void {
+    this[MAP].set(wmkPreboundResolvers, maps)
   }
 
   /**
@@ -859,10 +457,9 @@ export class Schemata extends String {
    * supports merging of types, extended types, interfaces, enums, unions,
    * input object types and directives for all of the above.
    *
-   * @param {string|Schemata|Source|GraphQLSchema} schemaLanguage an instance
-   * of Schemata, a string of SDL, a Source instance of SDL or a GraphQLSchema
-   * that can be printed as an SDL string to define what to merge with the
-   * values in this object instance
+   * @param {string|Schemata|Source|GraphQLSchema|ASTNode} schemaLanguage an
+   * instance of Schemata, a string of SDL, a Source instance of SDL, a
+   * GraphQLSchema or ASTNode that can be printed as an SDL string
    * @param {ConflictResolvers} conflictResolvers an object containing up to
    * four methods, each describing how to handle a conflict when an associated
    * type of conflict occurs. If no object or method are supplied, the right
@@ -980,10 +577,9 @@ export class Schemata extends String {
    * a copy of the SDL in this Schemata instance represents and the resolver
    * map passed in.
    *
-   * @param {string|Schemata|Source|GraphQLSchema} schemaLanguage an instance
-   * of Schemata, a string of SDL, a Source instance of SDL or a GraphQLSchema
-   * that can be printed as an SDL string to define what to pare with the
-   * values in this object instance
+   * @param {string|Schemata|Source|GraphQLSchema|ASTNode} schemaLanguage an
+   * instance of Schemata, a string of SDL, a Source instance of SDL, a
+   * GraphQLSchema or ASTNode that can be printed as an SDL string
    * @param {Object} resolverMap an object containing resolver functions, from
    * either those set on this instance or those in the resolverMap added in
    * @return {Schemata} a new Schemata instance with the changed values set
@@ -1110,8 +706,9 @@ export class Schemata extends String {
    * initiated
    */
   mergeSchema(
-    schema: GraphQLSchema,
-    conflictResolvers: ?ConflictResolvers = DefaultConflictResolvers
+    schema: GraphQLSchema | Schemata,
+    conflictResolvers: ?ConflictResolvers = DefaultConflictResolvers,
+    config: ?MergeOptionsConfig = DefaultMergeOptions
   ): Schemata {
     if (!schema) {
       throw new Error(inline`
@@ -1121,15 +718,67 @@ export class Schemata extends String {
       `)
     }
 
-    let resolvers = this.buildResolvers()
-    let mergeResolvers = stripResolversFromSchema(schema)
+    let left = Schemata.from(this, undefined, true)
+    let right = Schemata.from(schema, undefined, true)
 
-    resolvers = merge(this.buildResolvers(), mergeResolvers)
+    let exResolverMaps = right.prevResolverMaps || []
+    let mergeResolvers
+    let schemata
 
-    let schemata = this.mergeSDL(schema)
+    if (left.prevResolverMaps && left.prevResolverMaps.length) {
+      exResolverMaps = exResolverMaps.concat(left.prevResolverMaps)
+    }
+    else {
+      exResolverMaps.push(ExtendedResolverMap.from(left))
+    }
+    exResolverMaps.push(ExtendedResolverMap.from(right))
 
-    // Set the resolvers
-    schemata.resolvers = resolvers
+    // Walk through the list of
+    if (exResolverMaps && exResolverMaps.length) {
+      mergeResolvers = exResolverMaps.reduce((p,c,i,a) => {
+        return merge(p, c.resolvers || {})
+      }, {})
+    }
+
+    // Create a resolver map with the newly wrapped resolvers and those
+    // in the schema represented by this instance.
+    schemata = left.mergeSDL(right)
+
+    // Store the previous original resolver maps
+    schemata.prevResolverMaps = exResolverMaps
+
+    // This function allows recursive wrapping of resolver functions,
+    // overriding which values they receive as arguments via the
+    // MergeOptionsConfig and schemaInjectors.
+    //
+    // WARNNING: This function definition needs to occur AFTER the definition
+    // of `schemata` one code line before as it is used by closure within
+    // the function below
+    let wrapResolvers = (object) => {
+      for (let [key, value] of Object.entries(object)) {
+        if (typeof value === 'object') {
+          object[key] = wrapResolvers(value)
+        }
+        else {
+          let originalResolver = value
+          object[key] = function(source, args, context, info) {
+            let _args = runInjectors(
+              SchemaInjectorConfig(schemata.executableSchema, config),
+              { source, args, context, info }
+            )
+
+            return originalResolver(
+              _args.source, _args.args, _args.context, _args.info
+            )
+          }
+        }
+      }
+
+      return object
+    }
+
+    // Set the resolvers on the result
+    schemata.resolvers = wrapResolvers(mergeResolvers)
 
     // Trigger a new schema creation
     schemata.executableSchema
@@ -1368,8 +1017,8 @@ export class Schemata extends String {
    * some shared context as is used with the schema during normal runtime.
    * @param {GraphQLSchema} suppliedSchema an optional schema to use rather
    * than the one created or stored internally generated from this Schemata
-   * @return {GraphQLSchema} a new schema is generated from this Schemata, iterated
-   * over and returned.
+   * @return {GraphQLSchema} a new schema is generated from this Schemata,
+   * iterated over and returned.
    */
   forEachType(
     fn: ForEachOfResolver,
@@ -1389,7 +1038,8 @@ export class Schemata extends String {
    * some shared context as is used with the schema during normal runtime.
    * @param {GraphQLSchema} suppliedSchema an optional schema to use rather
    * than the one created or stored internally generated from this Schemata
-   * @return {GraphQLSchema} a new schema is generated from this Schemata, iterated
+   * @return {GraphQLSchema} a new schema is generated from this Schemata,
+   * iterated
    * over and returned.
    */
   forEachInputObjectType(
@@ -1720,9 +1370,9 @@ export class Schemata extends String {
    * A little wrapper used to catch any errors thrown when building a schema
    * from the string SDL representation of a given instance.
    *
-   * @param {string|Schemata|Source|GraphQLSchema} sdl an instance
-   * of Schemata, a string of SDL, a Source instance of SDL or a GraphQLSchema
-   * that can be printed as an SDL string
+   * @param {string|Schemata|Source|GraphQLSchema|ASTNode} sdl an
+   * instance of Schemata, a string of SDL, a Source instance of SDL, a
+   * GraphQLSchema or ASTNode that can be printed as an SDL string
    * @param {boolean} showError true if the error should be thrown, false if
    * the error should be silently suppressed
    * @param {BuildSchemaOptions&ParseOptions} schemaOpts for advanced users,
@@ -1731,7 +1381,7 @@ export class Schemata extends String {
    * surfaced or a valid GraphQLSchema object otherwise
    */
   static buildSchema(
-    sdl: string | Source | Schemata | GraphQLSchema,
+    sdl: string | Source | Schemata | GraphQLSchema | ASTNode,
     showError: boolean = false,
     schemaOpts: BuildSchemaOptions & ParseOptions = undefined
   ): ?GraphQLSchema {
@@ -1750,22 +1400,70 @@ export class Schemata extends String {
    * A little wrapper used to catch any errors thrown when parsing Schemata for
    * ASTNodes. If showError is true, any caught errors are thrown once again.
    *
-   * @param {string|Schemata|Source|GraphQLSchema} sdl an instance
-   * of Schemata, a string of SDL, a Source instance of SDL or a GraphQLSchema
-   * that can be printed as an SDL string
+   * @param {string|Schemata|Source|GraphQLSchema|ASTNode} sdl an instance of
+   * Schemata, a string of SDL, a Source instance of SDL, a GraphQLSchema or
+   * ASTNode that can be printed as an SDL string
    * @param {boolean} showError if true, any caught errors will be thrown once
    * again
+   * @param {boolean} enhance a generator keyed with `Symbol.iterator` is set
+   * on the resulting astNode object allowing the resulting `.ast` value to
+   * be iterable. The code iterates over each definition of the resulting
+   * DocumentNode. This behavior defaults to true and should not have any ill
+   * effects on code expecting vanilla ASTNode objects
    * @return {ASTNode|null} null if an error occurs and errors are suppressed,
    * a top level Document ASTNode otherwise
    */
   static parse(
     sdl: string | Schemata | Source | GraphQLSchema,
-    showError: boolean = false
+    showError: boolean = false,
+    enhance: boolean = true
   ): ?ASTNode {
     try {
       let source = normalizeSource(sdl)
+      let node = this.gql.parse(source)
 
-      return this.gql.parse(source)
+      if (enhance) {
+        node[Symbol.iterator] = function *() {
+          for (let node of this.definitions) {
+            yield node
+          }
+        }
+      }
+
+      return node
+    }
+    catch (e) {
+      if (showError) { throw e }
+      return null
+    }
+  }
+
+  /**
+   * A little wrapper used to catch any errors thrown when printing an ASTNode
+   * to string form using `require('graphql').print()`. If `showError` is true
+   * any thrown errors will be rethrown, otherwise null is returned instead.
+   *
+   * Should all go as planned, an instance of Schemata wrapped with the printed
+   * SDL will be returned.
+   *
+   * @since 1.7
+   *
+   * @param {ASTNode} ast an ASTNode, usually a DocumentNode generated with
+   * some version of `require('graphql').parse()`
+   * @param {boolean} showError if true, any caught errors will be thrown once
+   * again
+   * @return {Schemata|null} null if an error occurs (and showError is false)
+   * or an instance of Schemata wrapping the resulting SDL string from the
+   * print operation
+   */
+  static print(
+    ast: ASTNode,
+    showError: boolean = false
+  ): ?Schemata {
+    try {
+      let source = this.gql.print(ast)
+
+      return Schemata.from(source)
     }
     catch (e) {
       if (showError) { throw e }
@@ -1784,14 +1482,14 @@ export class Schemata extends String {
   /**
    * Shorthand way of invoking `new Schemata(typeDefs, resolvers)`
    *
-   * @param {string|Source|Schemata|GraphQLSchema} typeDefs usually a String or
-   * other `toString`'able item
+   * @param {string|Source|Schemata|GraphQLSchema|ASTNode} typeDefs usually a
+   * String or other `toString`'able item
    * @param {Object} resolvers an object containing field resolvers for
    * for the schema represented with this string. [Optional]
    * @return {Schemata} an instance of Schemata
    */
   static from(
-    typeDefs: string | Source | Schemata | GraphQLSchema,
+    typeDefs: string | Source | Schemata | GraphQLSchema | ASTNode,
     resolvers: ?Object
   ): Schemata {
     return new this(typeDefs, resolvers)
@@ -1871,6 +1569,608 @@ export class Schemata extends String {
    * @type {number}
    */
   static get HIDDEN(): number { return HIDDEN }
+}
+
+/**
+ * All resolvers are passed four parameters. This object contains all four
+ * of those parameters.
+ *
+ * @type {ResolverArgs}
+ */
+export type ResolverArgs = {
+  source: mixed,
+  args: mixed,
+  context: mixed,
+  info: GraphQLResolveInfo
+}
+
+/**
+ * A function that takes an option that conforms to `ResolverArgs`. The values
+ * passed in must be passed back, or variations of the same type. The idea is
+ * to allow the values to be modified, viewed or parsed before merged resolvers
+ * are bound with these values.
+ *
+ * @param  {ResolverArgs} args an object with the four arguments passed to each
+ * resolver so that they can be modified before used to wrap existing resolvers
+ * after a merge.
+ * @return {ResolverArgs} see above
+ */
+export type ResolverArgsTransformer = (args: ResolverArgs) => ResolverArgs
+
+/**
+ * A flow type definition of an object containing one or more resolver
+ * injector functions
+ *
+ * @see ResolverArgsTransformer
+ * @type {MergeOptionsConfig}
+ */
+export type MergeOptionsConfig = {
+  resolverInjectors: ResolverArgsTransformer | Array<ResolverArgsTransformer>
+}
+
+/**
+ * A `MergeOptionsConfig` object with an empty array of
+ * `ResolverArgsTransformer` instances
+ *
+ * @type {MergeOptionsConfig}
+ */
+export const DefaultMergeOptions: MergeOptionsConfig = {
+  resolverInjectors: []
+}
+
+/**
+ * Loops over the `resolverInjectors` in the supplied config object and
+ * lets each supplied function have a pass to inspect or modify the parameters
+ * that will be used to bind future resolver functions.
+ *
+ * @param {MergeOptionsConfig} config a config object with an array of
+ * `ResolverArgsTransformer` functions
+ * @param {ResolverArgs} args an object with `source`, `args`, `context`
+ * and `info`
+ * @return {ResolverArgs} a resulting object with `source`, `args`,
+ * `context` and `info`
+ */
+export function runInjectors(
+  config: MergeOptionsConfig,
+  resolverArgs: ResolverArgs
+): ResolverArgs {
+  let args: ResolverArgs
+
+  if (!Array.isArray(config.resolverInjectors)) {
+    config.resolverInjectors = [config.resolverInjectors]
+  }
+
+  for (let injector of config.resolverInjectors) {
+    args = injector(resolverArgs)
+  }
+
+  return args
+}
+
+/**
+ * The merge options config takes the arguments passed into a given `resolve()`
+ * function, allowing the implementor to modify the values before passing them
+ * back out.
+ *
+ * This function takes a schema to inject into the info object, or fourth
+ * parameter, passed to any resolver. Any `extraConfig` object added in will
+ * have its resolverInjectors added to the list to be processed.
+ *
+ * @param {GraphQLSchema} schema the GraphQLSchema object being inserted
+ * @param {MergeOptionsConfig} extraConfig an optional extraConfig option to
+ * merge with the resulting output
+ * @return {MergeOptionsConfig} a MergeOptionsConfig object that contains at
+ * least a single `ResolverArgsTransformer` which injects the supplied `schema`
+ * into the `info` object.
+ */
+export function SchemaInjectorConfig(
+  schema: GraphQLSchema,
+  extraConfig?: MergeOptionsConfig
+): MergeOptionsConfig {
+  let baseConfig = {
+    resolverInjectors: [
+      function __schema_injector__({source, args, context, info}) {
+        info.schema = schema || info.schema
+        return { source, args, context, info }
+      }
+    ]
+  }
+
+  if (extraConfig) {
+    if (extraConfig.resolverInjectors) {
+      if (!Array.isArray(extraConfig.resolverInjectors)) {
+        baseConfig.resolverInjectors.push(extraConfig.resolverInjectors)
+      }
+      else {
+        baseConfig.resolverInjectors = baseConfig.resolverInjectors.concat(
+          extraConfig.resolverInjectors
+        )
+      }
+    }
+  }
+
+  return baseConfig
+}
+
+
+/**
+ * Walk the supplied GraphQLSchema instance and retrieve the resolvers stored
+ * on it. These values are then returned with a [typeName][fieldName] pathing
+ *
+ * @param {GraphQLSchema} schema an instance of GraphQLSchema
+ * @return {Object} an object containing a mapping of typeName.fieldName that
+ * links to the resolve() function it is associated within the supplied schema
+ */
+export function stripResolversFromSchema(
+  schema: GraphQLSchema
+): ?Object {
+  let resolvers = {}
+
+  if (!schema) {
+    return null
+  }
+
+  forEachField(schema, (
+    type,
+    typeName,
+    typeDirectives,
+    field,
+    fieldName,
+    fieldArgs,
+    fieldDirectives,
+    _schema,
+    context
+  ) => {
+    if (field.resolve) {
+      resolvers[typeName] = resolvers[typeName] || {}
+      resolvers[typeName][fieldName] = resolvers[typeName][fieldName] || {}
+      resolvers[typeName][fieldName] = field.resolve
+    }
+  })
+
+  return resolvers
+}
+
+/**
+ * The callback for collision when a field is trying to be merged with an
+ * existing field.
+ *
+ * @param {ASTNode} leftType the ASTNode, usually denoting a type, that will
+ * receive the merged type's field from the right
+ * @param {FieldNode} leftField the FieldNode denoting the value that should
+ * be modified or replaced
+ * @param {ASTNode} rightType the ASTNode containing the field to be merged
+ * @param {FieldNode} rightField the FieldNode requesting to be merged and
+ * finding a conflicting value already present
+ * @return {FieldNode} the field to merge into the existing schema layout. To
+ * ignore changes, returning the leftField is sufficient enough. The default
+ * behavior is to always take the right hand value, overwriting new with old
+ */
+export type FieldMergeResolver = (
+  leftType: ASTNode,
+  leftField: FieldNode,
+  rightType: ASTNode,
+  rightField: FieldNode
+) => FieldNode
+
+/**
+ * The callback for collision when a directive is trying to be merged with an
+ * existing directive.
+ *
+ * @param {ASTNode} leftType the ASTNode, usually denoting a type, that will
+ * receive the merged type's directive from the right
+ * @param {DirectiveNode} leftDirective the DirectiveNode denoting the value
+ * that should be modified or replaced
+ * @param {ASTNode} rightType the ASTNode containing the directive to be merged
+ * @param {DirectiveNode} rightDirective the DirectiveNode requesting to be
+ * merged and finding a conflicting value already present
+ * @return {DirectiveNode} the directive to merge into the existing schema
+ * layout. To ignore changes, returning the leftDirective is sufficient enough.
+ * The default behavior is to always take the right hand value, overwriting
+ * new with old
+ */
+export type DirectiveMergeResolver = (
+  leftType: ASTNode,
+  leftDirective: DirectiveNode,
+  rightType: ASTNode,
+  rightDirective: DirectiveNode
+) => DirectiveNode
+
+/**
+ * The callback for collision when a enum value is trying to be merged with an
+ * existing enum value of the same name.
+ *
+ * @param {ASTNode} leftType the ASTNode, usually denoting a type, that will
+ * receive the merged type's enum value from the right
+ * @param {EnumValueNode} leftValue the EnumValueNode denoting the value
+ * that should be modified or replaced
+ * @param {ASTNode} rightType the ASTNode containing the enum value to be
+ * merged
+ * @param {EnumValueNode} rightValue the EnumValueNode requesting to be
+ * merged and finding a conflicting value already present
+ * @return {EnumValueNode} the enum value to merge into the existing schema
+ * layout. To ignore changes, returning the leftValue is sufficient enough.
+ * The default behavior is to always take the right hand value, overwriting
+ * new with old
+ */
+export type EnumMergeResolver = (
+  leftType: ASTNode,
+  leftValue: EnumValueNode,
+  rightType: ASTNode,
+  rightValue: EnumValueNode
+) => EnumValueNode
+
+/**
+ * The callback for collision when a union type is trying to be merged with an
+ * existing union type of the same name.
+ *
+ * @param {ASTNode} leftType the ASTNode, usually denoting a type, that will
+ * receive the merged type's union type from the right
+ * @param {NamedTypeNode} leftValue the NamedTypeNode denoting the value
+ * that should be modified or replaced
+ * @param {ASTNode} rightType the ASTNode containing the union type to be
+ * merged
+ * @param {NamedTypeNode} rightValue the NamedTypeNode requesting to be
+ * merged and finding a conflicting value already present
+ * @return {NamedTypeNode} the union type to merge into the existing schema
+ * layout. To ignore changes, returning the leftUnion is sufficient enough.
+ * The default behavior is to always take the right hand value, overwriting
+ * new with old
+ */
+export type UnionMergeResolver = (
+  leftType: ASTNode,
+  leftUnion: NamedTypeNode,
+  rightType: ASTNode,
+  rightUnion: NamedTypeNode
+) => NamedTypeNode
+
+/**
+ * A callback for to resolve merge conflicts with custom scalar types defined
+ * by the user.
+ *
+ * @param {ScalarTypeDefinitionNode} leftScalar the definition node found when
+ * parsing ASTNodes. This is the existing value that conflicts with the to be
+ * merged value
+ * @param {GraphQLScalarTypeConfig} leftConfig *if* there is a resolver defined
+ * for the existing ScalarTypeDefinitionNode it will be provided here. If this
+ * value is null, there is no availabe config with serialize(), parseValue() or
+ * parseLiteral() to work with.
+ * @param {ScalarTypeDefinitionNode} rightScalar the definition node found when
+ * parsing ASTNodes. This is to be merged value that conflicts with the
+ * existing value
+ * @param {GraphQLScalarTypeConfig} rightConfig *if* there is a resolver
+ * defined for the existing ScalarTypeDefinitionNode it will be provided here.
+ * If this value is null, there is no availabe config with serialize(),
+ * parseValue() or parseLiteral() to work with.
+ * @return {GraphQLScalarTypeConfig} whichever type config or resolver was
+ * desired should be returned here.
+ *
+ * @see https://www.apollographql.com/docs/graphql-tools/scalars.html
+ * @see http://graphql.org/graphql-js/type/#graphqlscalartype
+ */
+export type ScalarMergeResolver = (
+  leftScalar: ScalarTypeDefinitionNode,
+  leftConfig: GraphQLScalarTypeConfig,
+  rightScalar: ScalarTypeDefinitionNode,
+  rightConfig: GraphQLScalarTypeConfig
+) => GraphQLScalarTypeConfig
+
+/**
+ * An object that specifies the various types of resolvers that might occur
+ * during a given conflict resolution
+ */
+export type ConflictResolvers = {
+  /** A handler for resolving fields in matching types */
+  fieldMergeResolver?: FieldMergeResolver,
+
+  /** A handler for resolving directives in matching types */
+  directiveMergeResolver?: DirectiveMergeResolver,
+
+  /** A handler for resolving conflicting enum values */
+  enumValueMergeResolver?: EnumMergeResolver,
+
+  /** A handler for resolving type values in unions */
+  typeValueMergeResolver?: UnionMergeResolver,
+
+  /** A handler for resolving scalar config conflicts in custom scalars */
+  scalarMergeResolver?: ScalarMergeResolver
+}
+
+/** @type {Symbol} a unique symbol used as a key to all instance sdl strings */
+export const TYPEDEFS_KEY = Symbol()
+
+/** @type {Symbol} a constant symbol used as a key to a flag for express-gql */
+export const GRAPHIQL_FLAG = Symbol.for('superfluous graphiql flag')
+
+/** @type {Symbol} a unique symbol used as a key to all instance `WeakMap`s */
+export const MAP = Symbol()
+
+/** @type {Symbol} a key used to store the __executable__ flag on a schema */
+export const EXE = Symbol()
+
+/** @type {Object} a key used to store a resolver object in a WeakMap */
+const wmkResolvers = Object(Symbol('GraphQL Resolvers storage key'))
+
+/** @type {Object} a key used to store an internal schema in a WeakMap */
+const wmkSchema = Object(Symbol('GraphQLSchema storage key'))
+
+/**
+ * This is a `Symbol` key to a `WeakSet` of `ExtendedResolverMap` instances,
+ * each of which have at least three properties:
+ *
+ *  - schema
+ *  - sdl
+ *  - resolvers
+ *
+ * One of these are created and added to the set whenever a mergeSchema is
+ * performed. On each subsequent mergeSDL/Schema a new instance is added such
+ * that new versions exist to be wrapped anew
+ *
+ * @type {[type]}
+ */
+const wmkPreboundResolvers = Object(Symbol('Resolvers pre-merge-wrapped'))
+
+/**
+ * The default field resolver blindly takes returns the right field. This
+ * resolver is used when one is not specified.
+ *
+ * @param {ASTNode} leftType The matching left type indicating conflict
+ * @param {FieldNode} leftField The field causing the conflict
+ * @param {ASTNode} rightType The matching right type indicating conflict
+ * @param {FieldNode} rightField the field cause the conflict
+ *
+ * @return {FieldNode} the field that should be used after resolution
+ */
+export function DefaultFieldMergeResolver(
+  leftType: ASTNode,
+  leftField: FieldNode,
+  rightType: ASTNode,
+  rightField: FieldNode
+): FieldNode {
+  return rightField
+}
+
+/**
+ * The default directive resolver blindly takes returns the right field. This
+ * resolver is used when one is not specified.
+ *
+ * @param {ASTNode} leftType The matching left type indicating conflict
+ * @param {DirectiveNode} leftDirective The field causing the conflict
+ * @param {ASTNode} rightType The matching right type indicating conflict
+ * @param {DirectiveNode} rightDirective the field cause the conflict
+ *
+ * @return {DirectiveNode} the directive that should be used after resolution
+ */
+export function DefaultDirectiveMergeResolver(
+  leftType: ASTNode,
+  leftDirective: DirectiveNode,
+  rightType: ASTNode,
+  rightDirective: DirectiveNode
+): DirectiveNode {
+  return rightDirective
+}
+
+/**
+ * The default field resolver blindly takes returns the right field. This
+ * resolver is used when one is not specified.
+ *
+ * @param {ASTNode} leftType The matching left type indicating conflict
+ * @param {DirectiveNode} leftDirective The field causing the conflict
+ * @param {ASTNode} rightType The matching right type indicating conflict
+ * @param {DirectiveNode} rightDirective the field cause the conflict
+ *
+ * @return {DirectiveNode} the directive that should be used after resolution
+ */
+export function DefaultEnumMergeResolver(
+  leftType: ASTNode,
+  leftValue: EnumValueNode,
+  rightType: ASTNode,
+  rightValue: EnumValueNode
+): EnumValueNode {
+  return rightValue
+}
+
+/**
+ * The default union resolver blindly takes returns the right type. This
+ * resolver is used when one is not specified.
+ *
+ * @param {ASTNode} leftType The matching left type indicating conflict
+ * @param {NamedTypeNode} leftUnion The named node causing the conflict
+ * @param {ASTNode} rightType The matching right type indicating conflict
+ * @param {NamedTypeNode} rightUnion the named node cause the conflict
+ *
+ * @return {NamedTypeNode} the directive that should be used after resolution
+ */
+export function DefaultUnionMergeResolver(
+  leftType: ASTNode,
+  leftUnion: NamedTypeNode,
+  rightType: ASTNode,
+  rightUnion: NamedTypeNode
+): NamedTypeNode {
+  return rightUnion
+}
+
+/**
+ * The default scalar merge resolver returns the right config when there is
+ * one, otherwise the left one or null will be the default result. This is
+ * slightly different behavior since resolvers for scalars are not always
+ * available.
+ *
+ * @param {GraphQLScalarTypeConfig} leftConfig *if* there is a resolver defined
+ * for the existing ScalarTypeDefinitionNode it will be provided here. If this
+ * value is null, there is no availabe config with serialize(), parseValue() or
+ * parseLiteral() to work with.
+ * @param {ScalarTypeDefinitionNode} rightScalar the definition node found when
+ * parsing ASTNodes. This is to be merged value that conflicts with the
+ * existing value
+ * @param {GraphQLScalarTypeConfig} rightConfig *if* there is a resolver
+ * defined for the existing ScalarTypeDefinitionNode it will be provided here.
+ * If this value is null, there is no availabe config with serialize(),
+ * parseValue() or parseLiteral() to work with.
+ * @return {GraphQLScalarTypeConfig} whichever type config or resolver was
+ * desired should be returned here.
+ *
+ * @see https://www.apollographql.com/docs/graphql-tools/scalars.html
+ * @see http://graphql.org/graphql-js/type/#graphqlscalartype
+ */
+export function DefaultScalarMergeResolver(
+  leftScalar: ScalarTypeDefinitionNode,
+  leftConfig: GraphQLScalarTypeConfig,
+  rightScalar: ScalarTypeDefinitionNode,
+  rightConfig: GraphQLScalarTypeConfig
+): GraphQLScalarTypeConfig {
+  return rightConfig ? rightConfig : (leftConfig || null)
+}
+
+/**
+ * In order to facilitate merging, there needs to be some contingency plan
+ * for what to do when conflicts arise. This object specifies one of each
+ * type of resolver. Each simply takes the right-hand value.
+ *
+ * @type {Object}
+ */
+export const DefaultConflictResolvers: ConflictResolvers = {
+  /** A handler for resolving fields in matching types */
+  fieldMergeResolver: DefaultFieldMergeResolver,
+
+  /** A handler for resolving directives in matching types */
+  directiveMergeResolver: DefaultDirectiveMergeResolver,
+
+  /** A handler for resolving conflicting enum values */
+  enumValueMergeResolver: DefaultEnumMergeResolver,
+
+  /** A handler for resolving type values in unions */
+  typeValueMergeResolver: DefaultUnionMergeResolver,
+
+  /** A handler for resolving scalar configs in custom scalars */
+  scalarMergeResolver: DefaultScalarMergeResolver
+};
+
+const subTypeResolverMap: Map<string, Function> = new Map()
+subTypeResolverMap.set('fields', 'fieldMergeResolver')
+subTypeResolverMap.set('directives', 'directiveMergeResolver')
+subTypeResolverMap.set('values', 'enumValueMergeResolver')
+subTypeResolverMap.set('types', 'typeValueMergeResolver')
+subTypeResolverMap.set('scalars', 'scalarMergeResolver')
+
+/**
+ * Compares and combines a subset of ASTNode fields. Designed to work on all
+ * the various types that might have a merge conflict.
+ *
+ * @param {string} subTypeName the name of the field type; one of the following
+ * values: 'fields', 'directives', 'values', 'types'
+ * @param {ASTNode} lType the lefthand type containing the subtype to compare
+ * @param {ASTNode} lSubType the lefthand subtype; fields, directive, value or
+ * named union type
+ * @param {ASTNode} rType the righthand type containing the subtype to compare
+ * @param {ASTNode} rSubType the righthand subtype; fields, directive, value or
+ * named union type
+ */
+function combineTypeAndSubType(
+  subTypeName: string,
+  lType: ASTNode,
+  rType: ASTNode,
+  conflictResolvers: ConflictResolvers = DefaultConflictResolvers
+): void {
+  if (rType[subTypeName]) {
+    for (let rSubType of rType[subTypeName]) {
+      let lSubType = lType[subTypeName].find(
+        f => f.name.value == rSubType.name.value
+      )
+
+      if (!lSubType) {
+        lType[subTypeName].push(rSubType)
+        continue
+      }
+
+      let resolver = subTypeResolverMap.get(subTypeName) || 'fieldMergeResolver'
+      let resultingSubType = conflictResolvers[resolver](
+        lType, lSubType, rType, rSubType
+      )
+      let index = lType.fields.indexOf(lSubType)
+
+      lType[subTypeName].splice(index, 1, resultingSubType)
+    }
+  }
+}
+
+/**
+ * Compares a subset of ASTNode fields. Designed to work on all the various
+ * types that might have a merge conflict.
+ *
+ * @param {string} subTypeName the name of the field type; one of the following
+ * values: 'fields', 'directives', 'values', 'types'
+ * @param {ASTNode} lType the lefthand type containing the subtype to compare
+ * @param {ASTNode} lSubType the lefthand subtype; fields, directive, value or
+ * named union type
+ * @param {ASTNode} rType the righthand type containing the subtype to compare
+ * @param {ASTNode} rSubType the righthand subtype; fields, directive, value or
+ * named union type
+ */
+function pareTypeAndSubType(
+  subTypeName: string,
+  lType: ASTNode,
+  rType: ASTNode,
+  resolvers: Object = {}
+): void {
+  for (let rSubType of rType[subTypeName]) {
+    let lSubType = lType[subTypeName].find(
+      f => f.name.value == rSubType.name.value
+    )
+
+    if (!lSubType) {
+      continue
+    }
+
+    let index = lType.fields.indexOf(lSubType)
+    lType[subTypeName].splice(index, 1)
+
+    if (
+      resolvers[lType.name.value]
+      && resolvers[lType.name.value][lSubType.name.value]
+    ) {
+      delete resolvers[lType.name.value][lSubType.name.value]
+    }
+    else if (resolvers[lSubType.name.value]) {
+      delete resolvers[lSubType.name.value]
+    }
+  }
+}
+
+/**
+ * Small function that sorts through the typeDefs value supplied which can be
+ * any one of a Schemata instance, GraphQLSchema instance, Source instance or a
+ * string.
+ *
+ * @param {string|Source|Schemata|GraphQLSchema|ASTNode} typeDefs an instance
+ * of Schemata, a string of SDL, a Source instance of SDL, a GraphQLSchema or
+ * ASTNode that can be printed as an SDL string
+ * @return {string} a string representing the thing supplied as typeDefs
+ */
+export function normalizeSource(
+  typeDefs: string | Source | Schemata | GraphQLSchema | ASTNode,
+  wrap: boolean = false
+): (string | Schemata) {
+  if (!typeDefs) {
+    throw new Error(inline`
+      normalizeSource(typeDefs): typeDefs was invalid when passed to the
+      function \`normalizeSource\`. Please check your code and try again.
+
+      (received: ${typeDefs})
+    `)
+  }
+
+  let source =
+    (typeDefs.body
+      || typeDefs.sdl
+      || (typeof typeDefs === 'string' && typeDefs)
+      || (typeof typeDefs === 'object' && Schemata.print(typeDefs))
+      || (typeDefs instanceof GraphQLSchema
+        ? printSchema(typeDefs)
+        : typeDefs.toString())
+    ).toString()
+
+  return wrap ? Schemata.from(source) : source;
 }
 
 export default Schemata

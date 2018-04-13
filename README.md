@@ -166,8 +166,57 @@ app.use('/graphql', graphqlHTTP({
 app.listen(4000)
 ```
 
+#### Merging Concerns
+
+*TLDR; Schemata has your back and you don't really need to read this*
+
+Still here? Cool, let's learn what happens during merging. When merging multiple schemas, one of the problems that can occur, especially if one of the schemas being merged is a remote executable schema, is that the resolvers might be bound to an older version of a schema that is only a subset of the new merge.
+
+Schemata helps to alleviate this problem by introducing a few interfaces of note. The immediate solution to this problem is to wrap the resolvers and have those resolvers point to a newly merged GraphQLSchema object rather than the one it was originally bound to.
+
+The problem comes in when you try to merge more than once. Wrapping a previously wrapped version of a resolver will allow you to set it at the top, but the previous attempt to do will execute and override the changes you just made.
+
+Schemata solves this problem by storing the older unbound methods with each bind. A reference to the schema, sdl and resolvers at the time of the merge are kept. When each subsequent merge occurs, these older unwrapped/unbound resolvers are used to apply the new schema rather than layering things like Russian nesting dolls.
+
+Furthermore, when making a call to `.mergeSchema()` you may add your own resolver injectors which are simply objects containing a property called `'.resolverInjectors'` which are an array of `ResolverArgsTransformer` functions. These give you full acceess to the `source`, `args`, `context` and `info` parameters to modify to your hearts content before the original unwrapped resolver receives those parameters.
+
+```js
+import { Schemata } from 'ne-schemata'
+
+let a = Schemata.from(
+  'type Query { me: String }',
+  { me(s,a,c,i) { return 'Brielle' } }
+)
+
+let b = Schemata.from(
+  'type Query { her: String }',
+  { her(s,a,c,i) { return 'Stacy' } }
+)
+
+let ab = a.mergeSchema(b)
+
+console.log(ab.prevMergeResolvers)
+// [{schema:..., sdl:..., resolvers:...}, ...] <-- unwrapped
+console.log(ab.resolvers)
+// { me(), her() }     <-- wrapped to new schema
+
+let c = Schemata.from(
+  'type Polygon { sides: Int }',
+  { Polygon: { sides(s,a,c,i) { return 6 } } }
+)
+
+let abc = ab.mergeSchema(c)
+console.log(abc.prevMergeResolvers)
+// [{schema:..., sdl:..., resolvers:...}, ...] <-- unwrapped
+console.log(abc.resolvers)
+// { me(), her(), Polygon: { sides() } } <-- wrapped to new schema
+```
+
+Even this example has difficulty explaining properly what is happening and why it's important, but as each merge happens the previous unwrapped resolvers are passed along and newly introduced schemas' resolvers are added to this list.
+
 ### <a name="contents"></a>Schemata Class Properties and Methods
 
+- [Constructor](#instance-constructor)
 - [Instance properties](#instance-properties)
   - [.ast](#inst-ast): [`?ASTNode`](https://github.com/graphql/graphql-js/blob/master/src/language/ast.js#L88)
   - [.executableSchema](#inst-executable-schema): [`?GraphQLSchema`](https://github.com/graphql/graphql-js/blob/master/src/type/schema.js#L48)
@@ -218,6 +267,7 @@ app.listen(4000)
   - [buildSchema()](#fn-buildSchema)
   - [from()](#fn-from)
   - [parse()](#fn-parse)
+  - [print()](#fn-print)
 - [Exported types](#exported-types)
   - [ConflictResolvers](#type-conflict-resolvers)
   - [DirectiveMergeResolver](#type-directive-merge-resolver)
@@ -225,8 +275,33 @@ app.listen(4000)
   - [FieldMergeResolver](#type-field-merge-resolver)
   - [ForEachFieldResolver](#type-for-each-field-resolver)
   - [ForEachOfResolver](#type-for-each-of-resolver)
+  - [MergeOptionsConfig](#type-merge-options-config)
+  - [ResolverArgs](#type-resolver-args)
+  - [ResolverArgsTransformer](#type-resolver-args-transformer)
   - [ScalarMergeResolver](#type-scalar-merge-resolver)
   - [UnionMergeResolver](#type-union-enum-merge-resolver)
+- [External Functions](#external-functions)
+  - [normalizeSource](#etype-normalize-source)
+  - [runInjectors](#etype-run-injectors)
+  - [SchemaInjectorConfig](#etype-schema-injector-config)
+  - [stripResolversFromSchema](#etype-strip-resolvers-from-schema)
+
+## <a name="instance-constructor"></a>Constructor [✯](#contents)
+```js
+constructor(
+  typeDefs: string | Source | Schemata | GraphQLSchema | ASTNode,
+  resolvers: ?{ [string]: Function } = null,
+  buildResolvers: boolean = false,
+  flattenResolvers: boolean = false
+): Schemata
+```
+Schemata instances are versatile and can be created through a variety of sources. Typically anything that can be converted to a string of SDL can be used to create a new Schemata instance. Everything from a GraphQL `Source` instance, previously instantiated `Schemata` instance, a `GraphQLSchema` object or even an `ASTNode`. Of course, basic strings of SDL can also be used.
+
+An object with resolver functions can be supplied as the second parameter allowing executable schemas to be generated from the source SDL.
+
+The final two parameters are for the case where the Schemata instance is initialized with a GraphQLSchema instance or with an older instance of Schemata.
+- The first causes a programmatic attempt to generate and set an object containing resolvers from the executable schema represented by either eligible object.
+- The second causes the generated resolver map to be in the flattened style with root fields exposed at the root of the resolver map. By default the Apollo style resolver map with fields under their respective type names is the default
 
 ## <a name="instance-properties"></a>Instance properties [✯](#contents)
 
@@ -584,6 +659,21 @@ static parse(
 ```
 Using the Facebook reference implementation's call to `parse()` is made. The resulting `AstNode` objects will be returned. If the `sdl` is not valid, an error will be thrown if showError is truthy
 
+#### <a name="fn-print"></a>print [✯](#contents)
+```js
+static print(
+  ast: ASTNode,
+  showError: boolean = false
+): ?Schemata
+```
+A little wrapper used to catch any errors thrown when printing an ASTNode
+to string form using `require('graphql').print()`. If `showError` is true
+any thrown errors will be rethrown, otherwise null is returned instead.
+Should all go as planned, an instance of Schemata wrapped with the printed
+SDL will be returned.
+
+*Since version 1.7*
+
 #### <a name="fn-from"></a>from [✯](#contents)
 ```js
 static from(
@@ -677,6 +767,31 @@ export type ForEachOfResolver = (
 ```
 The [`ForEachOfResolver`](#type-for-each-of-resolver) function definition is about a function that takes a callback that receives the type object, the type object name, an array of directives if any, the schema and any supplied context to use in the iteration and looping over the types defined in the Schematas schema representation. If an internal store of a schema is not availabe, one is created
 
+#### <a name="type-resolver-args"></a>ResolverArgs [✯](#contents)
+```js
+export type ResolverArgs = {
+  source: mixed,
+  args: mixed,
+  context: mixed,
+  info: GraphQLResolveInfo
+}
+```
+Resolver functions receive four arguments when they execute. This type represents and object with the same four argument types within. Used by `ResolverArgsTransformer` and, indirectly by, `MergeOptionsConfig` objects.
+
+#### <a name="type-resolver-args-transformer"></a>ResolverArgsTransformer [✯](#contents)
+```js
+export type ResolverArgsTransformer = (args: ResolverArgs) => ResolverArgs
+```
+A function that takes a [`ResolverArgs`](#type-resolver-args) object and returns a [`ResolverArgs`](#type-resolver-args)
+
+#### <a name="type-merge-options-config"></a>MergeOptionsConfig [✯](#contents)
+```js
+export type MergeOptionsConfig = {
+  resolverInjectors: ResolverArgsTransformer | Array<ResolverArgsTransformer>
+}
+```
+A `MergeOptionsConfig` is a way to configure the arguments that are bound to each resolver during a call to [`mergeSchema`](#merge-schema). The functions set as `resolverInjectors` can be either a single function or an array of functions.
+
 #### <a name="type-union-merge-resolver"></a>UnionMergeResolver [✯](#contents)
 ```js
 export type UnionMergeResolver = (
@@ -698,3 +813,42 @@ export type ScalarMergeResolver = (
 ) => GraphQLScalarTypeConfig
 ```
 The `ScalarMergeResolver` is a function that takes both left and right scalars that are colliding and their custom resolver configs *if available*. Scalars definitions are a not always available, but if they are they will be provided. Therefore the default resolver for custom scalars will take whichever `GraphQLScalarTypeConfig` object is availabe starting with right, moving to left and then null.
+
+## <a name="external-functions"></a>External Functions [✯](#contents)
+
+#### <a name="etype-normalize-source"></a>normalizeSource() [✯](#contents)
+```js
+export function normalizeSource(
+  typeDefs: string | Source | Schemata | GraphQLSchema | ASTNode,
+  wrap: boolean = false
+): (string | Schemata)
+```
+A function that takes the various types of input that `Schemata` takes as a constructor and converts the results into either a `string` or `Schemata` instance if `wrap` is set to true.
+
+#### <a name="etype-run-injectors"></a>runInjectors() [✯](#contents)
+```js
+export function runInjectors(
+  config: MergeOptionsConfig,
+  resolverArgs: ResolverArgs
+): ResolverArgs
+```
+Given an initial set of arguments passed to a resolver function and a [`MergeOptionsConfig`](#type-merge-options-config) setup, it generates a new set of [`ResolverArgs`](#type-resolver-args) that, post-modification, can finally be passed to the resolver when wrapped.
+
+#### <a name="etype-schema-injector-config"></a>SchemaInjectorConfig() [✯](#contents)
+```js
+export function SchemaInjectorConfig(
+  schema: GraphQLSchema,
+  extraConfig?: MergeOptionsConfig
+): MergeOptionsConfig
+```
+The merge options config takes the arguments passed into a given `resolve()` function, allowing the implementor to modify the values before passing them back out.
+
+This function takes a schema to inject into the info object, or fourth parameter, passed to any resolver. Any `extraConfig` object added in will have its resolverInjectors added to the list to be processed.
+
+#### <a name="etype-strip-resolvers-from-schema"></a>stripResolversFromSchema() [✯](#contents)
+```js
+export function stripResolversFromSchema(
+  schema: GraphQLSchema
+): ?Object
+```
+Walk the supplied GraphQLSchema instance and retrieve the resolvers stored on it. These values are then returned with a `[typeName][fieldName]` pathing

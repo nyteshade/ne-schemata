@@ -1,7 +1,12 @@
-import { Schemata, stripResolversFromSchema, TYPEDEFS_KEY } from './Schemata'
+import {
+  Schemata,
+  normalizeSource,
+  stripResolversFromSchema,
+  TYPEDEFS_KEY
+} from './Schemata'
 import { register, graphQLExtensionHandler } from './GraphQLExtension'
 import { gql } from './gqlTagFn'
-import { jestTransformer } from './jestTransformer'
+import jestTransformer from './jestTransformer'
 
 const SDL = Schemata
 
@@ -28,6 +33,9 @@ export {
 
   // Nice utility function
   stripResolversFromSchema,
+
+  // Convert varied types of input to a string
+  normalizeSource,
 
   // Used to make modifications to the string wrapped in an Schemata instance
   TYPEDEFS_KEY,

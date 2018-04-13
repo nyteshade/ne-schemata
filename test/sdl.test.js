@@ -4,7 +4,7 @@ import { sdl, schema } from './gql/person.graphql'
 
 describe('testing Schemata', async () => {
   let str = sdl.sdl
-  let ast = parse(str)
+  let ast = Schemata.parse(str)
   let schema = buildSchema(str)
 
   it('checks to see if we can do string comparison', () => {
