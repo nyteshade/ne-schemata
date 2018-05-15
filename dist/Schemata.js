@@ -5,53 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.DefaultConflictResolvers = exports.EXE = exports.MAP = exports.GRAPHIQL_FLAG = exports.TYPEDEFS_KEY = exports.DefaultMergeOptions = exports.Schemata = undefined;
 
-var _map = require('babel-runtime/core-js/map');
-
-var _map2 = _interopRequireDefault(_map);
-
-var _symbol = require('babel-runtime/core-js/symbol');
-
-var _symbol2 = _interopRequireDefault(_symbol);
-
-var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
-
-var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
-
-var _entries = require('babel-runtime/core-js/object/entries');
-
-var _entries2 = _interopRequireDefault(_entries);
-
-var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
-
-var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
-
-var _getIterator2 = require('babel-runtime/core-js/get-iterator');
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _toStringTag = require('babel-runtime/core-js/symbol/to-string-tag');
-
-var _toStringTag2 = _interopRequireDefault(_toStringTag);
-
-var _iterator13 = require('babel-runtime/core-js/symbol/iterator');
-
-var _iterator14 = _interopRequireDefault(_iterator13);
-
-var _species = require('babel-runtime/core-js/symbol/species');
-
-var _species2 = _interopRequireDefault(_species);
-
-var _for = require('babel-runtime/core-js/symbol/for');
-
-var _for2 = _interopRequireDefault(_for);
-
-var _weakMap = require('babel-runtime/core-js/weak-map');
-
-var _weakMap2 = _interopRequireDefault(_weakMap);
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 exports.runInjectors = runInjectors;
 exports.SchemaInjectorConfig = SchemaInjectorConfig;
@@ -76,6 +30,8 @@ var _deepmerge2 = _interopRequireDefault(_deepmerge);
 var _forEachOf = require('./forEachOf');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 const debug_log = require('debug')('schemata:normal');
 const debug_trace = require('debug')('schemata:trace');
@@ -118,7 +74,7 @@ class Schemata extends String {
 
     this[GRAPHIQL_FLAG] = true;
     this[TYPEDEFS_KEY] = normalizeSource(typeDefs);
-    this[MAP] = new _weakMap2.default();
+    this[MAP] = new WeakMap();
     this[MAP].set(wmkSchema, typeDefs instanceof _graphql.GraphQLSchema ? typeDefs : null);
     this[MAP].set(wmkResolvers, resolvers);
     this[MAP].set(wmkPreboundResolvers, typeDefs instanceof Schemata ? typeDefs.prevResolverMaps : []);
@@ -128,7 +84,7 @@ class Schemata extends String {
     // schema from the SDL
     if (this[MAP].get(wmkSchema)) {
       this[MAP].get(wmkSchema)[EXE] = true;
-      this[MAP].get(wmkSchema)[(0, _for2.default)('constructor-supplied-schema')] = true;
+      this[MAP].get(wmkSchema)[Symbol.for('constructor-supplied-schema')] = true;
     }
 
     // If buildResolvers is true, after the rest is already set and done, go
@@ -151,7 +107,7 @@ class Schemata extends String {
    *
    * @type {Function}
    */
-  static get [_species2.default]() {
+  static get [Symbol.species]() {
     return Schemata;
   }
 
@@ -161,7 +117,7 @@ class Schemata extends String {
    *
    * @type {Function}
    */
-  get [_iterator14.default]() {
+  get [Symbol.iterator]() {
     return function* () {
       yield this.toString();
     }.bind(this);
@@ -173,7 +129,7 @@ class Schemata extends String {
    *
    * @type {string}
    */
-  get [_toStringTag2.default]() {
+  get [Symbol.toStringTag]() {
     return this.constructor.name;
   }
 
@@ -227,7 +183,7 @@ class Schemata extends String {
     }
 
     try {
-      if (this.resolvers && (0, _keys2.default)(this.resolvers).length) {
+      if (this.resolvers && Object.keys(this.resolvers).length) {
         debug_log('[get .schema] creating executable schema instead');
         return this.executableSchema;
       } else {
@@ -397,7 +353,7 @@ class Schemata extends String {
    * question
    */
   schemaResolverFor(type, field) {
-    if (!this.resolvers || !(0, _keys2.default)(this.resolvers).length || !this.valid) {
+    if (!this.resolvers || !Object.keys(this.resolvers).length || !this.valid) {
       return null;
     }
 
@@ -504,7 +460,7 @@ class Schemata extends String {
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = (0, _getIterator3.default)(type.fields), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (var _iterator = type.fields[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           let field = _step.value;
 
           if (field.name.value in resolvers) {
@@ -569,7 +525,7 @@ class Schemata extends String {
     var _iteratorError2 = undefined;
 
     try {
-      for (var _iterator2 = (0, _getIterator3.default)(rAST.definitions), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      for (var _iterator2 = rAST.definitions[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
         let rType = _step2.value;
 
         let lType = lAST.definitions.find(a => a.name.value == rType.name.value);
@@ -648,13 +604,13 @@ class Schemata extends String {
 
     let merged = Schemata.from(this.constructor.gql.print(lAST));
 
-    if ((0, _keys2.default)(_scalarFns).length) {
+    if (Object.keys(_scalarFns).length) {
       var _iteratorNormalCompletion3 = true;
       var _didIteratorError3 = false;
       var _iteratorError3 = undefined;
 
       try {
-        for (var _iterator3 = (0, _getIterator3.default)((0, _keys2.default)(_scalarFns)), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+        for (var _iterator3 = Object.keys(_scalarFns)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
           let typeName = _step3.value;
 
           merged.schema.getType(typeName)._scalarConfig = _scalarConfig[typeName];
@@ -714,7 +670,7 @@ class Schemata extends String {
     var _iteratorError4 = undefined;
 
     try {
-      for (var _iterator4 = (0, _getIterator3.default)(rAST.definitions), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+      for (var _iterator4 = rAST.definitions[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
         let rType = _step4.value;
 
         let lType = lAST.definitions.find(a => a.name.value == rType.name.value);
@@ -876,10 +832,10 @@ class Schemata extends String {
       var _iteratorError5 = undefined;
 
       try {
-        for (var _iterator5 = (0, _getIterator3.default)((0, _entries2.default)(object)), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+        for (var _iterator5 = Object.entries(object)[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
           let _ref = _step5.value;
 
-          var _ref2 = (0, _slicedToArray3.default)(_ref, 2);
+          var _ref2 = _slicedToArray(_ref, 2);
 
           let key = _ref2[0];
           let value = _ref2[1];
@@ -954,7 +910,7 @@ class Schemata extends String {
             var _iteratorError6 = undefined;
 
             try {
-              for (var _iterator6 = (0, _getIterator3.default)((0, _keys2.default)(resolvers[rootType])), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+              for (var _iterator6 = Object.keys(resolvers[rootType])[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
                 let field = _step6.value;
 
                 resolvers[field] = resolvers[rootType][field];
@@ -983,7 +939,7 @@ class Schemata extends String {
           var _iteratorError7 = undefined;
 
           try {
-            for (var _iterator7 = (0, _getIterator3.default)((0, _keys2.default)(resolvers)), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+            for (var _iterator7 = Object.keys(resolvers)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
               let field = _step7.value;
 
               try {
@@ -1035,7 +991,7 @@ class Schemata extends String {
       var _iteratorError8 = undefined;
 
       try {
-        for (var _iterator8 = (0, _getIterator3.default)(extendWith), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+        for (var _iterator8 = extendWith[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
           let item = _step8.value;
 
           resolvers = (0, _deepmerge2.default)(resolvers || {}, item || {});
@@ -1113,7 +1069,7 @@ class Schemata extends String {
    * field of a type in this Schemata instance's schema.
    */
   get hasAnExecutableSchema() {
-    return (0, _keys2.default)(this.buildResolvers()).length > 0;
+    return Object.keys(this.buildResolvers()).length > 0;
   }
 
   /**
@@ -1551,7 +1507,7 @@ class Schemata extends String {
   runAsync(query, contextValue, variableValues, rootValue, operationName, fieldResolver) {
     var _this = this;
 
-    return (0, _asyncToGenerator3.default)(function* () {
+    return _asyncToGenerator(function* () {
       return _this.constructor.gql.graphql(_this.schema, query, _this.resolvers || rootValue, contextValue, variableValues, operationName, fieldResolver);
     })();
   }
@@ -1614,13 +1570,13 @@ class Schemata extends String {
 
       if (enhance) {
         debug_log('[static parse()] enhancing');
-        node[_iterator14.default] = function* () {
+        node[Symbol.iterator] = function* () {
           var _iteratorNormalCompletion9 = true;
           var _didIteratorError9 = false;
           var _iteratorError9 = undefined;
 
           try {
-            for (var _iterator9 = (0, _getIterator3.default)(this.definitions), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+            for (var _iterator9 = this.definitions[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
               let node = _step9.value;
 
               yield node;
@@ -1893,7 +1849,7 @@ const DefaultMergeOptions = exports.DefaultMergeOptions = {
   var _iteratorError10 = undefined;
 
   try {
-    for (var _iterator10 = (0, _getIterator3.default)(config.resolverInjectors), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+    for (var _iterator10 = config.resolverInjectors[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
       let injector = _step10.value;
 
       args = injector(resolverArgs);
@@ -2086,22 +2042,22 @@ function stripResolversFromSchema(schema) {
 
 
 /** @type {Symbol} a unique symbol used as a key to all instance sdl strings */
-const TYPEDEFS_KEY = exports.TYPEDEFS_KEY = (0, _symbol2.default)();
+const TYPEDEFS_KEY = exports.TYPEDEFS_KEY = Symbol();
 
 /** @type {Symbol} a constant symbol used as a key to a flag for express-gql */
-const GRAPHIQL_FLAG = exports.GRAPHIQL_FLAG = (0, _for2.default)('superfluous graphiql flag');
+const GRAPHIQL_FLAG = exports.GRAPHIQL_FLAG = Symbol.for('superfluous graphiql flag');
 
 /** @type {Symbol} a unique symbol used as a key to all instance `WeakMap`s */
-const MAP = exports.MAP = (0, _symbol2.default)();
+const MAP = exports.MAP = Symbol();
 
 /** @type {Symbol} a key used to store the __executable__ flag on a schema */
-const EXE = exports.EXE = (0, _symbol2.default)();
+const EXE = exports.EXE = Symbol();
 
 /** @type {Object} a key used to store a resolver object in a WeakMap */
-const wmkResolvers = Object((0, _symbol2.default)('GraphQL Resolvers storage key'));
+const wmkResolvers = Object(Symbol('GraphQL Resolvers storage key'));
 
 /** @type {Object} a key used to store an internal schema in a WeakMap */
-const wmkSchema = Object((0, _symbol2.default)('GraphQLSchema storage key'));
+const wmkSchema = Object(Symbol('GraphQLSchema storage key'));
 
 /**
  * This is a `Symbol` key to a `WeakSet` of `ExtendedResolverMap` instances,
@@ -2117,7 +2073,7 @@ const wmkSchema = Object((0, _symbol2.default)('GraphQLSchema storage key'));
  *
  * @type {[type]}
  */
-const wmkPreboundResolvers = Object((0, _symbol2.default)('Resolvers pre-merge-wrapped'));
+const wmkPreboundResolvers = Object(Symbol('Resolvers pre-merge-wrapped'));
 
 /**
  * The default field resolver blindly takes returns the right field. This
@@ -2230,7 +2186,7 @@ const DefaultConflictResolvers = exports.DefaultConflictResolvers = {
   scalarMergeResolver: DefaultScalarMergeResolver
 };
 
-const subTypeResolverMap = new _map2.default();
+const subTypeResolverMap = new Map();
 subTypeResolverMap.set('fields', 'fieldMergeResolver');
 subTypeResolverMap.set('directives', 'directiveMergeResolver');
 subTypeResolverMap.set('values', 'enumValueMergeResolver');
@@ -2257,7 +2213,7 @@ function combineTypeAndSubType(subTypeName, lType, rType, conflictResolvers = De
     var _iteratorError11 = undefined;
 
     try {
-      for (var _iterator11 = (0, _getIterator3.default)(rType[subTypeName]), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
+      for (var _iterator11 = rType[subTypeName][Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
         let rSubType = _step11.value;
 
         let lSubType = lType[subTypeName].find(f => f.name.value == rSubType.name.value);
@@ -2309,7 +2265,7 @@ function pareTypeAndSubType(subTypeName, lType, rType, resolvers = {}) {
   var _iteratorError12 = undefined;
 
   try {
-    for (var _iterator12 = (0, _getIterator3.default)(rType[subTypeName]), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
+    for (var _iterator12 = rType[subTypeName][Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
       let rSubType = _step12.value;
 
       let lSubType = lType[subTypeName].find(f => f.name.value == rSubType.name.value);

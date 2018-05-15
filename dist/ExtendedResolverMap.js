@@ -3,21 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ExtendedResolverMap = undefined;
 
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _getIterator2 = require('babel-runtime/core-js/get-iterator');
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
-
-var _iterator2 = require('babel-runtime/core-js/symbol/iterator');
-
-var _iterator3 = _interopRequireDefault(_iterator2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * A class that stores information about a set of resolvers and their
@@ -51,14 +37,14 @@ class ExtendedResolverMap {
    * @return {Function} a bound generator function that iterates over the
    * key/value props of the internal .resovlers property
    */
-  get [_iterator3.default]() {
+  get [Symbol.iterator]() {
     return function* () {
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = (0, _getIterator3.default)((0, _keys2.default)(this.resolvers)), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (var _iterator = Object.keys(this.resolvers)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           let key = _step.value;
 
           yield { key, value: this.resolvers[key] };
