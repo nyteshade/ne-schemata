@@ -1,6 +1,6 @@
 {
   "name": "ne-schemata",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "GraphQL IDL/Schemata String class to make working with GraphQL easier",
   "repository": "https://github.com/nyteshade/ne-schemata",
   "main": "dist/index.js",
