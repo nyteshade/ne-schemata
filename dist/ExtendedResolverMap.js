@@ -3,7 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.ExtendedResolverMap = undefined;
 
+var _Schemata = require('./Schemata');
 
 /**
  * A class that stores information about a set of resolvers and their
@@ -12,6 +14,23 @@ Object.defineProperty(exports, "__esModule", {
  * a history of the unbound resolver functiosn from previous merges (in order)
  *
  * @class ExtendedResovlerMap
+ */
+
+
+/**
+ * A flow type defining the parameters for creating a new instance of
+ * `ExtendedResolverMap`. At least the resolver map is required, but ideally
+ * a `.schema` or `.sdl` value are desired
+ *
+ * @type {ExtendedResolverMapConfig}
+ */
+
+
+/**
+ * A union of types representing either the ExtendedResolverMapConfig type or
+ * an instance of Schemata.
+ *
+ * @type {SchemataConfigUnion}
  */
 class ExtendedResolverMap {
 
@@ -25,7 +44,7 @@ class ExtendedResolverMap {
    */
   constructor(config) {
     this.schema = config.schema;
-    this.sdl = config.schema;
+    this.sdl = config.sdl;
     this.resolvers = config.resolvers;
   }
 
@@ -67,23 +86,26 @@ class ExtendedResolverMap {
   }
 
   /**
-   * A shorthand way to create a new instance of `ExtendedResolverMap`
+   * A shorthand way to create a new instance of `ExtendedResolverMap`. In
+   * the case that an instance of Schemata is passed in, the schema
+   * property is first attempted as
    *
-   * @param {ExtendedResolverMapConfig} config the same config object passed
-   * to the constructor
+   * @param {SchemataConfigUnion} config the same config object passed
+   * to the constructor or an instance of Schemata
    * @return {ExtendedResolverMap} a new instance of `ExtendedResolverMap`
    */
   static from(config) {
-    return new ExtendedResolverMap(config);
+    if (config instanceof _Schemata.Schemata) {
+      const schema = config.schema,
+            sdl = config.sdl;
+
+      const resolvers = config.buildResolvers();
+
+      return new ExtendedResolverMap({ schema, sdl, resolvers });
+    } else {
+      return new ExtendedResolverMap(config);
+    }
   }
 }
 exports.ExtendedResolverMap = ExtendedResolverMap;
-
-/**
- * A flow type defining the parameters for creating a new instance of
- * `ExtendedResolverMap`. At least the resolver map is required, but ideally
- * a `.schema` or `.sdl` value are desired
- *
- * @type {ExtendedResolverMapConfig}
- */
 //# sourceMappingURL=ExtendedResolverMap.js.map

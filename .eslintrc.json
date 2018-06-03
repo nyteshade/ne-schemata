@@ -1,0 +1,15 @@
+{
+  "env": {
+    "node": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 9,
+    "sourceType": "module"
+  },
+  "plugins": ["import", "flowtype"],
+  "rules": {
+    "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+    "indent": ["error", 2]
+  }
+}

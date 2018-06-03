@@ -61,34 +61,40 @@ describe('testing Schemata', async () => {
     })
 
     expect(Array.from(types)).toEqual(
-      expect.arrayContaining(['Query', 'Person'])
+      expect.arrayContaining(['Query', 'Person']),
     )
   })
 
   it('can have its fields iterated over', () => {
     let values = new Set()
 
-    sdl.forEachField((
-      type,
-      typeName,
-      typeDirectives,
-      field,
-      fieldName,
-      fieldArgs,
-      fieldDirectives,
-      schema,
-      context
-    ) => {
-      values.add(fieldName)
-    })
+    sdl.forEachField(
+      (
+        type,
+        typeName,
+        typeDirectives,
+        field,
+        fieldName,
+        fieldArgs,
+        fieldDirectives,
+        schema,
+        context,
+      ) => {
+        values.add(fieldName)
+      },
+    )
 
-    expect(Array.from(values)).toEqual(expect.arrayContaining([
-      'name', 'gender', 'peeps'
-    ]))
+    expect(Array.from(values)).toEqual(
+      expect.arrayContaining(['name', 'gender', 'peeps']),
+    )
   })
 
   it('should return null if .schema is invoked with bad values', () => {
-    let sdlString = gql`type Something { fieldOf: Undefined }`
+    let sdlString = gql`
+      type Something {
+        fieldOf: Undefined
+      }
+    `
     let astNode = sdlString.ast
     let schema = sdlString.schema
 
@@ -96,10 +102,14 @@ describe('testing Schemata', async () => {
     expect(astNode).not.toBe(null)
   })
 
-  it('should return null if .executableSchema is used with bad values', () => {
-    let sdlString = gql`type Something { fieldOf: Undefined }`
+  it('should return null if .schema is used with bad values', () => {
+    let sdlString = gql`
+      type Something {
+        fieldOf: Undefined
+      }
+    `
     let astNode = sdlString.ast
-    let schema = sdlString.executableSchema
+    let schema = sdlString.schema
 
     expect(schema).toBe(null)
     expect(astNode).not.toBe(null)
@@ -108,7 +118,11 @@ describe('testing Schemata', async () => {
   it('should be able to tell if a schema is executable or not', () => {
     expect(sdl.hasAnExecutableSchema).toBe(true)
     expect(
-      gql`type Query { name: String }`.hasAnExecutableSchema
+      gql`
+        type Query {
+          name: String
+        }
+      `.hasAnExecutableSchema,
     ).not.toBe(true)
   })
 
@@ -129,10 +143,10 @@ describe('testing Schemata', async () => {
   it('requesting buildResolvers with extensions should work', () => {
     let resolvers = sdl.buildResolvers({
       Person: {
-        name(r,a,c,i) {
+        name(r, a, c, i) {
           return 'Sally'
-        }
-      }
+        },
+      },
     })
 
     expect(typeof resolvers.Person.name).toBe('function')
@@ -143,10 +157,10 @@ describe('testing Schemata', async () => {
   it('requesting buildResolvers with flatten & extensions should work', () => {
     let resolvers = sdl.buildResolvers(true, {
       Person: {
-        name(r,a,c,i) {
+        name(r, a, c, i) {
           return 'Sally'
-        }
-      }
+        },
+      },
     })
 
     expect(typeof resolvers.Person.name).toBe('function')
@@ -159,16 +173,29 @@ describe('testing Schemata', async () => {
   it('should be able to identify when its resolvers are flattened', () => {
     let flatSdl = Schemata.from(
       'type Person { name: String } type Query { peep: Person }',
-      { peep() { return { name: 'Sally' } } }
+      {
+        peep() {
+          return { name: 'Sally' }
+        },
+      },
     )
     let nestedSdl = Schemata.from(
       'type Person { name: String } type Query { peep: Person }',
-      { Query: { peep() { return { name: 'Sally' } } } }
+      {
+        Query: {
+          peep() {
+            return { name: 'Sally' }
+          },
+        },
+      },
     )
-    let invalidSdl = Schemata.from(
-      'I am not actually Schemata',
-      { Query: { peep() { return { name: 'Sally' } } } }
-    )
+    let invalidSdl = Schemata.from('I am not actually Schemata', {
+      Query: {
+        peep() {
+          return { name: 'Sally' }
+        },
+      },
+    })
 
     expect(flatSdl.hasFlattenedResolvers).toBe(true)
     expect(nestedSdl.hasFlattenedResolvers).toBe(false)
@@ -184,7 +211,10 @@ describe('testing Schemata', async () => {
     `
 
     let sdlB = gql`
-      enum Gender { Male, Female }
+      enum Gender {
+        Male
+        Female
+      }
 
       type Person {
         gender: Gender
@@ -202,36 +232,50 @@ describe('testing Schemata', async () => {
   it('test the schemaResolverFor() method', () => {
     let sdlA = Schemata.from(
       `type Box { faces: Int } type Query { box: Box }`,
-      { Box: { faces() {} }, Query: { box() { } } }
+      { Box: { faces() {} }, Query: { box() {} } },
     )
 
     expect(sdlA.schemaResolverFor('Box', 'faces')).toBeTruthy()
     expect(sdlA.schemaResolverFor('Query', 'box')).toBeTruthy()
   })
 
-  it('should be able to merge new GraphQLSchemas as easily', () => {
-    let sdlA = Schemata.from(`
-      type Box {
-        faces: Int
-        color: String
-      }
+  it('should be able to merge schemas and wrap all merged fields', () => {
+    let sdlA = Schemata.from(
+      `
+        type Box {
+          faces: Int
+          color: String
+        }
 
-      type Query {
-        box: Box
-      }
-    `, { box() { return { faces: 6, color: 'tan' } } })
+        type Query {
+          box: Box
+        }
+      `,
+      {
+        box() {
+          return { faces: 6, color: 'tan' }
+        },
+      },
+    )
 
-    let sdlB = Schemata.from(`
-      type Chest {
-        goldBars: Int
-      }
+    let sdlB = Schemata.from(
+      `
+        type Chest {
+          goldBars: Int
+        }
 
-      type Query {
-        pirateTreasure: [Chest]
-      }
-    `, { pirateTreasure() { return [{ goldBars: 23 }] } })
+        type Query {
+          pirateTreasure: [Chest]
+        }
+      `,
+      {
+        pirateTreasure() {
+          return [{ goldBars: 23 }]
+        },
+      },
+    )
 
-    let merged = sdlA.mergeSchema(sdlB.executableSchema)
+    let merged = sdlA.merge(sdlB, { createMissingResolvers: true })
     let schema = merged.schema
     let isFn = f => typeof f === 'function'
 
@@ -265,7 +309,9 @@ describe('testing Schemata', async () => {
   })
 
   it('should be able to work with the default conflict resolver', () => {
-    let left = Schemata.from('type Box { name: String } type Query { box: Box }')
+    let left = Schemata.from(
+      'type Box { name: String } type Query { box: Box }',
+    )
     let right = Schemata.from('type Query { box(color: String): Box }')
     let merged = left.mergeSDL(right)
     let field = merged.schemaFieldByName('Query', 'box')
@@ -279,36 +325,53 @@ describe('testing Schemata', async () => {
     let ccr = {
       fieldMergeResolver(leftType, leftField, rightType, rightField) {
         return leftField
-      }
+      },
     }
-    let left = Schemata.from('type Box { name: String } type Query { box: Box }')
+    let left = Schemata.from(
+      'type Box { name: String } type Query { box: Box }',
+    )
     let right = Schemata.from('type Query { box(color: String): Box }')
     let merged = left.mergeSDL(right, ccr)
     let field = merged.schemaFieldByName('Query', 'box')
 
     expect(field).toBeTruthy()
     expect(field.args.length).not.toBeTruthy()
-    expect(() => {expect(field.args[0].name).toBe('color')}).toThrow()
+    expect(() => {
+      expect(field.args[0].name).toBe('color')
+    }).toThrow()
   })
 
   it('should be able to merge custom scalars with resolvers', () => {
     let lScalarFn = new GraphQLScalarType({
       name: 'ContrivedScalar',
       description: 'Left hand scalar',
-      serialize(value) { return value },
-      parseValue(value) { return 24 },
-      parseLiteral(ast) { return ast }
+      serialize(value) {
+        return value
+      },
+      parseValue(value) {
+        return 24
+      },
+      parseLiteral(ast) {
+        return ast
+      },
     })
 
     let rScalarFn = new GraphQLScalarType({
       name: 'ContrivedScalar',
       description: 'Right hand scalar',
-      serialize(value) { return value },
-      parseValue(value) { return 42 },
-      parseLiteral(ast) { return ast }
+      serialize(value) {
+        return value
+      },
+      parseValue(value) {
+        return 42
+      },
+      parseLiteral(ast) {
+        return ast
+      },
     })
 
-    let lSchemata = Schemata.from(`
+    let lSchemata = Schemata.from(
+      `
       scalar ContrivedScalar
 
       type ContrivedType {
@@ -318,27 +381,34 @@ describe('testing Schemata', async () => {
       type Query {
         contrivances: ContrivedType
       }
-    `, { ContrivedType: lScalarFn })
+    `,
+      { ContrivedType: lScalarFn },
+    )
 
-    let rSchemata = Schemata.from(`
+    let rSchemata = Schemata.from(
+      `
       scalar ContrivedScalar
 
       type Query {
         moreContrivances: ContrivedScalar
       }
-    `, { ContrivedType: rScalarFn })
+    `,
+      { ContrivedType: rScalarFn },
+    )
 
-    lSchemata.mergeSDL(rSchemata, { scalarMergeResolver(lS,lC,rS,rC) {
-      expect(lS).toBeTruthy()
-      expect(lC).toBeTruthy()
-      expect(rS).toBeTruthy()
-      expect(rC).toBeTruthy()
+    lSchemata.mergeSDL(rSchemata, {
+      scalarMergeResolver(lS, lC, rS, rC) {
+        expect(lS).toBeTruthy()
+        expect(lC).toBeTruthy()
+        expect(rS).toBeTruthy()
+        expect(rC).toBeTruthy()
 
-      expect(lC).toBe(lScalarFn)
-      expect(rC).toBe(rScalarFn)
+        expect(lC).toBe(lScalarFn)
+        expect(rC).toBe(rScalarFn)
 
-      return rC
-    }})
+        return rC
+      },
+    })
   })
 
   it('should be able to pare down Schemata given Schemata as a guide', () => {
@@ -351,18 +421,23 @@ describe('testing Schemata', async () => {
   })
 
   it('should have a resolver for each and every field defined', () => {
-    let peep = (r,a,c,i) => { return { name: 'Brie', id: 5 } }
+    let peep = (r, a, c, i) => {
+      return { name: 'Brie', id: 5 }
+    }
     let resolvers
-    let schemata = Schemata.from(gql`
-      type Person {
-        name: String
-        id: ID
-      }
+    let schemata = Schemata.from(
+      gql`
+        type Person {
+          name: String
+          id: ID
+        }
 
-      type Query {
-        peep: Person
-      }
-    `, {Query: { peep } })
+        type Query {
+          peep: Person
+        }
+      `,
+      { Query: { peep } },
+    )
 
     resolvers = schemata.buildResolverForEachField()
 

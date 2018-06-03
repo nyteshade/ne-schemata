@@ -53,7 +53,7 @@ export function graphQLExtensionHandler(module, filename) {
   schemata.resolvers = resolvers
   if (schemata.resolvers) {
     schemata.clearSchema()
-    schema = schemata.executableSchema || schemata.schema
+    schema = schemata.schema
   }
 
   // For all intents and purposes this is an object that can be treated like

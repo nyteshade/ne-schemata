@@ -1,7 +1,7 @@
 // @flow
 
 import type { GraphQLSchema } from 'graphql'
-import type { Schemata } from './Schemata'
+import { Schemata } from './Schemata'
 
 /**
  * A flow type defining the parameters for creating a new instance of
@@ -12,9 +12,17 @@ import type { Schemata } from './Schemata'
  */
 export type ExtendedResolverMapConfig = {
   schema?: ?GraphQLSchema,
-  sdl?: (string|Schemata),
-  resolvers: { [string]: string }
+  sdl?: string | Schemata,
+  resolvers: { [string]: string },
 }
+
+/**
+ * A union of types representing either the ExtendedResolverMapConfig type or
+ * an instance of Schemata.
+ *
+ * @type {SchemataConfigUnion}
+ */
+export type SchemataConfigUnion = ExtendedResolverMapConfig | Schemata
 
 /**
  * A class that stores information about a set of resolvers and their
@@ -26,7 +34,7 @@ export type ExtendedResolverMapConfig = {
  */
 export class ExtendedResolverMap {
   schema: ?GraphQLSchema
-  sdl: ?(string|Schemata)
+  sdl: ?(string | Schemata)
   resolvers: ?{ [string]: string }
 
   /**
@@ -39,7 +47,7 @@ export class ExtendedResolverMap {
    */
   constructor(config: ExtendedResolverMapConfig) {
     this.schema = config.schema
-    this.sdl = config.schema
+    this.sdl = config.sdl
     this.resolvers = config.resolvers
   }
 
@@ -52,21 +60,31 @@ export class ExtendedResolverMap {
    * key/value props of the internal .resovlers property
    */
   get [Symbol.iterator](): Function {
-    return (function *() {
+    return function*() {
       for (let key of Object.keys(this.resolvers)) {
-        yield {key, value: this.resolvers[key]}
+        yield { key, value: this.resolvers[key] }
       }
-    }).bind(this)
+    }.bind(this)
   }
 
   /**
-   * A shorthand way to create a new instance of `ExtendedResolverMap`
+   * A shorthand way to create a new instance of `ExtendedResolverMap`. In
+   * the case that an instance of Schemata is passed in, the schema
+   * property is first attempted as
    *
-   * @param {ExtendedResolverMapConfig} config the same config object passed
-   * to the constructor
+   * @param {SchemataConfigUnion} config the same config object passed
+   * to the constructor or an instance of Schemata
    * @return {ExtendedResolverMap} a new instance of `ExtendedResolverMap`
    */
-  static from(config: ExtendedResolverMapConfig): ExtendedResolverMap {
-    return new ExtendedResolverMap(config)
+  static from(config: SchemataConfigUnion): ExtendedResolverMap {
+    if (config instanceof Schemata) {
+      const { schema, sdl } = config
+      const resolvers = config.buildResolvers()
+
+      return new ExtendedResolverMap({ schema, sdl, resolvers })
+    }
+    else {
+      return new ExtendedResolverMap(config)
+    }
   }
 }
