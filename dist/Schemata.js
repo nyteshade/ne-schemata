@@ -1064,13 +1064,13 @@ class Schemata extends String {
       `);
     }
 
-    let interim = Schemata.from(this.schema);
+    let interim = Schemata.from(this.sdl, this.resolvers);
     let r = {};
 
     interim.forEachField((type, typeName, typeDirectives, field, fieldName, fieldArgs, fieldDirectives, schema, context) => {
       // Ensure the path to the type in question exists before continuing
       // onward
-      ;(r[typeName] = r[typeName] || {})[fieldName] = r[typeName][fieldName] || {};
+      (r[typeName] = r[typeName] || {})[fieldName] = r[typeName][fieldName] || {};
 
       r[typeName][fieldName] = field.resolve || _graphql.defaultFieldResolver;
     });
@@ -1152,6 +1152,7 @@ class Schemata extends String {
    */
   set resolvers(resolvers) {
     this[MAP].set(wmkResolvers, resolvers);
+    this.clearSchema();
   }
 
   /**

@@ -876,7 +876,7 @@ export class Schemata extends String {
           schema,
           context
         ) => {
-          if (field.resolve) {        
+          if (field.resolve) {
             field.resolve = ExtendedResolver.SchemaInjector(
               field.resolve,
               merged.schema
@@ -1038,7 +1038,7 @@ export class Schemata extends String {
       `)
     }
 
-    let interim = Schemata.from(this.schema)
+    let interim = Schemata.from(this.sdl, this.resolvers)
     let r = {}
 
     interim.forEachField(
@@ -1055,8 +1055,8 @@ export class Schemata extends String {
       ) => {
         // Ensure the path to the type in question exists before continuing
         // onward
-        ;(r[typeName] = r[typeName] || {})[fieldName] =
-          r[typeName][fieldName] || {}
+        (r[typeName] = r[typeName] || {})[fieldName] =
+          (r[typeName][fieldName] || {})
 
         r[typeName][fieldName] = field.resolve || defaultFieldResolver
       }
@@ -1144,6 +1144,7 @@ export class Schemata extends String {
    */
   set resolvers(resolvers: ?ResolverMap): void {
     this[MAP].set(wmkResolvers, resolvers)
+    this.clearSchema()
   }
 
   /**
