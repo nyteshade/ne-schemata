@@ -9,7 +9,7 @@
   },
   "plugins": ["import", "flowtype"],
   "rules": {
-    "brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
-    "indent": ["error", 2]
+    "brace-style": [1, "stroustrup", { "allowSingleLine": true }],
+    "indent": [1, 2]
   }
 }

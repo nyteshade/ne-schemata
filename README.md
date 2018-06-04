@@ -314,6 +314,7 @@ Even this example has difficulty explaining properly what is happening and why i
   * [parse()](#fn-parse)
   * [print()](#fn-print)
 * [Exported types](#exported-types)
+  * [AsyncEntryInspector](#type-async-entry-inspector)
   * [ConflictResolvers](#type-conflict-resolvers)
   * [DirectiveMergeResolver](#type-directive-merge-resolver)
   * [EntryInspector](#type-entry-inspector)
@@ -336,6 +337,7 @@ Even this example has difficulty explaining properly what is happening and why i
   * [SchemaInjectorConfig](#etype-schema-injector-config)
   * [stripResolversFromSchema](#etype-strip-resolvers-from-schema)
 * [Default Functions](#default-function-handlers)
+  * [DefaultAsyncEntryInspector](#dtype-default-async-entry-inspector)
   * [DefaultDirectiveMergeResolver](#dtype-default-directive-merge-resolver)
   * [DefaultEntryInspector](#dtype-default-entry-inspector)
   * [DefaultEnumMergeResolver](#dtype-default-enum-merge-resolver)
@@ -343,6 +345,7 @@ Even this example has difficulty explaining properly what is happening and why i
   * [DefaultScalarMergeResolver](#dtype-default-scalar-merge-resolver)
   * [DefaultUnionMergeResolver](#dtype-default-union-merge-resolver)
 * [Additional Goodies](#goodies)
+  * [asyncWalkResolverMap](#goodie-fn-async-walk-resolver-map)
   * [at](#goodie-fn-at)
   * [atNicely](#goodie-fn-at-nicely)
   * [gql](#goodie-gql-tag-fn)
@@ -905,19 +908,35 @@ export type ConflictResolvers = {
 
 The `ConflictResolvers` is simply an object that defines one or more of the handler functions mentioned above. FieldMergeResolvers are the most common types, however the others can be useful in schema and Schemata merging as well. If no resolvers are supplied, the default ones are used. These simply overrite the lefthand (instance) value with the righthand (supplied) value
 
+#### <a name="type-async-entry-inspector"></a>AsyncEntryInspector [✯](#contents)
+
+```js
+type AsyncEntryInspector = (
+  key: string,
+  value: Function,
+  path: Array<string>,
+  map: ResolverMap
+) => ?Promise<{ [string]: Function }>
+```
+
+An `AsyncEntryInspector` is a function passed to `asyncWalkResolverMap` that is invoked for each encountered pair along the way as it traverses the `ResolverMap` in question. The default behavior is to simply return the supplied entry back.
+
+If undefined is returned instead of an object with a string mapping to a Function, then that property will not be included in the final results of `asyncWalkResolverMap`.
+
 #### <a name="type-entry-inspector"></a>EntryInspector [✯](#contents)
 
 ```js
 type EntryInspector = (
-  entry: { [string]: Function },
+  key: string,
+  value: Function,
   path: Array<string>,
   map: ResolverMap
-) => { [string]: Function | ResolverMap }
+) => { [string]: Function }
 ```
 
 An `EntryInspector` is a function passed to `walkResolverMap` that is invoked for each encountered pair along the way as it traverses the `ResolverMap` in question. The default behavior is to simply return the supplied entry back.
 
-If false, null or undefined is returned instead of an object with a string mapping to a Function, then that property will not be included in the final results of `walkResolverMap`.
+If undefined is returned instead of an object with a string mapping to a Function, then that property will not be included in the final results of `walkResolverMap`.
 
 #### <a name="type-directive-merge-resolver"></a>DirectiveMergeResolver [✯](#contents)
 
@@ -1134,11 +1153,21 @@ function DefaultDirectiveMergeResolver(
 The default directive resolver blindly takes returns the right field. This
 resolver is used when one is not specified.
 
+#### <a name="dtype-default-async-entry-inspector"></a>DefaultAsyncEntryInspector() [✯](#contents)
+
+```js
+const DefaultAsyncEntryInspector: AsyncEntryInspector = (key, value, path, map) => ?Promise<{
+  [string]: Function
+}>
+```
+
+A default implementation of the EntryInspector type for use as a default to `asyncWalkResolverMap`. While not immediately useful, a default implementation causes `asyncWalkResolverMap` to wrap any non-function and non-object values with a function that returns the non-compliant value and therefore has some intrinsic value.
+
 #### <a name="dtype-default-entry-inspector"></a>DefaultEntryInspector() [✯](#contents)
 
 ```js
-const DefaultEntryInspector: EntryInspector = (entry, path, map) => {
-  [string]: Function | ResolverMap
+const DefaultEntryInspector: EntryInspector = (key, value, path, map) => ?{
+  [string]: Function
 }
 ```
 
@@ -1295,6 +1324,26 @@ Given a `ResolverMap` object, walk its properties and allow execution with each 
 Paths here are somewhat interesting and bear a moments discussion. A `path` of `['job', 'responsibilities']` would indicate that the entry in question is located at `object.job.responsibilities[entry.key]`.
 
 * **object** an object containing string keys mapping to functions or objects nesting the same
-* **inspector** a function handler that takes an `entry`, an object in the form of `{[string]: mixed}`, a `path` which is an array of values from the top of the resolver map leading to the current entry and a reference to the resolver map itself.
+* **inspector** a function handler that takes a `key`, a `value`, a `path` which is an array of values from the top of the resolver map leading to the current entry and a reference to the resolver `map` itself.
+* **wrap** a boolean object, which defaults to true, and denotes that should a non-function, non-object, value be located then it should be wrapped in a function that returns that value instead
+* **path** an array of path strings; predominantly for re-entrant internal usage. See above
+
+#### <a name="goodie-fn-async-walk-resolver-map"></a>asyncWalkResolverMap() [✯](#contents)
+
+```js
+function asyncWalkResolverMap(
+  object: ResolverMap,
+  inspector: AsyncEntryInspector = DefaultAsyncEntryInspector,
+  wrap: boolean = true,
+  path: Array<string> = []
+): ResolverMap
+```
+
+Given a `ResolverMap` object, walk its properties and allow execution with each key, value pair. If the supplied function for handling a given entry returns null instead of an object with the format `{key: value}` then that entry will not be included in the final output.
+
+Paths here are somewhat interesting and bear a moments discussion. A `path` of `['job', 'responsibilities']` would indicate that the entry in question is located at `object.job.responsibilities[entry.key]`.
+
+* **object** an object containing string keys mapping to functions or objects nesting the same
+* **inspector** a function handler that takes a `key`, a `value`, a `path` which is an array of values from the top of the resolver map leading to the current entry and a reference to the resolver `map` itself.
 * **wrap** a boolean object, which defaults to true, and denotes that should a non-function, non-object, value be located then it should be wrapped in a function that returns that value instead
 * **path** an array of path strings; predominantly for re-entrant internal usage. See above

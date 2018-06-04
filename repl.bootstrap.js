@@ -2,9 +2,15 @@
 
 require('./register')
 
-let { Schemata, gql, atNicely } = require('.')
-let { parse, print, printSchema } = require('graphql')
-let { merge } = require('lodash')
+const {
+  Schemata,
+  gql,
+  atNicely,
+  walkResolverMap,
+  asyncWalkResolverMap
+} = require('.')
+const { parse, print, printSchema } = require('graphql')
+const { merge } = require('lodash')
 
 let repl = require('repl')
 
@@ -54,6 +60,9 @@ let context = merge(global, {
   merge,
   repl,
   at: atNicely,
+  walkResolverMap,
+  asyncWalkResolverMap,
+  graphql: require('graphql'),
   sdlA,
   sdlB,
   merged,
@@ -67,18 +76,22 @@ Object.defineProperty(context, 'help', {
       Welcome to the Schemata string repl bootstrapping process, the
       following objects are in scope for you to use
 
-        Schemata      - the Schemata class
-        gql           - template tag function for creating Schemata instances
-        parse         - converts SDL/IDL strings into AST nodes
-        print         - converts AST nodes into a SDL/IDL string
-        printSchema   - converts a GraphQLSchema object into SDL/IDL
-        merge         - underscore's merge() function
-        at            - useful function dynamically getting props of an object
+        Schemata        - the Schemata class
+        gql             - template tag function for creating Schemata instances
+        graphql         - require('graphql')
+        parse           - converts SDL/IDL strings into AST nodes
+        print           - converts AST nodes into a SDL/IDL string
+        printSchema     - converts a GraphQLSchema object into SDL/IDL
+        merge           - underscore's merge() function
+        at              - useful function dynamically getting props of an object
+        walkResolverMap - a function that walks over a resolver map and makes
+                          changes. Callback is (key, value, path, map)
+        asyncWalkResolverMap - \x1b[3masync version of the above\x1b[0m
 
-        sdlA          - Schemata instance
-        sdlB          - Schemata instance
-        merged        - Merged schemas of sdlA and sdlB
-        schema        - GraphQLSchema instance of merged
+        sdlA            - Schemata instance
+        sdlB            - Schemata instance
+        merged          - Merged schemas of sdlA and sdlB
+        schema          - GraphQLSchema instance of merged
       `,
     )
   },

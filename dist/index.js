@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SDL = exports.jestTransformer = exports.Schemata = exports.ResolverMapStumble = exports.BaseError = exports.DefaultEntryInspector = exports.walkResolverMap = exports.atNicely = exports.at = exports.gql = exports.graphQLExtensionHandler = exports.register = exports.ExtendedResolverMap = exports.ExtendedResolver = exports.TYPEDEFS_KEY = exports.stripResolversFromSchema = exports.SchemaInjectorConfig = exports.runInjectors = exports.normalizeSource = exports.isRootType = exports.DefaultUnionMergeResolver = exports.DefaultScalarMergeResolver = exports.DefaultMergeOptions = exports.DefaultFieldMergeResolver = exports.DefaultEnumMergeResolver = exports.DefaultDirectiveMergeResolver = exports.DefaultConflictResolvers = undefined;
+exports.SDL = exports.jestTransformer = exports.Schemata = exports.ResolverMapStumble = exports.BaseError = exports.DefaultAsyncEntryInspector = exports.DefaultEntryInspector = exports.asyncWalkResolverMap = exports.walkResolverMap = exports.atNicely = exports.at = exports.gql = exports.graphQLExtensionHandler = exports.register = exports.ExtendedResolverMap = exports.ExtendedResolver = exports.TYPEDEFS_KEY = exports.stripResolversFromSchema = exports.SchemaInjectorConfig = exports.runInjectors = exports.normalizeSource = exports.isRootType = exports.DefaultUnionMergeResolver = exports.DefaultScalarMergeResolver = exports.DefaultMergeOptions = exports.DefaultFieldMergeResolver = exports.DefaultEnumMergeResolver = exports.DefaultDirectiveMergeResolver = exports.DefaultConflictResolvers = undefined;
 
 var _Schemata = require('./Schemata');
 
@@ -151,10 +151,22 @@ Object.defineProperty(exports, 'walkResolverMap', {
     return _walkResolverMap.walkResolverMap;
   }
 });
+Object.defineProperty(exports, 'asyncWalkResolverMap', {
+  enumerable: true,
+  get: function get() {
+    return _walkResolverMap.asyncWalkResolverMap;
+  }
+});
 Object.defineProperty(exports, 'DefaultEntryInspector', {
   enumerable: true,
   get: function get() {
     return _walkResolverMap.DefaultEntryInspector;
+  }
+});
+Object.defineProperty(exports, 'DefaultAsyncEntryInspector', {
+  enumerable: true,
+  get: function get() {
+    return _walkResolverMap.DefaultAsyncEntryInspector;
   }
 });
 

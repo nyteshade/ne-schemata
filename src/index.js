@@ -22,7 +22,12 @@ export { ExtendedResolverMap } from './ExtendedResolverMap'
 export { register, graphQLExtensionHandler } from './GraphQLExtension'
 export { gql } from './gqlTagFn'
 export { at, atNicely } from './propAt'
-export { walkResolverMap, DefaultEntryInspector } from './walkResolverMap'
+export {
+  walkResolverMap,
+  asyncWalkResolverMap,
+  DefaultEntryInspector,
+  DefaultAsyncEntryInspector, 
+} from './walkResolverMap'
 
 export { BaseError } from './BaseError'
 export { ResolverMapStumble } from './errors'
