@@ -49,7 +49,7 @@ let asyncWalkResolverMap = exports.asyncWalkResolverMap = (() => {
         let value = _ref6[1];
 
         const isObject = value instanceof Object;
-        const isFunction = isObject && value instanceof Function;
+        const isFunction = isObject && isFn(value);
 
         if (isObject && !isFunction) {
           (0, _propAt2.default)(product, path.concat(key), (yield asyncWalkResolverMap(value, inspector, wrap, path)));
@@ -124,17 +124,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-/**
- * A default implementation of the EntryInspector type for use as a default
- * to `walkResolverMap`. While not immediately useful, a default implementation
- * causes `walkResolverMap` to wrap any non-function and non-object values
- * with a function that returns the non-compliant value and therefore has some
- * intrinsic value.
- *
- * @method DefaultEntryInspector
- * @type {Function}
- */
-
+const isFn = o => /Function\]/.test(Object.prototype.toString.call(o));
 
 /**
  * An `EntryInspector` is a function passed to `walkResolverMap` that is
@@ -171,6 +161,18 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
  * @param {[string]} path an array of strings indicating the path currently
  * being executed
  * @param {ResolverMap} map the map in question should it be needed
+ */
+
+
+/**
+ * A default implementation of the EntryInspector type for use as a default
+ * to `walkResolverMap`. While not immediately useful, a default implementation
+ * causes `walkResolverMap` to wrap any non-function and non-object values
+ * with a function that returns the non-compliant value and therefore has some
+ * intrinsic value.
+ *
+ * @method DefaultEntryInspector
+ * @type {Function}
  */
 const DefaultEntryInspector = exports.DefaultEntryInspector = (key, value, path, map) => {
   return { [key]: value };
@@ -237,7 +239,7 @@ function walkResolverMap(object, inspector = DefaultEntryInspector, wrap = true,
       let value = _ref3[1];
 
       const isObject = value instanceof Object;
-      const isFunction = isObject && value instanceof Function;
+      const isFunction = isObject && isFn(value);
 
       if (isObject && !isFunction) {
         (0, _propAt2.default)(product, path.concat(key), walkResolverMap(value, inspector, wrap, path));

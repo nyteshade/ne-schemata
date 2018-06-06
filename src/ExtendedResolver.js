@@ -1,4 +1,8 @@
 import { defaultFieldResolver } from 'graphql'
+import {
+  WrappedResolverExecutionError,
+  ResolverResultsPatcherError
+} from './errors'
 
 import type {
   GraphQLFieldResolver,
@@ -10,7 +14,17 @@ const original = Symbol('Original Resolver')
 const listing = Symbol('List of Resolvers')
 const patcher = Symbol('Resolver Result Patcher')
 
-export type ResolverResultsPatcher = (results: mixed) => mixed
+const isFn = o => /Function\]/.test(Object.prototype.toString.call(o))
+
+/**
+ * The ResolverResultsPatcher is an asynchronous function, or a function that
+ * returns a promise, which receives the final value of all the extended
+ * resolvers combined work as a parameter. The results of this function will
+ * be the final value returned to the GraphQL engine.
+ *
+ * @type {AsyncFunction}
+ */
+export type ResolverResultsPatcher = (results: mixed) => Promise<mixed>
 
 /**
  * Higher order, or wrapped, GraphQL field resolvers are a technique that
@@ -102,6 +116,35 @@ export class ExtendedResolver extends Function {
     this[patcher] = value
   }
 
+  /**
+   * A getter that retrieves the original resolver from within the
+   * `ExtendedResolver` instance.
+   *
+   * @method original
+   * @readonly
+   *
+   * @return {GraphQLFieldResolver} the originally wrapped field resolver
+   */
+  get original(): GraphQLFieldResolver {
+    return this[original]
+  }
+
+  /**
+   * The dynamic index of the original resolver inside the internal listing.
+   * As prepended and appended resolvers are added to the `ExtendedResolver`,
+   * this value will change.
+   *
+   * @method originalIndex
+   * @readonly
+   *
+   * @return {number} the numeric index of the original resolver within the
+   * internal listing. -1 indicates that the original resolver is missing
+   * which, in and of itself, indicates an invalid state.
+   */
+  get originalIndex(): number {
+    return this[listing].indexOf(this[original])
+  }
+
   // Methods
 
   /**
@@ -112,7 +155,7 @@ export class ExtendedResolver extends Function {
    * the original field resolver executes.
    */
   prepend(preresolver: GraphQLFieldResolver) {
-    if (preresolver && preresolver instanceof Function) {
+    if (preresolver && isFn(preresolver)) {
       let index = this[listing].indexOf(this[original])
 
       index = ~index ? index : 0
@@ -130,7 +173,7 @@ export class ExtendedResolver extends Function {
    * run after the original but before other postresolvers previously added.
    */
   append(postresolver: GraphQLFieldResolver) {
-    if (postresolver && postresolver instanceof Function) {
+    if (postresolver && isFn(postresolver)) {
       let index = this[listing].indexOf(this[original])
 
       index = ~index ? index + 1 : this[listing].length
@@ -147,7 +190,7 @@ export class ExtendedResolver extends Function {
    * run after the original
    */
   push(postresolver: GraphQLFieldResolver) {
-    if (postresolver && postresolver instanceof Function) {
+    if (postresolver && isFn(postresolver)) {
       this[listing].push(postresolver)
     }
   }
@@ -249,13 +292,13 @@ export class ExtendedResolver extends Function {
    */
   static wrap(
     original: GraphQLFieldResolver,
-    patcher?: ResolverResultsPatcher = null,
     prepends?: GraphQLFieldResolver | Array<GraphQLFieldResolver> = [],
-    appends?: GraphQLFieldResolver | Array<GraphQLFieldResolver> = []
+    appends?: GraphQLFieldResolver | Array<GraphQLFieldResolver> = [],
+    patcher?: ResolverResultsPatcher = null
   ) {
     let resolver = ExtendedResolver.from(original)
 
-    if (patcher && patcher instanceof Function) {
+    if (patcher && isFn(patcher)) {
       resolver.resultPatcher = patcher
     }
 
@@ -299,26 +342,34 @@ export class ExtendedResolver extends Function {
    * @param {GraphQLFieldResolver} originalResolver the original resolver todo
    * wrap.
    * @param {GraphQLSchema} newSchema the new, grander, schema with all fields
+   * @param {ResolverResultsPatcher} patcher a function that will allow you to
+   * modify the
    */
   static SchemaInjector(
     originalResolver: GraphQLFieldResolver,
-    newSchema: GraphQLSchema
+    newSchema: GraphQLSchema,
+    patcher?: ResolverResultsPatcher = undefined
   ) {
-    return ExtendedResolver.wrap(originalResolver, null, [
-      function(
-        source: any,
-        args: any,
-        context: { [argument: string]: any },
-        info: GraphQLResolveInfo
-      ) {
-        if (arguments.length === 3 && context.schema) {
-          context.schema = newSchema
-        }
-        else if (arguments.length === 4 && info.schema) {
-          info.schema = newSchema
-        }
-      },
-    ])
+    return ExtendedResolver.wrap(
+      originalResolver,
+      [
+        function SchemaInjector(
+          source: any,
+          args: any,
+          context: { [argument: string]: any },
+          info: GraphQLResolveInfo
+        ) {
+          if (arguments.length === 3 && context.schema) {
+            context.schema = newSchema
+          }
+          else if (arguments.length === 4 && info.schema) {
+            info.schema = newSchema
+          }
+        },
+      ],
+      [ ],
+      patcher
+    )
   }
 
   /**
@@ -343,25 +394,59 @@ export class ExtendedResolver extends Function {
        * @return {mixed} either null or some value as would have been returned
        * from the call of a graphql field resolver
        */
-      apply(target, thisArg, args) {
+      async apply(target, thisArg, args) {
         // Ensure we have arguments as an array so we can concat results in
         // each pass of the reduction process
         let myArgs = Array.isArray(args)
           ? args
           : Array.from((args && args) || [])
 
-        let results = target[listing].reduce(function(p, c, i, a) {
-          let result = c.apply(thisArg || target, myArgs.concat(p))
 
-          if (p && p instanceof Object && result && result instanceof Object) {
-            result = Object.assign(p, result)
+        let results = {}
+        let result
+
+        for (let fn of target[listing]) {
+          try {
+            result = await fn.apply(
+              thisArg || target,
+              myArgs.concat(results)
+            )
+          }
+          catch (error) {
+            throw new WrappedResolverExecutionError(
+              error,
+              this,
+              target[listing].indexOf(fn),
+              myArgs.concat(results),
+              thisArg || target
+            );
           }
 
-          return result
-        }, {})
+          if (
+            results &&
+            results instanceof Object &&
+            result &&
+            result instanceof Object
+          ) {
+            Object.assign(results, result)
+          }
+          else {
+            results = result
+          }
+        }
 
         if (target[patcher] && target[patcher] instanceof Function) {
-          results = target[patcher].call(thisArg || target, results)
+          try {
+            results = await target[patcher].call(thisArg || target, results)
+          }
+          catch (error) {
+            throw new ResolverResultsPatcherError(
+              error,
+              target[patcher],
+              (thisArg || target),
+              results
+            )
+          }
         }
 
         return results

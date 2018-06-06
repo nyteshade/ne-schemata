@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SDL = exports.jestTransformer = exports.Schemata = exports.ResolverMapStumble = exports.BaseError = exports.DefaultAsyncEntryInspector = exports.DefaultEntryInspector = exports.asyncWalkResolverMap = exports.walkResolverMap = exports.atNicely = exports.at = exports.gql = exports.graphQLExtensionHandler = exports.register = exports.ExtendedResolverMap = exports.ExtendedResolver = exports.TYPEDEFS_KEY = exports.stripResolversFromSchema = exports.SchemaInjectorConfig = exports.runInjectors = exports.normalizeSource = exports.isRootType = exports.DefaultUnionMergeResolver = exports.DefaultScalarMergeResolver = exports.DefaultMergeOptions = exports.DefaultFieldMergeResolver = exports.DefaultEnumMergeResolver = exports.DefaultDirectiveMergeResolver = exports.DefaultConflictResolvers = undefined;
+exports.SDL = exports.jestTransformer = exports.Schemata = exports.ResolverResultsPatcherError = exports.WrappedResolverExecutionError = exports.ResolverMapStumble = exports.BaseError = exports.DefaultAsyncEntryInspector = exports.DefaultEntryInspector = exports.asyncWalkResolverMap = exports.walkResolverMap = exports.atNicely = exports.at = exports.gql = exports.graphQLExtensionHandler = exports.register = exports.ExtendedResolverMap = exports.ExtendedResolver = exports.TYPEDEFS_KEY = exports.stripResolversFromSchema = exports.SchemaInjectorConfig = exports.runInjectors = exports.normalizeSource = exports.isRootType = exports.DefaultUnionMergeResolver = exports.DefaultScalarMergeResolver = exports.DefaultMergeOptions = exports.DefaultFieldMergeResolver = exports.DefaultEnumMergeResolver = exports.DefaultDirectiveMergeResolver = exports.DefaultConflictResolvers = undefined;
 
 var _Schemata = require('./Schemata');
 
@@ -185,6 +185,18 @@ Object.defineProperty(exports, 'ResolverMapStumble', {
   enumerable: true,
   get: function get() {
     return _errors.ResolverMapStumble;
+  }
+});
+Object.defineProperty(exports, 'WrappedResolverExecutionError', {
+  enumerable: true,
+  get: function get() {
+    return _errors.WrappedResolverExecutionError;
+  }
+});
+Object.defineProperty(exports, 'ResolverResultsPatcherError', {
+  enumerable: true,
+  get: function get() {
+    return _errors.ResolverResultsPatcherError;
   }
 });
 

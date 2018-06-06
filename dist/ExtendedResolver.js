@@ -7,9 +7,25 @@ exports.ExtendedResolver = undefined;
 
 var _graphql = require('graphql');
 
+var _errors = require('./errors');
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
 const original = Symbol('Original Resolver');
 const listing = Symbol('List of Resolvers');
 const patcher = Symbol('Resolver Result Patcher');
+
+const isFn = o => /Function\]/.test(Object.prototype.toString.call(o));
+
+/**
+ * The ResolverResultsPatcher is an asynchronous function, or a function that
+ * returns a promise, which receives the final value of all the extended
+ * resolvers combined work as a parameter. The results of this function will
+ * be the final value returned to the GraphQL engine.
+ *
+ * @type {AsyncFunction}
+ */
+
 
 /**
  * Higher order, or wrapped, GraphQL field resolvers are a technique that
@@ -100,6 +116,35 @@ class ExtendedResolver extends Function {
     this[patcher] = value;
   }
 
+  /**
+   * A getter that retrieves the original resolver from within the
+   * `ExtendedResolver` instance.
+   *
+   * @method original
+   * @readonly
+   *
+   * @return {GraphQLFieldResolver} the originally wrapped field resolver
+   */
+  get original() {
+    return this[original];
+  }
+
+  /**
+   * The dynamic index of the original resolver inside the internal listing.
+   * As prepended and appended resolvers are added to the `ExtendedResolver`,
+   * this value will change.
+   *
+   * @method originalIndex
+   * @readonly
+   *
+   * @return {number} the numeric index of the original resolver within the
+   * internal listing. -1 indicates that the original resolver is missing
+   * which, in and of itself, indicates an invalid state.
+   */
+  get originalIndex() {
+    return this[listing].indexOf(this[original]);
+  }
+
   // Methods
 
   /**
@@ -110,7 +155,7 @@ class ExtendedResolver extends Function {
    * the original field resolver executes.
    */
   prepend(preresolver) {
-    if (preresolver && preresolver instanceof Function) {
+    if (preresolver && isFn(preresolver)) {
       let index = this[listing].indexOf(this[original]);
 
       index = ~index ? index : 0;
@@ -128,7 +173,7 @@ class ExtendedResolver extends Function {
    * run after the original but before other postresolvers previously added.
    */
   append(postresolver) {
-    if (postresolver && postresolver instanceof Function) {
+    if (postresolver && isFn(postresolver)) {
       let index = this[listing].indexOf(this[original]);
 
       index = ~index ? index + 1 : this[listing].length;
@@ -145,7 +190,7 @@ class ExtendedResolver extends Function {
    * run after the original
    */
   push(postresolver) {
-    if (postresolver && postresolver instanceof Function) {
+    if (postresolver && isFn(postresolver)) {
       this[listing].push(postresolver);
     }
   }
@@ -261,10 +306,10 @@ class ExtendedResolver extends Function {
    * original field resolver executes
    * @return {[type]}          [description]
    */
-  static wrap(original, patcher = null, prepends = [], appends = []) {
+  static wrap(original, prepends = [], appends = [], patcher = null) {
     let resolver = ExtendedResolver.from(original);
 
-    if (patcher && patcher instanceof Function) {
+    if (patcher && isFn(patcher)) {
       resolver.resultPatcher = patcher;
     }
 
@@ -308,15 +353,17 @@ class ExtendedResolver extends Function {
    * @param {GraphQLFieldResolver} originalResolver the original resolver todo
    * wrap.
    * @param {GraphQLSchema} newSchema the new, grander, schema with all fields
+   * @param {ResolverResultsPatcher} patcher a function that will allow you to
+   * modify the
    */
-  static SchemaInjector(originalResolver, newSchema) {
-    return ExtendedResolver.wrap(originalResolver, null, [function (source, args, context, info) {
+  static SchemaInjector(originalResolver, newSchema, patcher = undefined) {
+    return ExtendedResolver.wrap(originalResolver, [function SchemaInjector(source, args, context, info) {
       if (arguments.length === 3 && context.schema) {
         context.schema = newSchema;
       } else if (arguments.length === 4 && info.schema) {
         info.schema = newSchema;
       }
-    }]);
+    }], [], patcher);
   }
 
   /**
@@ -342,25 +389,61 @@ class ExtendedResolver extends Function {
        * from the call of a graphql field resolver
        */
       apply(target, thisArg, args) {
-        // Ensure we have arguments as an array so we can concat results in
-        // each pass of the reduction process
-        let myArgs = Array.isArray(args) ? args : Array.from(args && args || []);
+        var _this = this;
 
-        let results = target[listing].reduce(function (p, c, i, a) {
-          let result = c.apply(thisArg || target, myArgs.concat(p));
+        return _asyncToGenerator(function* () {
+          // Ensure we have arguments as an array so we can concat results in
+          // each pass of the reduction process
+          let myArgs = Array.isArray(args) ? args : Array.from(args && args || []);
 
-          if (p && p instanceof Object && result && result instanceof Object) {
-            result = Object.assign(p, result);
+          let results = {};
+          let result;
+
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
+
+          try {
+            for (var _iterator2 = target[listing][Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              let fn = _step2.value;
+
+              try {
+                result = yield fn.apply(thisArg || target, myArgs.concat(results));
+              } catch (error) {
+                throw new _errors.WrappedResolverExecutionError(error, _this, target[listing].indexOf(fn), myArgs.concat(results), thisArg || target);
+              }
+
+              if (results && results instanceof Object && result && result instanceof Object) {
+                Object.assign(results, result);
+              } else {
+                results = result;
+              }
+            }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+              }
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
+            }
           }
 
-          return result;
-        }, {});
+          if (target[patcher] && target[patcher] instanceof Function) {
+            try {
+              results = yield target[patcher].call(thisArg || target, results);
+            } catch (error) {
+              throw new _errors.ResolverResultsPatcherError(error, target[patcher], thisArg || target, results);
+            }
+          }
 
-        if (target[patcher] && target[patcher] instanceof Function) {
-          results = target[patcher].call(thisArg || target, results);
-        }
-
-        return results;
+          return results;
+        })();
       }
     };
   }

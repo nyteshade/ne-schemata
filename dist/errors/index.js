@@ -12,4 +12,22 @@ Object.defineProperty(exports, 'ResolverMapStumble', {
     return _ResolverMapStumble.ResolverMapStumble;
   }
 });
+
+var _WrappedResolverExecutionError = require('./WrappedResolverExecutionError');
+
+Object.defineProperty(exports, 'WrappedResolverExecutionError', {
+  enumerable: true,
+  get: function get() {
+    return _WrappedResolverExecutionError.WrappedResolverExecutionError;
+  }
+});
+
+var _ResolverResultsPatcherError = require('./ResolverResultsPatcherError');
+
+Object.defineProperty(exports, 'ResolverResultsPatcherError', {
+  enumerable: true,
+  get: function get() {
+    return _ResolverResultsPatcherError.ResolverResultsPatcherError;
+  }
+});
 //# sourceMappingURL=index.js.map

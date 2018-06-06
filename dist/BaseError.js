@@ -34,7 +34,7 @@ class BaseError extends Error {
 
     return new Proxy(this, {
       get(target, property, receiver) {
-        if (this.error.hasOwnProperty(property)) {
+        if (this.error && this.error.hasOwnProperty(property)) {
           return this.error[property];
         } else {
           return Reflect.get(target, property, receiver);

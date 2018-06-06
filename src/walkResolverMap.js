@@ -5,6 +5,8 @@ import { ResolverMapStumble } from './errors'
 import at from './propAt'
 import merge from 'deepmerge'
 
+const isFn = o => /Function\]/.test(Object.prototype.toString.call(o))
+
 /**
  * An `EntryInspector` is a function passed to `walkResolverMap` that is
  * invoked for each encountered pair along the way as it traverses the
@@ -125,7 +127,7 @@ export function walkResolverMap(
 
   for (let [key, value] of Object.entries(object)) {
     const isObject: boolean = value instanceof Object
-    const isFunction: boolean = isObject && value instanceof Function
+    const isFunction: boolean = isObject && isFn(value)
 
     if (isObject && !isFunction) {
       at(
@@ -193,7 +195,7 @@ export async function asyncWalkResolverMap(
 
   for (let [key, value] of Object.entries(object)) {
     const isObject: boolean = value instanceof Object
-    const isFunction: boolean = isObject && value instanceof Function
+    const isFunction: boolean = isObject && isFn(value)
 
     if (isObject && !isFunction) {
       at(

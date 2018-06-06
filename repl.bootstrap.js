@@ -3,11 +3,12 @@
 require('./register')
 
 const {
-  Schemata,
-  gql,
+  asyncWalkResolverMap,
   atNicely,
+  ExtendedResolver,
+  gql,
+  Schemata,
   walkResolverMap,
-  asyncWalkResolverMap
 } = require('.')
 const { parse, print, printSchema } = require('graphql')
 const { merge } = require('lodash')
@@ -62,6 +63,7 @@ let context = merge(global, {
   at: atNicely,
   walkResolverMap,
   asyncWalkResolverMap,
+  ExtendedResolver,
   graphql: require('graphql'),
   sdlA,
   sdlB,
@@ -87,6 +89,7 @@ Object.defineProperty(context, 'help', {
         walkResolverMap - a function that walks over a resolver map and makes
                           changes. Callback is (key, value, path, map)
         asyncWalkResolverMap - \x1b[3masync version of the above\x1b[0m
+        ExtendedResolver - the resolver wrapper class
 
         sdlA            - Schemata instance
         sdlB            - Schemata instance

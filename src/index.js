@@ -26,11 +26,15 @@ export {
   walkResolverMap,
   asyncWalkResolverMap,
   DefaultEntryInspector,
-  DefaultAsyncEntryInspector, 
+  DefaultAsyncEntryInspector,
 } from './walkResolverMap'
 
 export { BaseError } from './BaseError'
-export { ResolverMapStumble } from './errors'
+export {
+  ResolverMapStumble,
+  WrappedResolverExecutionError,
+  ResolverResultsPatcherError,
+} from './errors'
 
 export type { ResolverResultsPatcher } from './ExtendedResolver'
 export type { EntryInspector } from './walkResolverMap'
