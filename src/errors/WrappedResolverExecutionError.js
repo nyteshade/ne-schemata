@@ -2,10 +2,13 @@
 
 import { inline, dropLowest } from 'ne-tag-fns'
 import { BaseError } from '../BaseError'
+import { inspect } from 'util'
+import PrettyError from 'pretty-error'
 
 import type { ExtendedResolver } from '../ExtendedResolver'
 
 const isFn = o => /Function\]/.test(Object.prototype.toString.call(o))
+const pe = new PrettyError()
 
 /**
  * ExtendedResolvers wrap several functions including the original GraphQL
@@ -92,23 +95,44 @@ export class WrappedResolverExecutionError extends BaseError {
    * @return {string} a string denoting the purpose/cause of this error class
    */
   toString(): string {
-    let fn: Function = this.resolver && this.resolver.order[this.index]
+    let fn: Function = (
+      this.resolver && 
+      this.resolver.order &&
+      this.resolver.order[this.index]
+    )
 
     return dropLowest`
       The ExtendedResolver execution failed. The resolver that failed was at
-      index ${this.index}. The function had a name of '${fn.name}'.
+      index ${this.index}. The function had a name of '${fn && fn.name}'.
 
-      Was the function likely a big arrow function? ${this.wasBigArrowFunction}
+      Was the function likely a big arrow function? ${
+        (this.wasBigArrowFunction 
+          ? '\x1b[33mtrue\x1b[0m'
+          : '\x1b[31mfalse\x1b[0m'
+        )
+      }
 
       Arguments at the time were:
-      ${this.args}
+      ${inspect(this.args, {colors: true, depth: 8})}
 
       Context at the time was:
-      ${this.context}
+      ${inspect(this.context, {colors: true, depth: 8})}
 
       Results before the function was called
-      ${this.results}
+      ${inspect(this.results, {colors: true, depth: 8})}
+
+      Original Stack Trace
+      ${pe.render(this.error)}
     `
+  }
+
+  /**
+   * Modify the `valueOf()` function to mirror the `toString()` functionality
+   * 
+   * @return {string} an identical string to `.toString()`
+   */
+  valueOf(): string {
+    return this.toString()
   }
 
   /**
@@ -123,7 +147,11 @@ export class WrappedResolverExecutionError extends BaseError {
    * successfully to the execution context
    */
   get wasBigArrowFunction(): boolean {
-    const resolver = this.resolver && this.resolver.listing[this.index]
+    const resolver = (
+      this.resolver && 
+      this.resolver.order && 
+      this.resolver.order[this.index]
+    )
 
     if (resolver && isFn(resolver)) {
       return typeof resolver.prototype === 'undefined'

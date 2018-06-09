@@ -9,7 +9,16 @@ var _neTagFns = require('ne-tag-fns');
 
 var _BaseError = require('../BaseError');
 
+var _util = require('util');
+
+var _prettyError = require('pretty-error');
+
+var _prettyError2 = _interopRequireDefault(_prettyError);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 const isFn = o => /Function\]/.test(Object.prototype.toString.call(o));
+const pe = new _prettyError2.default();
 
 /**
  * The `ResolverResultsPatcherError` can occur as the `ExtendedResolver` is
@@ -79,12 +88,24 @@ class ResolverResultsPatcherError extends _BaseError.BaseError {
       '${this.patcher && this.patcher.name || null}'.
 
       The context of the patcher was:
-      ${this.context}
+      ${(0, _util.inspect)(this.context, { colors: true, depth: 8 })}
 
       The results passed to the function were:
-      ${this.results}
+      ${(0, _util.inspect)(this.results, { colors: true, depth: 8 })}
+
+      Original Stack Trace
+      ${pe.render(this.error)}
 
     `;
+  }
+
+  /**
+   * Modify the `valueOf()` function to mirror the `toString()` functionality
+   * 
+   * @return {string} an identical string to `.toString()`
+   */
+  valueOf() {
+    return this.toString();
   }
 
   /**

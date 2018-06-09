@@ -7,6 +7,8 @@ exports.BaseError = undefined;
 
 var _neTagFns = require('ne-tag-fns');
 
+var _util = require('util');
+
 /**
  * The BaseError class provides a simply stock way to wrap errors in a more
  * concise error type for use within the project. All normal error fields are
@@ -34,6 +36,12 @@ class BaseError extends Error {
         override the \`toString()\` function in order to describe the cause
         of this named error. Please remedy this.
       `);
+    }
+
+    if (_util.inspect.custom) {
+      this[_util.inspect.custom] = (depth, options) => this.toString();
+    } else {
+      this.inspect = (depth, options) => this.toString();
     }
 
     return new Proxy(this, {

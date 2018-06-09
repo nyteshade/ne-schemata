@@ -2,10 +2,13 @@
 
 import { inline, dropLowest } from 'ne-tag-fns'
 import { BaseError } from '../BaseError'
+import { inspect } from 'util'
+import PrettyError from 'pretty-error'
 
 import type { ResolverResultsPatcher } from '../ExtendedResolver'
 
 const isFn = o => /Function\]/.test(Object.prototype.toString.call(o))
+const pe = new PrettyError()
 
 /**
  * The `ResolverResultsPatcherError` can occur as the `ExtendedResolver` is
@@ -80,12 +83,24 @@ export class ResolverResultsPatcherError extends BaseError {
       '${this.patcher && this.patcher.name || null}'.
 
       The context of the patcher was:
-      ${this.context}
+      ${inspect(this.context, {colors: true, depth: 8})}
 
       The results passed to the function were:
-      ${this.results}
+      ${inspect(this.results, {colors: true, depth: 8})}
+
+      Original Stack Trace
+      ${pe.render(this.error)}
 
     `
+  }
+
+  /**
+   * Modify the `valueOf()` function to mirror the `toString()` functionality
+   * 
+   * @return {string} an identical string to `.toString()`
+   */
+  valueOf(): string {
+    return this.toString()
   }
 
   /**

@@ -9,7 +9,16 @@ var _neTagFns = require('ne-tag-fns');
 
 var _BaseError = require('../BaseError');
 
+var _util = require('util');
+
+var _prettyError = require('pretty-error');
+
+var _prettyError2 = _interopRequireDefault(_prettyError);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 const isFn = o => /Function\]/.test(Object.prototype.toString.call(o));
+const pe = new _prettyError2.default();
 
 /**
  * ExtendedResolvers wrap several functions including the original GraphQL
@@ -89,23 +98,35 @@ class WrappedResolverExecutionError extends _BaseError.BaseError {
    * @type {ExtendedResolver}
    */
   toString() {
-    let fn = this.resolver && this.resolver.order[this.index];
+    let fn = this.resolver && this.resolver.order && this.resolver.order[this.index];
 
     return _neTagFns.dropLowest`
       The ExtendedResolver execution failed. The resolver that failed was at
-      index ${this.index}. The function had a name of '${fn.name}'.
+      index ${this.index}. The function had a name of '${fn && fn.name}'.
 
-      Was the function likely a big arrow function? ${this.wasBigArrowFunction}
+      Was the function likely a big arrow function? ${this.wasBigArrowFunction ? '\x1b[33mtrue\x1b[0m' : '\x1b[31mfalse\x1b[0m'}
 
       Arguments at the time were:
-      ${this.args}
+      ${(0, _util.inspect)(this.args, { colors: true, depth: 8 })}
 
       Context at the time was:
-      ${this.context}
+      ${(0, _util.inspect)(this.context, { colors: true, depth: 8 })}
 
       Results before the function was called
-      ${this.results}
+      ${(0, _util.inspect)(this.results, { colors: true, depth: 8 })}
+
+      Original Stack Trace
+      ${pe.render(this.error)}
     `;
+  }
+
+  /**
+   * Modify the `valueOf()` function to mirror the `toString()` functionality
+   * 
+   * @return {string} an identical string to `.toString()`
+   */
+  valueOf() {
+    return this.toString();
   }
 
   /**
@@ -120,7 +141,7 @@ class WrappedResolverExecutionError extends _BaseError.BaseError {
    * successfully to the execution context
    */
   get wasBigArrowFunction() {
-    const resolver = this.resolver && this.resolver.listing[this.index];
+    const resolver = this.resolver && this.resolver.order && this.resolver.order[this.index];
 
     if (resolver && isFn(resolver)) {
       return typeof resolver.prototype === 'undefined';

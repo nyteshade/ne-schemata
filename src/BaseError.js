@@ -1,6 +1,7 @@
 // @flow
 
 import { inline } from 'ne-tag-fns'
+import { inspect } from 'util'
 
 /**
  * The BaseError class provides a simply stock way to wrap errors in a more
@@ -35,6 +36,13 @@ export class BaseError extends Error {
         override the \`toString()\` function in order to describe the cause
         of this named error. Please remedy this.
       `)
+    }
+
+    if (inspect.custom) {
+      this[inspect.custom] = (depth, options) => this.toString()
+    }
+    else {
+      this.inspect = (depth, options) => this.toString()
     }
 
     return new Proxy(this, {
