@@ -14,11 +14,15 @@ var _neTagFns = require('ne-tag-fns');
  * the requested property; failing that, it is passed on to the subclass.
  *
  * It is highly recommended
- *
- * @type {[type]}
  */
 class BaseError extends Error {
 
+  /**
+   * Creates a new BaseError type that wraps either an existing error or 
+   * uses this error instantiation with the given error message. 
+   * 
+   * @constructor
+   */
   constructor(error) {
     super(error.message || error, error.fileName, error.lineNumber);
 
@@ -42,13 +46,19 @@ class BaseError extends Error {
       }
     });
   }
+
+  /**
+   * All BaseError children will show `[object <class name>]` as their internal 
+   * class naming when used with `Object.prototype.toString.call` or `apply`.
+   * 
+   * @type {String}
+   */
+
   /**
    * The error this error wraps.
    *
    * @type {Error}
    */
-
-
   get [Symbol.toStringTag]() {
     return this.constructor.name;
   }
