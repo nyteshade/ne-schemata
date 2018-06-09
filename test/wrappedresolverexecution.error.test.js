@@ -1,6 +1,5 @@
 import { WrappedResolverExecutionError, ExtendedResolver } from '..'
 import { dropLowest } from 'ne-tag-fns'
-import stripAnsi from 'strip-ansi'
 
 describe('Ensure wrapped resolver execution error works as expected', () => {
   const baseError = new Error('I am a contrived error')
@@ -27,7 +26,7 @@ describe('Ensure wrapped resolver execution error works as expected', () => {
   it('should not throw an error when invoking toString()', () => {
     expect(() => {
       wreError = createError() 
-        
+
       console.log('Sample Error')
       console.log(wreError.toString())
     }).not.toThrow()

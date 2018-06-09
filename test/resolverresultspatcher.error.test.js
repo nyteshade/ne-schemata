@@ -1,6 +1,5 @@
 import { ResolverResultsPatcherError } from '..'
 import { dropLowest } from 'ne-tag-fns'
-import stripAnsi from 'strip-ansi'
 import { create } from 'domain';
 
 describe('Ensure resolver results patcher error works as expected', () => {
