@@ -1,4 +1,5 @@
 import { defaultFieldResolver } from 'graphql'
+import { stripResolversFromSchema } from './Schemata'
 import {
   WrappedResolverExecutionError,
   ResolverResultsPatcherError
@@ -361,9 +362,11 @@ export class ExtendedResolver extends Function {
         ) {
           if (arguments.length === 3 && context.schema) {
             context.schema = newSchema
+            context.rootValue = stripResolversFromSchema(newSchema)
           }
           else if (arguments.length === 4 && info.schema) {
             info.schema = newSchema
+            info.rootValue = stripResolversFromSchema(newSchema)
           }
         },
       ],

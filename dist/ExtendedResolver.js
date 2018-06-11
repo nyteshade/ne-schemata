@@ -7,6 +7,8 @@ exports.ExtendedResolver = undefined;
 
 var _graphql = require('graphql');
 
+var _Schemata = require('./Schemata');
+
 var _errors = require('./errors');
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -360,8 +362,10 @@ class ExtendedResolver extends Function {
     return ExtendedResolver.wrap(originalResolver, [function SchemaInjector(source, args, context, info) {
       if (arguments.length === 3 && context.schema) {
         context.schema = newSchema;
+        context.rootValue = (0, _Schemata.stripResolversFromSchema)(newSchema);
       } else if (arguments.length === 4 && info.schema) {
         info.schema = newSchema;
+        info.rootValue = (0, _Schemata.stripResolversFromSchema)(newSchema);
       }
     }], [], patcher);
   }
