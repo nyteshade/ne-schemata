@@ -217,3 +217,82 @@ export type SchemaSource = string
   | Schemata
   | GraphQLSchema
   | ASTNodes;
+
+/**
+ * A flow type defining the parameters for creating a new instance of
+ * `ExtendedResolverMap`. At least the resolver map is required, but ideally
+ * a `.schema` or `.sdl` value are desired
+ *
+ * @type {ExtendedResolverMapConfig}
+ */
+export type ExtendedResolverMapConfig = {
+  schema?: ?GraphQLSchema,
+  sdl?: string | Schemata,
+  resolvers: { [string]: string },
+}
+
+/**
+ * A union of types representing either the ExtendedResolverMapConfig type or
+ * an instance of Schemata.
+ *
+ * @type {SchemataConfigUnion}
+ */
+export type SchemataConfigUnion = ExtendedResolverMapConfig | Schemata
+
+/**
+ * The ResolverResultsPatcher is an asynchronous function, or a function that
+ * returns a promise, which receives the final value of all the extended
+ * resolvers combined work as a parameter. The results of this function will
+ * be the final value returned to the GraphQL engine.
+ *
+ * @type {AsyncFunction}
+ */
+export type ResolverResultsPatcher = (results: mixed) => Promise<mixed>
+
+/**
+ * An `EntryInspector` is a function passed to `walkResolverMap` that is
+ * invoked for each encountered pair along the way as it traverses the
+ * `ResolverMap` in question. The default behavior is to simply return the
+ * supplied entry back.
+ *
+ * If false, null or undefined is returned instead of an object with a string
+ * mapping to a Function, then that property will not be included in the final
+ * results of `walkResolverMap`.
+ *
+ * @type {Function}
+ *
+ * @param {{[string]: Function}} entry the key value pair supplied on each call
+ * @param {[string]} path an array of strings indicating the path currently
+ * being executed
+ * @param {ResolverMap} map the map in question should it be needed
+ */
+export type EntryInspector = (
+  key: string,
+  value: Function,
+  path: Array<string>,
+  map: ResolverMap
+) => ?{ [string]: Function }
+
+/**
+ * An `AsyncEntryInspector` is a function passed to `asyncWalkResolverMap`
+ * that is invoked for each encountered pair along the way as it traverses the
+ * `ResolverMap` in question. The default behavior is to simply return the
+ * supplied entry back.
+ *
+ * If false, null or undefined is returned instead of an object with a string
+ * mapping to a Function, then that property will not be included in the final
+ * results of `asyncWalkResolverMap`.
+ *
+ * @type {Function}
+ *
+ * @param {{[string]: Function}} entry the key value pair supplied on each call
+ * @param {[string]} path an array of strings indicating the path currently
+ * being executed
+ * @param {ResolverMap} map the map in question should it be needed
+ */
+export type AsyncEntryInspector = (
+  key: string,
+  value: Function,
+  path: Array<string>,
+  map: ResolverMap
+) => ?Promise<{ [string]: Function }>

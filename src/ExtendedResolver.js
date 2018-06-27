@@ -5,6 +5,7 @@ import {
   ResolverResultsPatcherError
 } from './errors'
 
+import type { ResolverResultsPatcher } from './types'
 import type {
   GraphQLFieldResolver,
   GraphQLResolveInfo,
@@ -16,16 +17,6 @@ const listing = Symbol('List of Resolvers')
 const patcher = Symbol('Resolver Result Patcher')
 
 const isFn = o => /Function\]/.test(Object.prototype.toString.call(o))
-
-/**
- * The ResolverResultsPatcher is an asynchronous function, or a function that
- * returns a promise, which receives the final value of all the extended
- * resolvers combined work as a parameter. The results of this function will
- * be the final value returned to the GraphQL engine.
- *
- * @type {AsyncFunction}
- */
-export type ResolverResultsPatcher = (results: mixed) => Promise<mixed>
 
 /**
  * Higher order, or wrapped, GraphQL field resolvers are a technique that

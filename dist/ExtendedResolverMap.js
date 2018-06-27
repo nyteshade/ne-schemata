@@ -15,23 +15,6 @@ var _Schemata = require('./Schemata');
  *
  * @class ExtendedResovlerMap
  */
-
-
-/**
- * A flow type defining the parameters for creating a new instance of
- * `ExtendedResolverMap`. At least the resolver map is required, but ideally
- * a `.schema` or `.sdl` value are desired
- *
- * @type {ExtendedResolverMapConfig}
- */
-
-
-/**
- * A union of types representing either the ExtendedResolverMapConfig type or
- * an instance of Schemata.
- *
- * @type {SchemataConfigUnion}
- */
 class ExtendedResolverMap {
 
   /**

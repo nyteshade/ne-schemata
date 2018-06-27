@@ -20,16 +20,6 @@ const patcher = Symbol('Resolver Result Patcher');
 const isFn = o => /Function\]/.test(Object.prototype.toString.call(o));
 
 /**
- * The ResolverResultsPatcher is an asynchronous function, or a function that
- * returns a promise, which receives the final value of all the extended
- * resolvers combined work as a parameter. The results of this function will
- * be the final value returned to the GraphQL engine.
- *
- * @type {AsyncFunction}
- */
-
-
-/**
  * Higher order, or wrapped, GraphQL field resolvers are a technique that
  * is becoming increasingly common these days. This class attempts to wrap
  * that in such a manner that it allows a bit of extensibility.

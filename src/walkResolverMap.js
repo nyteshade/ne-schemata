@@ -1,59 +1,11 @@
 // @flow
 
-import type { ResolverMap } from './types'
+import type { ResolverMap, EntryInspector, AsyncEntryInspector } from './types'
 import { ResolverMapStumble } from './errors'
 import at from './propAt'
 import merge from 'deepmerge'
 
 const isFn = o => /Function\]/.test(Object.prototype.toString.call(o))
-
-/**
- * An `EntryInspector` is a function passed to `walkResolverMap` that is
- * invoked for each encountered pair along the way as it traverses the
- * `ResolverMap` in question. The default behavior is to simply return the
- * supplied entry back.
- *
- * If false, null or undefined is returned instead of an object with a string
- * mapping to a Function, then that property will not be included in the final
- * results of `walkResolverMap`.
- *
- * @type {Function}
- *
- * @param {{[string]: Function}} entry the key value pair supplied on each call
- * @param {[string]} path an array of strings indicating the path currently
- * being executed
- * @param {ResolverMap} map the map in question should it be needed
- */
-export type EntryInspector = (
-  key: string,
-  value: Function,
-  path: Array<string>,
-  map: ResolverMap
-) => ?{ [string]: Function }
-
-/**
- * An `AsyncEntryInspector` is a function passed to `asyncWalkResolverMap`
- * that is invoked for each encountered pair along the way as it traverses the
- * `ResolverMap` in question. The default behavior is to simply return the
- * supplied entry back.
- *
- * If false, null or undefined is returned instead of an object with a string
- * mapping to a Function, then that property will not be included in the final
- * results of `asyncWalkResolverMap`.
- *
- * @type {Function}
- *
- * @param {{[string]: Function}} entry the key value pair supplied on each call
- * @param {[string]} path an array of strings indicating the path currently
- * being executed
- * @param {ResolverMap} map the map in question should it be needed
- */
-export type AsyncEntryInspector = (
-  key: string,
-  value: Function,
-  path: Array<string>,
-  map: ResolverMap
-) => ?Promise<{ [string]: Function }>
 
 /**
  * A default implementation of the EntryInspector type for use as a default
@@ -84,7 +36,7 @@ export const DefaultEntryInspector: EntryInspector = (
  * @method DefaultEntryInspector
  * @type {Function}
  */
-export const DefaultAsyncEntryInspector: EntryInspector = async (
+export const DefaultAsyncEntryInspector: AsyncEntryInspector = async (
   key,
   value,
   path,

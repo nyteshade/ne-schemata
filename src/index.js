@@ -36,17 +36,18 @@ export {
   ResolverResultsPatcherError,
 } from './errors'
 
-export type { ResolverResultsPatcher } from './ExtendedResolver'
-export type { EntryInspector } from './walkResolverMap'
 export type {
+  AsyncEntryInspector,
   ConflictResolvers,
   DirectiveMergeResolver,
+  EntryInspector,
   EnumMergeResolver,
   FieldMergeResolver,
   MergeOptionsConfig,
   ResolverArgs,
   ResolverArgsTransformer,
   ResolverMap,
+  ResolverResultsPatcher,
   ScalarMergeResolver,
   SchemaSource,
   UnionMergeResolver,

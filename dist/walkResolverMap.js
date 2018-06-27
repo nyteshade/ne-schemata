@@ -46,13 +46,13 @@ let asyncWalkResolverMap = exports.asyncWalkResolverMap = (() => {
         var _ref6 = _slicedToArray(_ref5, 2);
 
         let key = _ref6[0];
-        let value = _ref6[1];
+        let _value = _ref6[1];
 
-        const isObject = value instanceof Object;
-        const isFunction = isObject && isFn(value);
+        const isObject = _value instanceof Object;
+        const isFunction = isObject && isFn(_value);
 
         if (isObject && !isFunction) {
-          (0, _propAt2.default)(product, path.concat(key), (yield asyncWalkResolverMap(value, inspector, wrap, path)));
+          (0, _propAt2.default)(product, path.concat(key), (yield asyncWalkResolverMap(_value, inspector, wrap, path)));
         } else {
           if (!isObject && !isFunction) {
             // In the case that we have a string mapping to a non-function and a
@@ -62,23 +62,13 @@ let asyncWalkResolverMap = exports.asyncWalkResolverMap = (() => {
             if (!wrap) {
               throw new _errors.ResolverMapStumble(new Error('Invalid ResolverMap'));
             } else {
-              value = function (_value) {
-                function value() {
-                  return _value.apply(this, arguments);
-                }
-
-                value.toString = function () {
-                  return _value.toString();
-                };
-
-                return value;
-              }(function () {
-                return value;
-              });
+              _value = function value() {
+                return _value;
+              };
             }
           }
 
-          let entry = yield inspector(key, value, path, object);
+          let entry = yield inspector(key, _value, path, object);
 
           if (entry !== undefined) {
             (0, _propAt2.default)(product, path.concat(key), entry[key]);
@@ -125,44 +115,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 const isFn = o => /Function\]/.test(Object.prototype.toString.call(o));
-
-/**
- * An `EntryInspector` is a function passed to `walkResolverMap` that is
- * invoked for each encountered pair along the way as it traverses the
- * `ResolverMap` in question. The default behavior is to simply return the
- * supplied entry back.
- *
- * If false, null or undefined is returned instead of an object with a string
- * mapping to a Function, then that property will not be included in the final
- * results of `walkResolverMap`.
- *
- * @type {Function}
- *
- * @param {{[string]: Function}} entry the key value pair supplied on each call
- * @param {[string]} path an array of strings indicating the path currently
- * being executed
- * @param {ResolverMap} map the map in question should it be needed
- */
-
-
-/**
- * An `AsyncEntryInspector` is a function passed to `asyncWalkResolverMap`
- * that is invoked for each encountered pair along the way as it traverses the
- * `ResolverMap` in question. The default behavior is to simply return the
- * supplied entry back.
- *
- * If false, null or undefined is returned instead of an object with a string
- * mapping to a Function, then that property will not be included in the final
- * results of `asyncWalkResolverMap`.
- *
- * @type {Function}
- *
- * @param {{[string]: Function}} entry the key value pair supplied on each call
- * @param {[string]} path an array of strings indicating the path currently
- * being executed
- * @param {ResolverMap} map the map in question should it be needed
- */
-
 
 /**
  * A default implementation of the EntryInspector type for use as a default

@@ -50,6 +50,7 @@
     },
     "dependencies": {
         "deepmerge": "^2.1.0",
+        "graphql": "^0.13.2",
         "ne-tag-fns": "^0.6.1",
         "pretty-error": "^2.1.1"
     }
