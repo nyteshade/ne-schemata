@@ -255,12 +255,14 @@ Even this example has difficulty explaining properly what is happening and why i
   * [.ast](#inst-ast): [`?ASTNode`](https://github.com/graphql/graphql-js/blob/master/src/language/ast.js#L88)
   * [.executableSchema](#inst-executable-schema): [`?GraphQLSchema`](https://github.com/graphql/graphql-js/blob/master/src/type/schema.js#L48)
   * [.graphiql](#inst-graphiql): `boolean`
+  * [.schemaDirectives](#inst-schema-directives): `Object`
   * [.hasAnExecutableSchema](#inst-has-an-executable-schema): `boolean`
   * [.hasFlattenedResolvers](#inst-has-flattened-resolvers): `boolean`
   * [.prevResolverMaps](#inst-prev-resolver-maps): `Array<ExtendedResolverMap>`
   * [.resolvers](#inst-resolvers): `?ResolverMap`
   * [.rootValue](#inst-root-value): `?ResolverMap`
   * [.schema](#inst-schema): [`?GraphQLSchema`](https://github.com/graphql/graphql-js/blob/master/src/type/schema.js#L48)
+  * [.schemaDirectives](#inst-schema-directives): `Object`
   * [.sdl](#inst-sdl): `string`
   * [.typeDefs](#inst-type-defs): `string`
   * [.valid](#inst-valid): `boolean`
@@ -406,6 +408,19 @@ When a Schemata instance is merged with another GraphQLSchema, its resolvers get
 
 ![getter](https://github.com/nyteshade/ne-schemata/raw/master/assets/get-left-arrow-24.png) retrieves any internally stored resolver maps
 ![setter](https://github.com/nyteshade/ne-schemata/raw/master/assets/set-right-arrow-24.png) sets the internally stored resolver maps
+
+#### <a name="inst-schema-directives"></a>.schemaDirectives [✯](#contents)
+
+Schemata is designed to be used with various GraphQL JavaScript engines. In 
+many cases, it is simply used as a variable to store configuration for more 
+specific calls to things like `makeExecutableSchema` from `graphql-tools` or
+`GraphQLServer` and the like. For more information on Apollo's usage of 
+this property, see this page:
+https://www.apollographql.com/docs/graphql-tools/schema-directives.html
+
+![getter](https://github.com/nyteshade/ne-schemata/raw/master/assets/get-left-arrow-24.png) An object containing the name to function mapping for schema directive classes when used with apollo-server or graphql-yoga.
+![setter](https://github.com/nyteshade/ne-schemata/raw/master/assets/set-right-arrow-24.png) Internally sets the instance variable for the schemaDirectives object used with apollo-server or graphql-yoga
+
 
 #### <a name="inst-sdl"></a>.sdl [✯](#contents)
 
