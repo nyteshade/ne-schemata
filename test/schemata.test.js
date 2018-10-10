@@ -451,4 +451,38 @@ describe('testing Schemata', async () => {
     expect(resolvers.Person.id).toBeTruthy()
     expect(resolvers.peep).toBeTruthy()
   })
+
+  it('should allow the setting and retrieval of a directives object', () => {
+    let schemata = Schemata.from(gql`
+      directive @sample on FIELD_DEFINITION | ENUM_VALUE
+
+      type ExampleType {
+        newField: String 
+        oldField: String @sample 
+      }
+    `)
+
+    class SampleDirective /* extends SchemaDirectiveVisitor */ {
+      visitFieldDefinition(field) {
+        field.isSample = true 
+        field.sampleReason = 'truth'
+      }
+
+      visitEnumValue(value) {
+        value.isSample = true 
+        value.sampleReason = 'truth'
+      }
+    }
+
+    expect(schemata.schemaDirectives).toBeUndefined()
+
+    let directives = {
+      sample: SampleDirective
+    }
+
+    schemata.schemaDirectives = directives
+
+    expect(schemata.schemaDirectives).not.toBeUndefined()
+    expect(schemata.schemaDirectives).toBe(directives)
+  })
 })

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DefaultMergeOptions = exports.DefaultConflictResolvers = exports.EXE = exports.MAP = exports.GRAPHIQL_FLAG = exports.TYPEDEFS_KEY = exports.isRootType = exports.Schemata = undefined;
+exports.DefaultMergeOptions = exports.DefaultConflictResolvers = exports.EXE = exports.MAP = exports.SCHEMA_DIRECTIVES = exports.GRAPHIQL_FLAG = exports.TYPEDEFS_KEY = exports.isRootType = exports.Schemata = undefined;
 exports.runInjectors = runInjectors;
 exports.SchemaInjectorConfig = SchemaInjectorConfig;
 exports.stripResolversFromSchema = stripResolversFromSchema;
@@ -277,6 +277,32 @@ class Schemata extends String {
 
       this[MAP].set(wmkSchema, schema);
     }
+  }
+
+  /**
+   * Retrieves the `schemaDirectives` value, which defaults to true. This 
+   * value can make setting up an endpoint from a Schemata instance easier 
+   * with apollo-server or graphql-yoga or compatible variants. See 
+   * https://www.apollographql.com/docs/graphql-tools/schema-directives.html
+   * if you are using this value with apollo-server. 
+   *
+   * @type {Object}
+   */
+  get schemaDirectives() {
+    return this[SCHEMA_DIRECTIVES];
+  }
+
+  /**
+   * Retrieves the `schemaDirectives` value, which defaults to true. This 
+   * value can make setting up an endpoint from a Schemata instance easier 
+   * with apollo-server or graphql-yoga or compatible variants. See 
+   * https://www.apollographql.com/docs/graphql-tools/schema-directives.html
+   * if you are using this value with apollo-server. 
+   * 
+   * @type {Object}
+   */
+  set schemaDirectives(value) {
+    this[SCHEMA_DIRECTIVES] = value;
   }
 
   /**
@@ -1934,6 +1960,9 @@ const TYPEDEFS_KEY = exports.TYPEDEFS_KEY = Symbol('internal-typedefs-key');
 
 /** @type {Symbol} a constant symbol used as a key to a flag for express-gql */
 const GRAPHIQL_FLAG = exports.GRAPHIQL_FLAG = Symbol.for('internal-graphiql-key');
+
+/** @type {Symbol} a constant symbol used as a key to a flag for express-gql */
+const SCHEMA_DIRECTIVES = exports.SCHEMA_DIRECTIVES = Symbol.for('internal-directives-key');
 
 /** @type {Symbol} a unique symbol used as a key to all instance `WeakMap`s */
 const MAP = exports.MAP = Symbol('internal-weak-map-key');
