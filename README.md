@@ -419,6 +419,7 @@ this property, see this page:
 https://www.apollographql.com/docs/graphql-tools/schema-directives.html
 
 ![getter](https://github.com/nyteshade/ne-schemata/raw/master/assets/get-left-arrow-24.png) An object containing the name to function mapping for schema directive classes when used with apollo-server or graphql-yoga.
+
 ![setter](https://github.com/nyteshade/ne-schemata/raw/master/assets/set-right-arrow-24.png) Internally sets the instance variable for the schemaDirectives object used with apollo-server or graphql-yoga
 
 
