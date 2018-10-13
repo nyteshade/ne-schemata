@@ -27,7 +27,7 @@
         "babel-preset-flow": "^6.23.0",
         "eslint": "^5.8.0",
         "eslint-plugin-babel": "^5.2.1",
-        "eslint-plugin-flowtype": "^2.50.3",
+        "eslint-plugin-flowtype": "^3.0.0",
         "eslint-plugin-import": "^2.14.0",
         "flow-bin": "^0.88.0",
         "graphql": "^0.13",
