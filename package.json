@@ -25,8 +25,8 @@
         "babel-plugin-transform-class-properties": "^6.24.1",
         "babel-preset-env": "^1.6.1",
         "babel-preset-flow": "^6.23.0",
-        "eslint": "^5.8.0",
-        "eslint-plugin-babel": "^5.2.1",
+        "eslint": "^5.10.0",
+        "eslint-plugin-babel": "^5.3.0",
         "eslint-plugin-flowtype": "^3.0.0",
         "eslint-plugin-import": "^2.14.0",
         "flow-bin": "^0.88.0",
@@ -52,7 +52,7 @@
     },
     "dependencies": {
         "deepmerge": "^3.0.0",
-        "ne-tag-fns": "^0.6.7",
+        "ne-tag-fns": "^0.6.8",
         "pretty-error": "^2.1.1"
     }
 }
