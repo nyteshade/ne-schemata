@@ -24,7 +24,10 @@ import {
   defaultFieldResolver,
   GraphQLObjectType,
   GraphQLSchema,
+  parse,
   printSchema,
+  printType,
+  typeFromAST,
 } from 'graphql'
 
 import type {
@@ -339,11 +342,11 @@ export class Schemata extends String {
   }
 
   /**
-   * Retrieves the `schemaDirectives` value, which defaults to true. This 
-   * value can make setting up an endpoint from a Schemata instance easier 
-   * with apollo-server or graphql-yoga or compatible variants. See 
+   * Retrieves the `schemaDirectives` value, which defaults to true. This
+   * value can make setting up an endpoint from a Schemata instance easier
+   * with apollo-server or graphql-yoga or compatible variants. See
    * https://www.apollographql.com/docs/graphql-tools/schema-directives.html
-   * if you are using this value with apollo-server. 
+   * if you are using this value with apollo-server.
    *
    * @type {Object}
    */
@@ -352,12 +355,12 @@ export class Schemata extends String {
   }
 
   /**
-   * Retrieves the `schemaDirectives` value, which defaults to true. This 
-   * value can make setting up an endpoint from a Schemata instance easier 
-   * with apollo-server or graphql-yoga or compatible variants. See 
+   * Retrieves the `schemaDirectives` value, which defaults to true. This
+   * value can make setting up an endpoint from a Schemata instance easier
+   * with apollo-server or graphql-yoga or compatible variants. See
    * https://www.apollographql.com/docs/graphql-tools/schema-directives.html
-   * if you are using this value with apollo-server. 
-   * 
+   * if you are using this value with apollo-server.
+   *
    * @type {Object}
    */
   set schemaDirectives(value: {string: Function}) {
@@ -425,6 +428,58 @@ export class Schemata extends String {
    */
   get typeDefs(): string {
     return this.sdl
+  }
+
+  /**
+   * Walks the types defined in the sdl for this instance of Schemata and
+   * returns an object mapping for those definitions. Given a schema such as
+   * ```
+   * type A {
+   *   a: String
+   *   b: [String]
+   *   c: [String]!
+   * }
+   * type Query {
+   *   As(name: String): [A]
+   * }
+   * ```
+   * a JavaScript object with properties such as the following will be
+   * returned
+   * ```
+   * {
+   *   Query: {
+   *     As: { type: '[A]', args: [{ name: 'String' }] }
+   *   },
+   *   A: {
+   *     a: { type: 'String', args: [] },
+   *     b: { type: '[String]', args: [] },
+   *     c: { type: '[String]!', args: [] }
+   *   }
+   * }
+   * ```
+   */
+  get types(): Object {
+    let types = {}
+
+    this.forEachTypeField((t,tn,td,f,fn,fa,fd,schema,c) => {
+      let ast = parse(printType(t)).definitions[0]
+      let fieldAST = ast.fields.filter((o,i,a) => o.name.value == fn)
+      let fieldType = fieldAST.length && typeFromAST(schema, fieldAST[0].type)
+      let args = []
+
+      if (fa && fa.length) {
+        for (let {name, type} of fa) {
+          args.push({ [name]: type.toString() })
+        }
+      }
+
+      (types[tn] = types[tn] || {})[fn] = {
+        type: fieldType.toString(),
+        args: args
+      }
+    })
+
+    return types
   }
 
   /**

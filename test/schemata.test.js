@@ -457,19 +457,19 @@ describe('testing Schemata', async () => {
       directive @sample on FIELD_DEFINITION | ENUM_VALUE
 
       type ExampleType {
-        newField: String 
-        oldField: String @sample 
+        newField: String
+        oldField: String @sample
       }
     `)
 
     class SampleDirective /* extends SchemaDirectiveVisitor */ {
       visitFieldDefinition(field) {
-        field.isSample = true 
+        field.isSample = true
         field.sampleReason = 'truth'
       }
 
       visitEnumValue(value) {
-        value.isSample = true 
+        value.isSample = true
         value.sampleReason = 'truth'
       }
     }
@@ -484,5 +484,33 @@ describe('testing Schemata', async () => {
 
     expect(schemata.schemaDirectives).not.toBeUndefined()
     expect(schemata.schemaDirectives).toBe(directives)
+  })
+
+  it('should be able to provide a js representation of sdl for types', () => {
+    let schema = gql`
+      type Person {
+        id: ID
+        name: String
+        friends: [Person]!
+      }
+
+      type Query {
+        person(id: ID!): Person
+        people: [Person]
+      }
+    `
+    let types = schema.types
+
+    expect(types).toMatchObject({
+      Person: {
+        id: { type: 'ID', args: [] },
+        name: { type: 'String', args: [] },
+        friends: { type: '[Person]!', args: [] }
+      },
+      Query: {
+        person: { type: 'Person', args: [{ id: 'ID!'}] },
+        people: { type: '[Person]', args: [] }
+      }
+    })
   })
 })

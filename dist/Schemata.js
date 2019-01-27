@@ -280,11 +280,11 @@ class Schemata extends String {
   }
 
   /**
-   * Retrieves the `schemaDirectives` value, which defaults to true. This 
-   * value can make setting up an endpoint from a Schemata instance easier 
-   * with apollo-server or graphql-yoga or compatible variants. See 
+   * Retrieves the `schemaDirectives` value, which defaults to true. This
+   * value can make setting up an endpoint from a Schemata instance easier
+   * with apollo-server or graphql-yoga or compatible variants. See
    * https://www.apollographql.com/docs/graphql-tools/schema-directives.html
-   * if you are using this value with apollo-server. 
+   * if you are using this value with apollo-server.
    *
    * @type {Object}
    */
@@ -293,12 +293,12 @@ class Schemata extends String {
   }
 
   /**
-   * Retrieves the `schemaDirectives` value, which defaults to true. This 
-   * value can make setting up an endpoint from a Schemata instance easier 
-   * with apollo-server or graphql-yoga or compatible variants. See 
+   * Retrieves the `schemaDirectives` value, which defaults to true. This
+   * value can make setting up an endpoint from a Schemata instance easier
+   * with apollo-server or graphql-yoga or compatible variants. See
    * https://www.apollographql.com/docs/graphql-tools/schema-directives.html
-   * if you are using this value with apollo-server. 
-   * 
+   * if you are using this value with apollo-server.
+   *
    * @type {Object}
    */
   set schemaDirectives(value) {
@@ -366,6 +366,81 @@ class Schemata extends String {
    */
   get typeDefs() {
     return this.sdl;
+  }
+
+  /**
+   * Walks the types defined in the sdl for this instance of Schemata and
+   * returns an object mapping for those definitions. Given a schema such as
+   * ```
+   * type A {
+   *   a: String
+   *   b: [String]
+   *   c: [String]!
+   * }
+   * type Query {
+   *   As(name: String): [A]
+   * }
+   * ```
+   * a JavaScript object with properties such as the following will be
+   * returned
+   * ```
+   * {
+   *   Query: {
+   *     As: { type: '[A]', args: [{ name: 'String' }] }
+   *   },
+   *   A: {
+   *     a: { type: 'String', args: [] },
+   *     b: { type: '[String]', args: [] },
+   *     c: { type: '[String]!', args: [] }
+   *   }
+   * }
+   * ```
+   */
+  get types() {
+    let types = {};
+
+    this.forEachTypeField((t, tn, td, f, fn, fa, fd, schema, c) => {
+      let ast = (0, _graphql.parse)((0, _graphql.printType)(t)).definitions[0];
+      let fieldAST = ast.fields.filter((o, i, a) => o.name.value == fn);
+      let fieldType = fieldAST.length && (0, _graphql.typeFromAST)(schema, fieldAST[0].type);
+      let args = [];
+
+      if (fa && fa.length) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = fa[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            let _ref = _step.value;
+            let name = _ref.name;
+            let type = _ref.type;
+
+            args.push({ [name]: type.toString() });
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
+
+      (types[tn] = types[tn] || {})[fn] = {
+        type: fieldType.toString(),
+        args: args
+      };
+    });
+
+    return types;
   }
 
   /**
@@ -501,29 +576,29 @@ class Schemata extends String {
         continue;
       }
 
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator = type.fields[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          let field = _step.value;
+        for (var _iterator2 = type.fields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          let field = _step2.value;
 
           if (field.name.value in resolvers) {
             return true;
           }
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
           }
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          if (_didIteratorError2) {
+            throw _iteratorError2;
           }
         }
       }
@@ -566,13 +641,13 @@ class Schemata extends String {
     // atop the default ones should only a partial custom be supplied.
     conflictResolvers = (0, _deepmerge2.default)(DefaultConflictResolvers, conflictResolvers);
 
-    var _iteratorNormalCompletion2 = true;
-    var _didIteratorError2 = false;
-    var _iteratorError2 = undefined;
+    var _iteratorNormalCompletion3 = true;
+    var _didIteratorError3 = false;
+    var _iteratorError3 = undefined;
 
     try {
-      for (var _iterator2 = rAST.definitions[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-        let rType = _step2.value;
+      for (var _iterator3 = rAST.definitions[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+        let rType = _step3.value;
 
         let lType = lAST.definitions.find(a => a.name.value == rType.name.value);
 
@@ -634,16 +709,16 @@ class Schemata extends String {
         }
       }
     } catch (err) {
-      _didIteratorError2 = true;
-      _iteratorError2 = err;
+      _didIteratorError3 = true;
+      _iteratorError3 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-          _iterator2.return();
+        if (!_iteratorNormalCompletion3 && _iterator3.return) {
+          _iterator3.return();
         }
       } finally {
-        if (_didIteratorError2) {
-          throw _iteratorError2;
+        if (_didIteratorError3) {
+          throw _iteratorError3;
         }
       }
     }
@@ -651,27 +726,27 @@ class Schemata extends String {
     let merged = Schemata.from(this.constructor.gql.print(lAST));
 
     if (Object.keys(_scalarFns).length) {
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
 
       try {
-        for (var _iterator3 = Object.keys(_scalarFns)[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          let typeName = _step3.value;
+        for (var _iterator4 = Object.keys(_scalarFns)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          let typeName = _step4.value;
 
           merged.schema.getType(typeName)._scalarConfig = _scalarConfig[typeName];
         }
       } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
+          if (!_iteratorNormalCompletion4 && _iterator4.return) {
+            _iterator4.return();
           }
         } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
+          if (_didIteratorError4) {
+            throw _iteratorError4;
           }
         }
       }
@@ -711,13 +786,13 @@ class Schemata extends String {
     let lAST = this.ast;
     let rAST = source.ast;
 
-    var _iteratorNormalCompletion4 = true;
-    var _didIteratorError4 = false;
-    var _iteratorError4 = undefined;
+    var _iteratorNormalCompletion5 = true;
+    var _didIteratorError5 = false;
+    var _iteratorError5 = undefined;
 
     try {
-      for (var _iterator4 = rAST.definitions[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-        let rType = _step4.value;
+      for (var _iterator5 = rAST.definitions[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+        let rType = _step5.value;
 
         let lType = lAST.definitions.find(a => a.name.value == rType.name.value);
 
@@ -789,16 +864,16 @@ class Schemata extends String {
         }
       }
     } catch (err) {
-      _didIteratorError4 = true;
-      _iteratorError4 = err;
+      _didIteratorError5 = true;
+      _iteratorError5 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion4 && _iterator4.return) {
-          _iterator4.return();
+        if (!_iteratorNormalCompletion5 && _iterator5.return) {
+          _iterator5.return();
         }
       } finally {
-        if (_didIteratorError4) {
-          throw _iteratorError4;
+        if (_didIteratorError5) {
+          throw _iteratorError5;
         }
       }
     }
@@ -951,28 +1026,28 @@ class Schemata extends String {
         let rootType = _arr2[_i2];
         if (flattenRootResolversOrFirstParam) {
           if (resolvers[rootType]) {
-            var _iteratorNormalCompletion5 = true;
-            var _didIteratorError5 = false;
-            var _iteratorError5 = undefined;
+            var _iteratorNormalCompletion6 = true;
+            var _didIteratorError6 = false;
+            var _iteratorError6 = undefined;
 
             try {
-              for (var _iterator5 = Object.keys(resolvers[rootType])[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                let field = _step5.value;
+              for (var _iterator6 = Object.keys(resolvers[rootType])[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                let field = _step6.value;
 
                 resolvers[field] = resolvers[rootType][field];
                 delete resolvers[rootType][field];
               }
             } catch (err) {
-              _didIteratorError5 = true;
-              _iteratorError5 = err;
+              _didIteratorError6 = true;
+              _iteratorError6 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                  _iterator5.return();
+                if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                  _iterator6.return();
                 }
               } finally {
-                if (_didIteratorError5) {
-                  throw _iteratorError5;
+                if (_didIteratorError6) {
+                  throw _iteratorError6;
                 }
               }
             }
@@ -980,13 +1055,13 @@ class Schemata extends String {
             delete resolvers[rootType];
           }
         } else {
-          var _iteratorNormalCompletion6 = true;
-          var _didIteratorError6 = false;
-          var _iteratorError6 = undefined;
+          var _iteratorNormalCompletion7 = true;
+          var _didIteratorError7 = false;
+          var _iteratorError7 = undefined;
 
           try {
-            for (var _iterator6 = Object.keys(resolvers)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-              let field = _step6.value;
+            for (var _iterator7 = Object.keys(resolvers)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+              let field = _step7.value;
 
               try {
                 debug_log('[buildResolvers()] finding field in schema');
@@ -1011,16 +1086,16 @@ class Schemata extends String {
               }
             }
           } catch (err) {
-            _didIteratorError6 = true;
-            _iteratorError6 = err;
+            _didIteratorError7 = true;
+            _iteratorError7 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion6 && _iterator6.return) {
-                _iterator6.return();
+              if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                _iterator7.return();
               }
             } finally {
-              if (_didIteratorError6) {
-                throw _iteratorError6;
+              if (_didIteratorError7) {
+                throw _iteratorError7;
               }
             }
           }
@@ -1032,27 +1107,27 @@ class Schemata extends String {
 
     // Finally extend with any remaining arguments
     if (extendWith.length) {
-      var _iteratorNormalCompletion7 = true;
-      var _didIteratorError7 = false;
-      var _iteratorError7 = undefined;
+      var _iteratorNormalCompletion8 = true;
+      var _didIteratorError8 = false;
+      var _iteratorError8 = undefined;
 
       try {
-        for (var _iterator7 = extendWith[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-          let item = _step7.value;
+        for (var _iterator8 = extendWith[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+          let item = _step8.value;
 
           resolvers = (0, _deepmerge2.default)(resolvers || {}, item || {});
         }
       } catch (err) {
-        _didIteratorError7 = true;
-        _iteratorError7 = err;
+        _didIteratorError8 = true;
+        _iteratorError8 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion7 && _iterator7.return) {
-            _iterator7.return();
+          if (!_iteratorNormalCompletion8 && _iterator8.return) {
+            _iterator8.return();
           }
         } finally {
-          if (_didIteratorError7) {
-            throw _iteratorError7;
+          if (_didIteratorError8) {
+            throw _iteratorError8;
           }
         }
       }
@@ -1618,27 +1693,27 @@ class Schemata extends String {
       if (enhance) {
         debug_log('[static parse()] enhancing');
         node[Symbol.iterator] = function* () {
-          var _iteratorNormalCompletion8 = true;
-          var _didIteratorError8 = false;
-          var _iteratorError8 = undefined;
+          var _iteratorNormalCompletion9 = true;
+          var _didIteratorError9 = false;
+          var _iteratorError9 = undefined;
 
           try {
-            for (var _iterator8 = this.definitions[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-              let node = _step8.value;
+            for (var _iterator9 = this.definitions[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+              let node = _step9.value;
 
               yield node;
             }
           } catch (err) {
-            _didIteratorError8 = true;
-            _iteratorError8 = err;
+            _didIteratorError9 = true;
+            _iteratorError9 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion8 && _iterator8.return) {
-                _iterator8.return();
+              if (!_iteratorNormalCompletion9 && _iterator9.return) {
+                _iterator9.return();
               }
             } finally {
-              if (_didIteratorError8) {
-                throw _iteratorError8;
+              if (_didIteratorError9) {
+                throw _iteratorError9;
               }
             }
           }
@@ -1863,27 +1938,27 @@ function runInjectors(config, resolverArgs) {
     config.resolverInjectors = [config.resolverInjectors];
   }
 
-  var _iteratorNormalCompletion9 = true;
-  var _didIteratorError9 = false;
-  var _iteratorError9 = undefined;
+  var _iteratorNormalCompletion10 = true;
+  var _didIteratorError10 = false;
+  var _iteratorError10 = undefined;
 
   try {
-    for (var _iterator9 = config.resolverInjectors[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-      let injector = _step9.value;
+    for (var _iterator10 = config.resolverInjectors[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+      let injector = _step10.value;
 
       args = injector(resolverArgs);
     }
   } catch (err) {
-    _didIteratorError9 = true;
-    _iteratorError9 = err;
+    _didIteratorError10 = true;
+    _iteratorError10 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion9 && _iterator9.return) {
-        _iterator9.return();
+      if (!_iteratorNormalCompletion10 && _iterator10.return) {
+        _iterator10.return();
       }
     } finally {
-      if (_didIteratorError9) {
-        throw _iteratorError9;
+      if (_didIteratorError10) {
+        throw _iteratorError10;
       }
     }
   }
@@ -2137,13 +2212,13 @@ subTypeResolverMap.set('scalars', 'scalarMergeResolver');
  */
 function combineTypeAndSubType(subTypeName, lType, rType, conflictResolvers = DefaultConflictResolvers) {
   if (rType[subTypeName]) {
-    var _iteratorNormalCompletion10 = true;
-    var _didIteratorError10 = false;
-    var _iteratorError10 = undefined;
+    var _iteratorNormalCompletion11 = true;
+    var _didIteratorError11 = false;
+    var _iteratorError11 = undefined;
 
     try {
-      for (var _iterator10 = rType[subTypeName][Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
-        let rSubType = _step10.value;
+      for (var _iterator11 = rType[subTypeName][Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
+        let rSubType = _step11.value;
 
         let lSubType = lType[subTypeName].find(f => f.name.value == rSubType.name.value);
 
@@ -2159,16 +2234,16 @@ function combineTypeAndSubType(subTypeName, lType, rType, conflictResolvers = De
         lType[subTypeName].splice(index, 1, resultingSubType);
       }
     } catch (err) {
-      _didIteratorError10 = true;
-      _iteratorError10 = err;
+      _didIteratorError11 = true;
+      _iteratorError11 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion10 && _iterator10.return) {
-          _iterator10.return();
+        if (!_iteratorNormalCompletion11 && _iterator11.return) {
+          _iterator11.return();
         }
       } finally {
-        if (_didIteratorError10) {
-          throw _iteratorError10;
+        if (_didIteratorError11) {
+          throw _iteratorError11;
         }
       }
     }
@@ -2189,13 +2264,13 @@ function combineTypeAndSubType(subTypeName, lType, rType, conflictResolvers = De
  * named union type
  */
 function pareTypeAndSubType(subTypeName, lType, rType, resolvers = {}) {
-  var _iteratorNormalCompletion11 = true;
-  var _didIteratorError11 = false;
-  var _iteratorError11 = undefined;
+  var _iteratorNormalCompletion12 = true;
+  var _didIteratorError12 = false;
+  var _iteratorError12 = undefined;
 
   try {
-    for (var _iterator11 = rType[subTypeName][Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
-      let rSubType = _step11.value;
+    for (var _iterator12 = rType[subTypeName][Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
+      let rSubType = _step12.value;
 
       let lSubType = lType[subTypeName].find(f => f.name.value == rSubType.name.value);
 
@@ -2213,16 +2288,16 @@ function pareTypeAndSubType(subTypeName, lType, rType, resolvers = {}) {
       }
     }
   } catch (err) {
-    _didIteratorError11 = true;
-    _iteratorError11 = err;
+    _didIteratorError12 = true;
+    _iteratorError12 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion11 && _iterator11.return) {
-        _iterator11.return();
+      if (!_iteratorNormalCompletion12 && _iterator12.return) {
+        _iterator12.return();
       }
     } finally {
-      if (_didIteratorError11) {
-        throw _iteratorError11;
+      if (_didIteratorError12) {
+        throw _iteratorError12;
       }
     }
   }

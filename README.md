@@ -264,6 +264,7 @@ Even this example has difficulty explaining properly what is happening and why i
   * [.schema](#inst-schema): [`?GraphQLSchema`](https://github.com/graphql/graphql-js/blob/master/src/type/schema.js#L48)
   * [.schemaDirectives](#inst-schema-directives): `Object`
   * [.sdl](#inst-sdl): `string`
+  * [.types](#inst-types): `Object`
   * [.typeDefs](#inst-type-defs): `string`
   * [.valid](#inst-valid): `boolean`
   * [.validSchema](#inst-valid-schema): `boolean`
@@ -411,10 +412,10 @@ When a Schemata instance is merged with another GraphQLSchema, its resolvers get
 
 #### <a name="inst-schema-directives"></a>.schemaDirectives [✯](#contents)
 
-Schemata is designed to be used with various GraphQL JavaScript engines. In 
-many cases, it is simply used as a variable to store configuration for more 
+Schemata is designed to be used with various GraphQL JavaScript engines. In
+many cases, it is simply used as a variable to store configuration for more
 specific calls to things like `makeExecutableSchema` from `graphql-tools` or
-`GraphQLServer` and the like. For more information on Apollo's usage of 
+`GraphQLServer` and the like. For more information on Apollo's usage of
 this property, see this page:
 https://www.apollographql.com/docs/graphql-tools/schema-directives.html
 
@@ -426,6 +427,36 @@ https://www.apollographql.com/docs/graphql-tools/schema-directives.html
 #### <a name="inst-sdl"></a>.sdl [✯](#contents)
 
 ![getter](https://github.com/nyteshade/ne-schemata/raw/master/assets/get-left-arrow-24.png) the same value as the string this instance represents
+
+#### <a name="inst-type"></a>.types [✯](#contents)
+
+![getter](https://github.com/nyteshade/ne-schemata/raw/master/assets/get-left-arrow-24.png) calculates a JavaScript object based on the schema where type names are sub-objects, and their keys are field names with values containing objects with two keys. Those keys are `type` and `args`. The `type` field will evaluate to the SDL type of the field in question and the `args` field will evaluate to an order specific set of objects with an argument `name` key and SDL argument type value.
+
+For clarity, given a schema such as the following:
+```graphql
+type A {
+a: String
+b: [String]
+c: [String]!
+}
+type Query {
+As(name: String): [A]
+}
+```
+
+One can expect a return type like this:
+```js
+{
+  Query: {
+    As: { type: '[A]', args: [ { name: 'String' } ] }
+  },
+  A: {
+    a: { type: 'String', args: [] },
+    b: { type: '[String]', args: [] },
+    c: { type: '[String]!', args: [] }
+  }
+}
+```
 
 #### <a name="inst-type-defs"></a>.typeDefs [✯](#contents)
 
