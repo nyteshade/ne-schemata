@@ -428,19 +428,19 @@ https://www.apollographql.com/docs/graphql-tools/schema-directives.html
 
 ![getter](https://github.com/nyteshade/ne-schemata/raw/master/assets/get-left-arrow-24.png) the same value as the string this instance represents
 
-#### <a name="inst-type"></a>.types [✯](#contents)
+#### <a name="inst-types"></a>.types [✯](#contents)
 
 ![getter](https://github.com/nyteshade/ne-schemata/raw/master/assets/get-left-arrow-24.png) calculates a JavaScript object based on the schema where type names are sub-objects, and their keys are field names with values containing objects with two keys. Those keys are `type` and `args`. The `type` field will evaluate to the SDL type of the field in question and the `args` field will evaluate to an order specific set of objects with an argument `name` key and SDL argument type value.
 
 For clarity, given a schema such as the following:
 ```graphql
 type A {
-a: String
-b: [String]
-c: [String]!
+  a: String
+  b: [String]
+  c: [String]!
 }
 type Query {
-As(name: String): [A]
+  As(name: String): [A]
 }
 ```
 
