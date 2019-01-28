@@ -1,16 +1,19 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.graphQLExtensionHandler = graphQLExtensionHandler;
 exports.register = register;
+exports.default = void 0;
 
-var _Schemata = require('./Schemata');
+var _Schemata = require("./Schemata");
 
-var _fs = require('fs');
+var _fs = require("fs");
 
-var _path = require('path');
+var _path = require("path");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /**
  * Adds the ability to `require` or `import` files ending in a `.graphql`
@@ -36,54 +39,54 @@ var _path = require('path');
  * @param {string} filename a fully qualified path to the file being imported
  */
 function graphQLExtensionHandler(module, filename) {
-  let content = (0, _fs.readFileSync)(filename);
-  let schemata = new _Schemata.Schemata(content.toString());
-  let schema = schemata.schema;
-  let astNode = schemata.ast;
-  let resolvers;
-  let jsFilename;
-  let jsModule;
+  var content = (0, _fs.readFileSync)(filename);
+  var schemata = new _Schemata.Schemata(content.toString());
+  var schema = schemata.schema;
+  var astNode = schemata.ast;
+  var resolvers;
+  var jsFilename;
+  var jsModule;
 
   try {
     jsFilename = filename.replace((0, _path.extname)(filename), '.js');
     jsModule = require((0, _path.resolve)(jsFilename));
-    resolvers = jsModule.resolvers || typeof jsModule == 'object' && jsModule;
+    resolvers = jsModule.resolvers || _typeof(jsModule) == 'object' && jsModule;
   } catch (error) {
     console.error(error);
-
-    process.nextTick(() => {
+    process.nextTick(function () {
       delete require.cache[(0, _path.resolve)(jsFilename)];
     });
-
     resolvers = null;
-  }
+  } // Assign the resolvers to the sdl string
 
-  // Assign the resolvers to the sdl string
+
   schemata.resolvers = resolvers;
+
   if (schemata.resolvers) {
     schemata.clearSchema();
     schema = schemata.schema;
-  }
-
-  // For all intents and purposes this is an object that can be treated like
+  } // For all intents and purposes this is an object that can be treated like
   // a string but that also has three extra properties; sdl, ast and schema.
   // `ast` and `schema` invoke the functions `parse` and `buildSchema` from
   // the 'graphql' module, respectively
+
+
   module.exports = {
-    astNode,
+    astNode: astNode,
     default: schemata,
-    resolvers,
-    schema,
+    resolvers: resolvers,
+    schema: schema,
     sdl: schemata,
-    schemata,
+    schemata: schemata,
     typeDefs: schemata
   };
 }
 
-function register(extension = '.graphql') {
+function register() {
+  var extension = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '.graphql';
   require.extensions = require.extensions || {};
   require.extensions[extension] = graphQLExtensionHandler;
 }
 
-exports.default = register;
-//# sourceMappingURL=GraphQLExtension.js.map
+var _default = register;
+exports.default = _default;

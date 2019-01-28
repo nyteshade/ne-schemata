@@ -1,30 +1,42 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.forEachField = exports.forEachOf = exports.TypeMap = exports.HIDDEN = exports.INPUT_TYPES = exports.ROOT_TYPES = exports.SCALARS = exports.UNIONS = exports.ENUMS = exports.INTERFACES = exports.TYPES = exports.ALL = undefined;
+exports.forEachOf = forEachOf;
+exports.forEachField = forEachField;
+exports.default = exports.TypeMap = exports.HIDDEN = exports.INPUT_TYPES = exports.ROOT_TYPES = exports.SCALARS = exports.UNIONS = exports.ENUMS = exports.INTERFACES = exports.TYPES = exports.ALL = void 0;
 
-var _graphql = require('graphql');
+var _graphql = require("graphql");
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 // Create constants for each of the types allowed, over which one might
 // iterate. These can be bitmasked to include multiple types; i.e. for both
 // type and enums, pass TYPES | ENUMS for the types parameter. It
 // defaults to simply types.
-const ALL = 1;
+var ALL = 1;
+exports.ALL = ALL;
+var TYPES = 2;
+exports.TYPES = TYPES;
+var INTERFACES = 4;
+exports.INTERFACES = INTERFACES;
+var ENUMS = 8;
+exports.ENUMS = ENUMS;
+var UNIONS = 16;
+exports.UNIONS = UNIONS;
+var SCALARS = 32;
+exports.SCALARS = SCALARS;
+var ROOT_TYPES = 64;
+exports.ROOT_TYPES = ROOT_TYPES;
+var INPUT_TYPES = 128;
+exports.INPUT_TYPES = INPUT_TYPES;
+var HIDDEN = 256;
+exports.HIDDEN = HIDDEN;
+var Masks = [ALL, TYPES, INTERFACES, UNIONS, ENUMS, SCALARS, ROOT_TYPES, INPUT_TYPES]; // Create a mapping from the constant to the GraphQL type class.
 
-const TYPES = 2;
-const INTERFACES = 4;
-const ENUMS = 8;
-const UNIONS = 16;
-const SCALARS = 32;
-const ROOT_TYPES = 64;
-const INPUT_TYPES = 128;
-const HIDDEN = 256;
-const Masks = [ALL, TYPES, INTERFACES, UNIONS, ENUMS, SCALARS, ROOT_TYPES, INPUT_TYPES];
-
-// Create a mapping from the constant to the GraphQL type class.
-const TypeMap = new Map();
+var TypeMap = new Map();
+exports.TypeMap = TypeMap;
 TypeMap.set(TYPES, _graphql.GraphQLObjectType);
 TypeMap.set(ROOT_TYPES, _graphql.GraphQLObjectType);
 TypeMap.set(INTERFACES, _graphql.GraphQLInterfaceType);
@@ -32,7 +44,6 @@ TypeMap.set(INPUT_TYPES, _graphql.GraphQLInputObjectType);
 TypeMap.set(ENUMS, _graphql.GraphQLEnumType);
 TypeMap.set(UNIONS, _graphql.GraphQLUnionType);
 TypeMap.set(SCALARS, _graphql.GraphQLScalarType);
-
 /**
  * Iterates over the values contained in a Schema's typeMap. If a desired
  * value is encountered, the supplied callback will be invoked. The values are
@@ -69,29 +80,28 @@ TypeMap.set(SCALARS, _graphql.GraphQLScalarType);
  * @return {GraphQLSchema} a new schema is generated from this SDL, iterated
  * over and returned.
  */
-function forEachOf(schema, fn, context, types = ALL) {
-  [_graphql.GraphQLObjectType, _graphql.GraphQLInterfaceType, _graphql.GraphQLEnumType, _graphql.GraphQLUnionType, _graphql.GraphQLScalarType].forEach(t => {
+
+function forEachOf(schema, fn, context) {
+  var types = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : ALL;
+  [_graphql.GraphQLObjectType, _graphql.GraphQLInterfaceType, _graphql.GraphQLEnumType, _graphql.GraphQLUnionType, _graphql.GraphQLScalarType].forEach(function (t) {
     if (!t) return;
 
     if (!Object.getOwnPropertySymbols(t.prototype).includes(Symbol.toStringTag)) {
-      Object.defineProperties(t.prototype, {
-        [Symbol.toStringTag]: { get() {
-            return this.constructor.name;
-          } }
-      });
+      Object.defineProperties(t.prototype, _defineProperty({}, Symbol.toStringTag, {
+        get: function get() {
+          return this.constructor.name;
+        }
+      }));
     }
   });
-
-  const typeMap = schema.getTypeMap();
-
-  Object.keys(typeMap).forEach(typeName => {
-    const type = typeMap[typeName];
-    const hidden = (0, _graphql.getNamedType)(type).name.startsWith('__');
-    const showHidden = (types & HIDDEN) === HIDDEN;
-    const directives = type && type.astNode && type.astNode.directives || [];
-    let doIt = (types & ALL) === ALL;
-
-    Masks.forEach(mask => {
+  var typeMap = schema.getTypeMap();
+  Object.keys(typeMap).forEach(function (typeName) {
+    var type = typeMap[typeName];
+    var hidden = (0, _graphql.getNamedType)(type).name.startsWith('__');
+    var showHidden = (types & HIDDEN) === HIDDEN;
+    var directives = type && type.astNode && type.astNode.directives || [];
+    var doIt = (types & ALL) === ALL;
+    Masks.forEach(function (mask) {
       if (doIt) {
         return;
       } else if ((mask & ROOT_TYPES) === ROOT_TYPES && (type === schema.getQueryType() || type === schema.getSubscriptionType() || type === schema.getMutationType())) {
@@ -100,15 +110,12 @@ function forEachOf(schema, fn, context, types = ALL) {
       } else {
         doIt = (types & mask) === mask && type instanceof TypeMap.get(mask);
       }
-    });
+    }); // Prevent hidden items from being shown unless asked for
 
-    // Prevent hidden items from being shown unless asked for
     doIt = doIt && (!hidden || hidden && showHidden);
-
     if (doIt) fn(type, typeName, directives, schema, context);
   });
 }
-
 /**
  * An extension of `forEachOf` that targets the fields of the types in the
  * schema's typeMap. This function provides more detail and allows greater
@@ -150,33 +157,23 @@ function forEachOf(schema, fn, context, types = ALL) {
  * @param {mixed} context usually an object but any mixed value the denotes
  * some shared context as is used with the schema during normal runtime.
  */
-function forEachField(schema, fn, context, types = ALL) {
-  forEachOf(schema, (type, typeName, _, context, directives) => {
+
+
+function forEachField(schema, fn, context) {
+  var types = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : ALL;
+  forEachOf(schema, function (type, typeName, _, context, directives) {
     if (!type._fields) {
       return;
     }
 
-    Object.keys(type._fields).forEach(fieldName => {
-      let field = type._fields[fieldName];
-      let fieldDirectives = field.astNode && field.astNode.directives || [];
-      let fieldArgs = field.args || [];
-
+    Object.keys(type._fields).forEach(function (fieldName) {
+      var field = type._fields[fieldName];
+      var fieldDirectives = field.astNode && field.astNode.directives || [];
+      var fieldArgs = field.args || [];
       fn(type, typeName, directives, field, fieldName, fieldArgs, fieldDirectives, schema, context);
     });
   }, context, types);
 }
 
-exports.ALL = ALL;
-exports.TYPES = TYPES;
-exports.INTERFACES = INTERFACES;
-exports.ENUMS = ENUMS;
-exports.UNIONS = UNIONS;
-exports.SCALARS = SCALARS;
-exports.ROOT_TYPES = ROOT_TYPES;
-exports.INPUT_TYPES = INPUT_TYPES;
-exports.HIDDEN = HIDDEN;
-exports.TypeMap = TypeMap;
-exports.forEachOf = forEachOf;
-exports.forEachField = forEachField;
-exports.default = forEachOf;
-//# sourceMappingURL=forEachOf.js.map
+var _default = forEachOf;
+exports.default = _default;

@@ -1,13 +1,14 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.gql = gql;
+exports.default = void 0;
 
-var _Schemata = require('./Schemata');
+var _Schemata = require("./Schemata");
 
-var _neTagFns = require('ne-tag-fns');
+var _neTagFns = require("ne-tag-fns");
 
 /**
  * A small wrapper that creates a Schemata instance when using template strings
@@ -22,9 +23,13 @@ var _neTagFns = require('ne-tag-fns');
  * @return {Schemata} an instance of Schemata wrapping the string in the
  * template
  */
-function gql(template, ...substitutions) {
-  return _Schemata.Schemata.from((0, _neTagFns.handleSubstitutions)(template, ...substitutions));
+function gql(template) {
+  for (var _len = arguments.length, substitutions = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    substitutions[_key - 1] = arguments[_key];
+  }
+
+  return _Schemata.Schemata.from(_neTagFns.handleSubstitutions.apply(void 0, [template].concat(substitutions)));
 }
 
-exports.default = gql;
-//# sourceMappingURL=gqlTagFn.js.map
+var _default = gql;
+exports.default = _default;

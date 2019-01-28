@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.at = at;
 exports.atNicely = atNicely;
-
+exports.default = void 0;
 
 /**
  * This function takes an array of values that are used with `eval` to
@@ -54,7 +54,9 @@ exports.atNicely = atNicely;
  * invalid access was requested. Otherwise an error is thrown if try to deeply
  * reach into a space where no value exists.
  */
-function at(object, path, setTo, playNice = false) {
+function at(object, path, setTo) {
+  var playNice = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
   if (typeof path === 'string') {
     if (path.includes('.')) {
       path = path.split('.');
@@ -65,22 +67,26 @@ function at(object, path, setTo, playNice = false) {
 
   try {
     if (setTo !== undefined) {
-      eval(`(object${path.reduce((p, c) => `${p}['${c}']`, '')} = setTo)`);
+      eval("(object".concat(path.reduce(function (p, c) {
+        return "".concat(p, "['").concat(c, "']");
+      }, ''), " = setTo)"));
     }
 
-    return eval(`(object${path.reduce((p, c) => `${p}['${c}']`, '')})`);
+    return eval("(object".concat(path.reduce(function (p, c) {
+      return "".concat(p, "['").concat(c, "']");
+    }, ''), ")"));
   } catch (error) {
     if (playNice) {
       return undefined;
     }
 
-    console.error(`[ERROR:at] Cannot reach into the beyond!`);
-    console.error(`Tried: object${path.reduce((p, c) => `${p}['${c}']`, '')}`);
-
+    console.error("[ERROR:at] Cannot reach into the beyond!");
+    console.error("Tried: object".concat(path.reduce(function (p, c) {
+      return "".concat(p, "['").concat(c, "']");
+    }, '')));
     throw error;
   }
 }
-
 /**
  * `atNicely()` is a shorthand version of calling `at()` but specifying `true`
  * for the argument `playNice`. This can make reads normally performed with
@@ -98,10 +104,11 @@ function at(object, path, setTo, playNice = false) {
  * will be modified to this value before it is returned
  * @return {mixed} either the requested value or undefined
  */
+
+
 function atNicely(object, path, setTo) {
   return at(object, path, setTo, true);
 }
-
 /**
  * Default export is atNicely; as long as you know what you want, this leaves
  * cleaner code in your repository. Simply add this to the top of your module
@@ -116,5 +123,7 @@ function atNicely(object, path, setTo) {
  * import { at } from './propAt'
  * ```
  */
-exports.default = atNicely;
-//# sourceMappingURL=propAt.js.map
+
+
+var _default = atNicely;
+exports.default = _default;

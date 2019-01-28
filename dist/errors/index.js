@@ -1,33 +1,29 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _ResolverMapStumble = require('./ResolverMapStumble');
-
-Object.defineProperty(exports, 'ResolverMapStumble', {
+Object.defineProperty(exports, "ResolverMapStumble", {
   enumerable: true,
-  get: function () {
+  get: function get() {
     return _ResolverMapStumble.ResolverMapStumble;
   }
 });
-
-var _WrappedResolverExecutionError = require('./WrappedResolverExecutionError');
-
-Object.defineProperty(exports, 'WrappedResolverExecutionError', {
+Object.defineProperty(exports, "WrappedResolverExecutionError", {
   enumerable: true,
-  get: function () {
+  get: function get() {
     return _WrappedResolverExecutionError.WrappedResolverExecutionError;
   }
 });
-
-var _ResolverResultsPatcherError = require('./ResolverResultsPatcherError');
-
-Object.defineProperty(exports, 'ResolverResultsPatcherError', {
+Object.defineProperty(exports, "ResolverResultsPatcherError", {
   enumerable: true,
-  get: function () {
+  get: function get() {
     return _ResolverResultsPatcherError.ResolverResultsPatcherError;
   }
 });
-//# sourceMappingURL=index.js.map
+
+var _ResolverMapStumble = require("./ResolverMapStumble");
+
+var _WrappedResolverExecutionError = require("./WrappedResolverExecutionError");
+
+var _ResolverResultsPatcherError = require("./ResolverResultsPatcherError");
