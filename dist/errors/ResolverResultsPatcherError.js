@@ -1,9 +1,27 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = exports.ResolverResultsPatcherError = void 0;
+
+var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+
+var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
 var _neTagFns = require("ne-tag-fns");
 
@@ -13,12 +31,8 @@ var _util = require("util");
 
 var _prettyError = _interopRequireDefault(require("pretty-error"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n      The patcher function failed to execute against the results of the\n      'ExtendedResolver' execution. The patcher function had a name of\n      '", "'.\n\n      The context of the patcher was:\n      ", "\n\n      The results passed to the function were:\n      ", "\n\n      Original Stack Trace\n      ", "\n\n    "]);
+  var data = (0, _taggedTemplateLiteral2.default)(["\n      The patcher function failed to execute against the results of the\n      'ExtendedResolver' execution. The patcher function had a name of\n      '", "'.\n\n      The context of the patcher was:\n      ", "\n\n      The results passed to the function were:\n      ", "\n\n      Original Stack Trace\n      ", "\n\n    "]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -26,26 +40,6 @@ function _templateObject() {
 
   return data;
 }
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var isFn = function isFn(o) {
   return /Function\]/.test(Object.prototype.toString.call(o));
@@ -65,7 +59,7 @@ var pe = new _prettyError.default();
 var ResolverResultsPatcherError =
 /*#__PURE__*/
 function (_BaseError) {
-  _inherits(ResolverResultsPatcherError, _BaseError);
+  (0, _inherits2.default)(ResolverResultsPatcherError, _BaseError);
 
   /**
    * The `ResolverResultsPatcher` function that failed.
@@ -104,16 +98,11 @@ function (_BaseError) {
   function ResolverResultsPatcherError(error, patcher, context, results) {
     var _this;
 
-    _classCallCheck(this, ResolverResultsPatcherError);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ResolverResultsPatcherError).call(this, error));
-
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "patcher", void 0);
-
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "context", void 0);
-
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "results", void 0);
-
+    (0, _classCallCheck2.default)(this, ResolverResultsPatcherError);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ResolverResultsPatcherError).call(this, error));
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "patcher", void 0);
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "context", void 0);
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "results", void 0);
     _this.patcher = patcher;
     _this.context = context;
     _this.results = results;
@@ -127,7 +116,7 @@ function (_BaseError) {
    */
 
 
-  _createClass(ResolverResultsPatcherError, [{
+  (0, _createClass2.default)(ResolverResultsPatcherError, [{
     key: "toString",
     value: function toString() {
       return (0, _neTagFns.dropLowest)(_templateObject(), this.patcher && this.patcher.name || null, (0, _util.inspect)(this.context, {
@@ -173,7 +162,6 @@ function (_BaseError) {
       return false;
     }
   }]);
-
   return ResolverResultsPatcherError;
 }(_BaseError2.BaseError);
 

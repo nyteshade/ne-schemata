@@ -4,6 +4,7 @@ module.exports = {
     "@babel/preset-flow",
   ],
   "plugins": [
+    ["@babel/plugin-transform-runtime", { "regenerator": true }],
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-transform-classes",
     "@babel/plugin-proposal-optional-chaining",

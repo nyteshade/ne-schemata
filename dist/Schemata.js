@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -13,6 +15,28 @@ exports.DefaultUnionMergeResolver = DefaultUnionMergeResolver;
 exports.DefaultScalarMergeResolver = DefaultScalarMergeResolver;
 exports.normalizeSource = normalizeSource;
 exports.default = exports.DefaultMergeOptions = exports.DefaultConflictResolvers = exports.EXE = exports.MAP = exports.SCHEMA_DIRECTIVES = exports.GRAPHIQL_FLAG = exports.TYPEDEFS_KEY = exports.isRootType = exports.Schemata = void 0;
+
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+
+var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+
+var _wrapNativeSuper2 = _interopRequireDefault(require("@babel/runtime/helpers/wrapNativeSuper"));
 
 var _graphql = require("graphql");
 
@@ -28,12 +52,8 @@ var _util = _interopRequireDefault(require("util"));
 
 var _forEachOf2 = require("./forEachOf");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 function _templateObject7() {
-  var data = _taggedTemplateLiteral(["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function `normalizeSource`. Please check your code and try again.\n\n      (received: ", ")\n    "], ["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function \\`normalizeSource\\`. Please check your code and try again.\n\n      (received: ", ")\n    "]);
+  var data = (0, _taggedTemplateLiteral2.default)(["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function `normalizeSource`. Please check your code and try again.\n\n      (received: ", ")\n    "], ["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function \\`normalizeSource\\`. Please check your code and try again.\n\n      (received: ", ")\n    "]);
 
   _templateObject7 = function _templateObject7() {
     return data;
@@ -42,14 +62,8 @@ function _templateObject7() {
   return data;
 }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function _templateObject6() {
-  var data = _taggedTemplateLiteral(["\n        buildResolverForEachField() cannot be called unless there is enough\n        valid SDL in the instance to construct a schema. Please check your\n        code!\n      "]);
+  var data = (0, _taggedTemplateLiteral2.default)(["\n        buildResolverForEachField() cannot be called unless there is enough\n        valid SDL in the instance to construct a schema. Please check your\n        code!\n      "]);
 
   _templateObject6 = function _templateObject6() {
     return data;
@@ -59,7 +73,7 @@ function _templateObject6() {
 }
 
 function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n                [buildResolvers()] Falling back to `astFieldByName()` due to\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\` due to\n              "]);
+  var data = (0, _taggedTemplateLiteral2.default)(["\n                [buildResolvers()] Falling back to `astFieldByName()` due to\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\` due to\n              "]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -69,7 +83,7 @@ function _templateObject5() {
 }
 
 function _templateObject4() {
-  var data = _taggedTemplateLiteral(["\n                [buildResolvers()] Falling back to `astFieldByName()`\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\`\n              "]);
+  var data = (0, _taggedTemplateLiteral2.default)(["\n                [buildResolvers()] Falling back to `astFieldByName()`\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\`\n              "]);
 
   _templateObject4 = function _templateObject4() {
     return data;
@@ -79,7 +93,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n        In the call to mergeSchema(schema), ", " was received as a value\n        and the code could not proceed because of it. Please check your code\n        and try again\n      "]);
+  var data = (0, _taggedTemplateLiteral2.default)(["\n        In the call to mergeSchema(schema), ", " was received as a value\n        and the code could not proceed because of it. Please check your code\n        and try again\n      "]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -89,7 +103,7 @@ function _templateObject3() {
 }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        `schemaLanguage` could not be parsed.\n      "], ["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        \\`schemaLanguage\\` could not be parsed.\n      "]);
+  var data = (0, _taggedTemplateLiteral2.default)(["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        `schemaLanguage` could not be parsed.\n      "], ["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        \\`schemaLanguage\\` could not be parsed.\n      "]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -99,7 +113,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n        The call to mergeSDL(schemaLanguage, conflictResolvers) received an\n        invalid value for schemaLanguage. Please check your code and try again.\n        Received ", ".\n      "]);
+  var data = (0, _taggedTemplateLiteral2.default)(["\n        The call to mergeSDL(schemaLanguage, conflictResolvers) received an\n        invalid value for schemaLanguage. Please check your code and try again.\n        Received ", ".\n      "]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -107,32 +121,6 @@ function _templateObject() {
 
   return data;
 }
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
-
-function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _construct(Parent, args, Class) { if (isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
-
-function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 var debug_log = require('debug')('schemata:normal');
 
@@ -150,7 +138,7 @@ var debug_trace = require('debug')('schemata:trace');
 var Schemata =
 /*#__PURE__*/
 function (_String) {
-  _inherits(Schemata, _String);
+  (0, _inherits2.default)(Schemata, _String);
 
   /**
    * Creates a new `String`, presumably of SDL or IDL. The getter `.valid`
@@ -179,10 +167,8 @@ function (_String) {
     var resolvers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     var buildResolvers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     var flattenResolvers = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-
-    _classCallCheck(this, Schemata);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Schemata).call(this, normalizeSource(typeDefs)));
+    (0, _classCallCheck2.default)(this, Schemata);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Schemata).call(this, normalizeSource(typeDefs)));
     resolvers = resolvers || typeDefs instanceof Schemata && typeDefs.resolvers || typeDefs instanceof _graphql.GraphQLSchema && stripResolversFromSchema(typeDefs) || null;
     _this[GRAPHIQL_FLAG] = true;
     _this[TYPEDEFS_KEY] = normalizeSource(typeDefs);
@@ -225,7 +211,7 @@ function (_String) {
    */
 
 
-  _createClass(Schemata, [{
+  (0, _createClass2.default)(Schemata, [{
     key: "schemaResolverFor",
 
     /**
@@ -1265,10 +1251,10 @@ function (_String) {
   }, {
     key: "runAsync",
     value: function () {
-      var _runAsync = _asyncToGenerator(
+      var _runAsync = (0, _asyncToGenerator2.default)(
       /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee(query, contextValue, variableValues, rootValue, operationName, fieldResolver) {
-        return regeneratorRuntime.wrap(function _callee$(_context) {
+      _regenerator.default.mark(function _callee(query, contextValue, variableValues, rootValue, operationName, fieldResolver) {
+        return _regenerator.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -1315,8 +1301,8 @@ function (_String) {
     get: function get() {
       return (
         /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee2() {
-          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+        _regenerator.default.mark(function _callee2() {
+          return _regenerator.default.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
@@ -1639,7 +1625,7 @@ function (_String) {
               var _step3$value = _step3.value,
                   name = _step3$value.name,
                   type = _step3$value.type;
-              args.push(_defineProperty({}, name, type.toString()));
+              args.push((0, _defineProperty2.default)({}, name, type.toString()));
             }
           } catch (err) {
             _didIteratorError3 = true;
@@ -1882,10 +1868,10 @@ function (_String) {
           debug_log('[static parse()] enhancing');
           node[Symbol.iterator] =
           /*#__PURE__*/
-          regeneratorRuntime.mark(function _callee3() {
+          _regenerator.default.mark(function _callee3() {
             var _iteratorNormalCompletion5, _didIteratorError5, _iteratorError5, _iterator5, _step5, _node;
 
-            return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            return _regenerator.default.wrap(function _callee3$(_context3) {
               while (1) {
                 switch (_context3.prev = _context3.next) {
                   case 0:
@@ -2171,9 +2157,8 @@ function (_String) {
       return _forEachOf2.HIDDEN;
     }
   }]);
-
   return Schemata;
-}(_wrapNativeSuper(String));
+}((0, _wrapNativeSuper2.default)(String));
 /**
  * Given an type, determine if the type is a root type; i.e. one of Query,
  * Mutation or Subscription as defined in the `graphql` library.
@@ -2642,7 +2627,7 @@ function normalizeSource(typeDefs) {
     return typeDefs;
   }
 
-  var source = (typeDefs.body || typeDefs.sdl || typeof typeDefs === 'string' && typeDefs || _typeof(typeDefs) === 'object' && Schemata.print(typeDefs) || (typeDefs instanceof _graphql.GraphQLSchema ? (0, _graphql.printSchema)(typeDefs) : typeDefs.toString())).toString().trim();
+  var source = (typeDefs.body || typeDefs.sdl || typeof typeDefs === 'string' && typeDefs || (0, _typeof2.default)(typeDefs) === 'object' && Schemata.print(typeDefs) || (typeDefs instanceof _graphql.GraphQLSchema ? (0, _graphql.printSchema)(typeDefs) : typeDefs.toString())).toString().trim();
   return wrap ? Schemata.from(source) : source;
 }
 

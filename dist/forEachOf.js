@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -7,9 +9,9 @@ exports.forEachOf = forEachOf;
 exports.forEachField = forEachField;
 exports.default = exports.TypeMap = exports.HIDDEN = exports.INPUT_TYPES = exports.ROOT_TYPES = exports.SCALARS = exports.UNIONS = exports.ENUMS = exports.INTERFACES = exports.TYPES = exports.ALL = void 0;
 
-var _graphql = require("graphql");
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+var _graphql = require("graphql");
 
 // Create constants for each of the types allowed, over which one might
 // iterate. These can be bitmasked to include multiple types; i.e. for both
@@ -87,7 +89,7 @@ function forEachOf(schema, fn, context) {
     if (!t) return;
 
     if (!Object.getOwnPropertySymbols(t.prototype).includes(Symbol.toStringTag)) {
-      Object.defineProperties(t.prototype, _defineProperty({}, Symbol.toStringTag, {
+      Object.defineProperties(t.prototype, (0, _defineProperty2.default)({}, Symbol.toStringTag, {
         get: function get() {
           return this.constructor.name;
         }

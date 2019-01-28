@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -7,27 +9,19 @@ exports.walkResolverMap = walkResolverMap;
 exports.asyncWalkResolverMap = asyncWalkResolverMap;
 exports.default = exports.DefaultAsyncEntryInspector = exports.DefaultEntryInspector = void 0;
 
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
 var _errors = require("./errors");
 
 var _propAt = _interopRequireDefault(require("./propAt"));
 
 var _deepmerge = _interopRequireDefault(require("deepmerge"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var isFn = function isFn(o) {
   return /Function\]/.test(Object.prototype.toString.call(o));
@@ -45,7 +39,7 @@ var isFn = function isFn(o) {
 
 
 var DefaultEntryInspector = function DefaultEntryInspector(key, value, path, map) {
-  return _defineProperty({}, key, value);
+  return (0, _defineProperty2.default)({}, key, value);
 };
 /**
  * A default implementation of the EntryInspector type for use as a default
@@ -64,14 +58,14 @@ exports.DefaultEntryInspector = DefaultEntryInspector;
 var DefaultAsyncEntryInspector =
 /*#__PURE__*/
 function () {
-  var _ref2 = _asyncToGenerator(
+  var _ref2 = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee(key, value, path, map) {
-    return regeneratorRuntime.wrap(function _callee$(_context) {
+  _regenerator.default.mark(function _callee(key, value, path, map) {
+    return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            return _context.abrupt("return", _defineProperty({}, key, value));
+            return _context.abrupt("return", (0, _defineProperty2.default)({}, key, value));
 
           case 1:
           case "end":
@@ -121,7 +115,7 @@ function walkResolverMap(object) {
   var _arr = Object.entries(object);
 
   var _loop = function _loop() {
-    var _arr$_i = _slicedToArray(_arr[_i], 2),
+    var _arr$_i = (0, _slicedToArray2.default)(_arr[_i], 2),
         key = _arr$_i[0],
         _value = _arr$_i[1];
 
@@ -181,9 +175,9 @@ function asyncWalkResolverMap(_x5) {
 }
 
 function _asyncWalkResolverMap() {
-  _asyncWalkResolverMap = _asyncToGenerator(
+  _asyncWalkResolverMap = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee2(object) {
+  _regenerator.default.mark(function _callee2(object) {
     var inspector,
         wrap,
         path,
@@ -193,7 +187,7 @@ function _asyncWalkResolverMap() {
         _i2,
         _args3 = arguments;
 
-    return regeneratorRuntime.wrap(function _callee2$(_context3) {
+    return _regenerator.default.wrap(function _callee2$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
@@ -212,14 +206,14 @@ function _asyncWalkResolverMap() {
             _arr2 = Object.entries(object);
             _loop2 =
             /*#__PURE__*/
-            regeneratorRuntime.mark(function _loop2() {
+            _regenerator.default.mark(function _loop2() {
               var _arr2$_i, key, _value2, isObject, isFunction, entry;
 
-              return regeneratorRuntime.wrap(function _loop2$(_context2) {
+              return _regenerator.default.wrap(function _loop2$(_context2) {
                 while (1) {
                   switch (_context2.prev = _context2.next) {
                     case 0:
-                      _arr2$_i = _slicedToArray(_arr2[_i2], 2), key = _arr2$_i[0], _value2 = _arr2$_i[1];
+                      _arr2$_i = (0, _slicedToArray2.default)(_arr2[_i2], 2), key = _arr2$_i[0], _value2 = _arr2$_i[1];
                       isObject = _value2 instanceof Object;
                       isFunction = isObject && isFn(_value2);
 

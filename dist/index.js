@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -204,8 +206,6 @@ var _walkResolverMap = require("./walkResolverMap");
 var _BaseError = require("./BaseError");
 
 var _errors = require("./errors");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var SDL = _Schemata.Schemata;
 exports.SDL = SDL;

@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -7,13 +9,13 @@ exports.graphQLExtensionHandler = graphQLExtensionHandler;
 exports.register = register;
 exports.default = void 0;
 
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
+
 var _Schemata = require("./Schemata");
 
 var _fs = require("fs");
 
 var _path = require("path");
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /**
  * Adds the ability to `require` or `import` files ending in a `.graphql`
@@ -50,7 +52,7 @@ function graphQLExtensionHandler(module, filename) {
   try {
     jsFilename = filename.replace((0, _path.extname)(filename), '.js');
     jsModule = require((0, _path.resolve)(jsFilename));
-    resolvers = jsModule.resolvers || _typeof(jsModule) == 'object' && jsModule;
+    resolvers = jsModule.resolvers || (0, _typeof2.default)(jsModule) == 'object' && jsModule;
   } catch (error) {
     console.error(error);
     process.nextTick(function () {
