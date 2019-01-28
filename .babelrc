@@ -5,7 +5,7 @@
       "env",
       {
         "targets": { "node": "8" },
-        "useBuiltins": false,
+        "useBuiltins": true,
         "modules": "commonjs"
       }
     ]
