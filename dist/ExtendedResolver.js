@@ -11,8 +11,6 @@ var _Schemata = require('./Schemata');
 
 var _errors = require('./errors');
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
 const original = Symbol('Original Resolver');
 const listing = Symbol('List of Resolvers');
 const patcher = Symbol('Resolver Result Patcher');
@@ -199,32 +197,11 @@ class ExtendedResolver extends Function {
   toString() {
     let strings = [];
 
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-      for (var _iterator = this.order[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        let fn = _step.value;
-
-        strings.push(`Function: ${fn.name}`);
-        strings.push(`---------${'-'.repeat(fn.name.length ? fn.name.length + 1 : 0)}`);
-        strings.push(fn.toString());
-        strings.push('');
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
+    for (let fn of this.order) {
+      strings.push(`Function: ${fn.name}`);
+      strings.push(`---------${'-'.repeat(fn.name.length ? fn.name.length + 1 : 0)}`);
+      strings.push(fn.toString());
+      strings.push('');
     }
 
     return strings.join('\n');
@@ -382,62 +359,37 @@ class ExtendedResolver extends Function {
        * @return {mixed} either null or some value as would have been returned
        * from the call of a graphql field resolver
        */
-      apply(target, thisArg, args) {
-        var _this = this;
+      async apply(target, thisArg, args) {
+        // Ensure we have arguments as an array so we can concat results in
+        // each pass of the reduction process
+        let myArgs = Array.isArray(args) ? args : Array.from(args && args || []);
 
-        return _asyncToGenerator(function* () {
-          // Ensure we have arguments as an array so we can concat results in
-          // each pass of the reduction process
-          let myArgs = Array.isArray(args) ? args : Array.from(args && args || []);
+        let results = {};
+        let result;
 
-          let results = {};
-          let result;
-
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
-
+        for (let fn of target[listing]) {
           try {
-            for (var _iterator2 = target[listing][Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              let fn = _step2.value;
-
-              try {
-                result = yield fn.apply(thisArg || target, myArgs.concat(results));
-              } catch (error) {
-                throw new _errors.WrappedResolverExecutionError(error, _this, target[listing].indexOf(fn), myArgs.concat(results), thisArg || target);
-              }
-
-              if (results && results instanceof Object && result && result instanceof Object) {
-                Object.assign(results, result);
-              } else {
-                results = result;
-              }
-            }
-          } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                _iterator2.return();
-              }
-            } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
-              }
-            }
+            result = await fn.apply(thisArg || target, myArgs.concat(results));
+          } catch (error) {
+            throw new _errors.WrappedResolverExecutionError(error, this, target[listing].indexOf(fn), myArgs.concat(results), thisArg || target);
           }
 
-          if (target[patcher] && target[patcher] instanceof Function) {
-            try {
-              results = yield target[patcher].call(thisArg || target, results);
-            } catch (error) {
-              throw new _errors.ResolverResultsPatcherError(error, target[patcher], thisArg || target, results);
-            }
+          if (results && results instanceof Object && result && result instanceof Object) {
+            Object.assign(results, result);
+          } else {
+            results = result;
           }
+        }
 
-          return results;
-        })();
+        if (target[patcher] && target[patcher] instanceof Function) {
+          try {
+            results = await target[patcher].call(thisArg || target, results);
+          } catch (error) {
+            throw new _errors.ResolverResultsPatcherError(error, target[patcher], thisArg || target, results);
+          }
+        }
+
+        return results;
       }
     };
   }

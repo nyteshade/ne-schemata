@@ -4,7 +4,7 @@
     [
       "env",
       {
-        "targets": { "node": "6" },
+        "targets": { "node": "8" },
         "useBuiltins": false,
         "modules": "commonjs"
       }

@@ -34,8 +34,6 @@ var _forEachOf = require('./forEachOf');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
 const debug_log = require('debug')('schemata:normal');
 const debug_trace = require('debug')('schemata:trace');
 
@@ -406,31 +404,8 @@ class Schemata extends String {
       let args = [];
 
       if (fa && fa.length) {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = fa[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            let _ref = _step.value;
-            let name = _ref.name;
-            let type = _ref.type;
-
-            args.push({ [name]: type.toString() });
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        for (let { name, type } of fa) {
+          args.push({ [name]: type.toString() });
         }
       }
 
@@ -569,37 +544,14 @@ class Schemata extends String {
       return false;
     }
 
-    var _arr = [query, mutation, subscription];
-    for (var _i = 0; _i < _arr.length; _i++) {
-      let type = _arr[_i];
+    for (let type of [query, mutation, subscription]) {
       if (!type || !type.fields) {
         continue;
       }
 
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = type.fields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          let field = _step2.value;
-
-          if (field.name.value in resolvers) {
-            return true;
-          }
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
+      for (let field of type.fields) {
+        if (field.name.value in resolvers) {
+          return true;
         }
       }
     }
@@ -641,114 +593,72 @@ class Schemata extends String {
     // atop the default ones should only a partial custom be supplied.
     conflictResolvers = (0, _deepmerge2.default)(DefaultConflictResolvers, conflictResolvers);
 
-    var _iteratorNormalCompletion3 = true;
-    var _didIteratorError3 = false;
-    var _iteratorError3 = undefined;
+    for (let rType of rAST.definitions) {
+      let lType = lAST.definitions.find(a => a.name.value == rType.name.value);
 
-    try {
-      for (var _iterator3 = rAST.definitions[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-        let rType = _step3.value;
-
-        let lType = lAST.definitions.find(a => a.name.value == rType.name.value);
-
-        if (rType.kind && rType.kind.endsWith && rType.kind.endsWith('Extension')) {
-          rType = (0, _deepmerge2.default)({}, rType);
-          rType.kind = rType.kind.substring(0, rType.kind.length - 9) + 'Definition';
-        }
-
-        if (!lType) {
-          lAST.definitions.push(rType);
-          continue;
-        }
-
-        switch (lType.kind) {
-          default:
-          case 'ObjectTypeDefinition':
-          case 'ObjectTypeDefinitionExtension':
-          case 'InterfaceTypeDefinition':
-          case 'InterfaceTypeDefinitionExtension':
-          case 'InputObjectTypeDefinition':
-          case 'InputObjectTypeDefinitionExtension':
-            combineTypeAndSubType('directives', lType, rType, conflictResolvers);
-            combineTypeAndSubType('fields', lType, rType, conflictResolvers);
-            break;
-
-          case 'EnumTypeDefinition':
-            combineTypeAndSubType('directives', lType, rType, conflictResolvers);
-            combineTypeAndSubType('values', lType, rType, conflictResolvers);
-            break;
-
-          case 'UnionTypeDefinition':
-            combineTypeAndSubType('directives', lType, rType, conflictResolvers);
-            combineTypeAndSubType('types', lType, rType, conflictResolvers);
-            break;
-
-          case 'ScalarTypeDefinitionNode':
-            let lScalar, lScalarConfig, rScalar, rScalarConfig, resolver;
-
-            combineTypeAndSubType('directives', lType, rType, conflictResolvers);
-
-            if (this.schema) {
-              lScalar = this.schema.getType(lType.name.value);
-              lScalarConfig = lScalar && lScalar._scalarConfig || null;
-            }
-
-            if (source.schema) {
-              rScalar = source.schema.getType(rType.name.value);
-              rScalarConfig = rScalar && rScalar._scalarConfig || null;
-            }
-
-            resolver = (conflictResolvers.scalarMergeResolver || DefaultConflictResolvers.scalarMergeResolver)(lType, lScalarConfig, rType, rScalarConfig);
-
-            if (resolver) {
-              _scalarFns[lType.name.value] = _scalarFns[lType.name.value] || {};
-              _scalarFns[lType.name.value] = resolver;
-            }
-
-            break;
-        }
+      if (rType.kind && rType.kind.endsWith && rType.kind.endsWith('Extension')) {
+        rType = (0, _deepmerge2.default)({}, rType);
+        rType.kind = rType.kind.substring(0, rType.kind.length - 9) + 'Definition';
       }
-    } catch (err) {
-      _didIteratorError3 = true;
-      _iteratorError3 = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion3 && _iterator3.return) {
-          _iterator3.return();
-        }
-      } finally {
-        if (_didIteratorError3) {
-          throw _iteratorError3;
-        }
+
+      if (!lType) {
+        lAST.definitions.push(rType);
+        continue;
+      }
+
+      switch (lType.kind) {
+        default:
+        case 'ObjectTypeDefinition':
+        case 'ObjectTypeDefinitionExtension':
+        case 'InterfaceTypeDefinition':
+        case 'InterfaceTypeDefinitionExtension':
+        case 'InputObjectTypeDefinition':
+        case 'InputObjectTypeDefinitionExtension':
+          combineTypeAndSubType('directives', lType, rType, conflictResolvers);
+          combineTypeAndSubType('fields', lType, rType, conflictResolvers);
+          break;
+
+        case 'EnumTypeDefinition':
+          combineTypeAndSubType('directives', lType, rType, conflictResolvers);
+          combineTypeAndSubType('values', lType, rType, conflictResolvers);
+          break;
+
+        case 'UnionTypeDefinition':
+          combineTypeAndSubType('directives', lType, rType, conflictResolvers);
+          combineTypeAndSubType('types', lType, rType, conflictResolvers);
+          break;
+
+        case 'ScalarTypeDefinitionNode':
+          let lScalar, lScalarConfig, rScalar, rScalarConfig, resolver;
+
+          combineTypeAndSubType('directives', lType, rType, conflictResolvers);
+
+          if (this.schema) {
+            lScalar = this.schema.getType(lType.name.value);
+            lScalarConfig = lScalar && lScalar._scalarConfig || null;
+          }
+
+          if (source.schema) {
+            rScalar = source.schema.getType(rType.name.value);
+            rScalarConfig = rScalar && rScalar._scalarConfig || null;
+          }
+
+          resolver = (conflictResolvers.scalarMergeResolver || DefaultConflictResolvers.scalarMergeResolver)(lType, lScalarConfig, rType, rScalarConfig);
+
+          if (resolver) {
+            _scalarFns[lType.name.value] = _scalarFns[lType.name.value] || {};
+            _scalarFns[lType.name.value] = resolver;
+          }
+
+          break;
       }
     }
 
     let merged = Schemata.from(this.constructor.gql.print(lAST));
 
     if (Object.keys(_scalarFns).length) {
-      var _iteratorNormalCompletion4 = true;
-      var _didIteratorError4 = false;
-      var _iteratorError4 = undefined;
-
-      try {
-        for (var _iterator4 = Object.keys(_scalarFns)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-          let typeName = _step4.value;
-
-          merged.schema.getType(typeName)._scalarConfig = _scalarConfig[typeName];
-        }
-      } catch (err) {
-        _didIteratorError4 = true;
-        _iteratorError4 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion4 && _iterator4.return) {
-            _iterator4.return();
-          }
-        } finally {
-          if (_didIteratorError4) {
-            throw _iteratorError4;
-          }
-        }
+      for (let typeName of Object.keys(_scalarFns)) {
+        merged.schema.getType(typeName)._scalarConfig = _scalarConfig[typeName];
       }
     }
 
@@ -786,95 +696,74 @@ class Schemata extends String {
     let lAST = this.ast;
     let rAST = source.ast;
 
-    var _iteratorNormalCompletion5 = true;
-    var _didIteratorError5 = false;
-    var _iteratorError5 = undefined;
+    for (let rType of rAST.definitions) {
+      let lType = lAST.definitions.find(a => a.name.value == rType.name.value);
 
-    try {
-      for (var _iterator5 = rAST.definitions[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-        let rType = _step5.value;
+      if (rType.kind && rType.kind.endsWith && rType.kind.endsWith('Extension')) {
+        let len = 'Extension'.length;
 
-        let lType = lAST.definitions.find(a => a.name.value == rType.name.value);
+        rType = (0, _deepmerge2.default)({}, rType);
+        rType.kind = rType.kind.substring(0, rType.kind.length - len) + 'Definition';
+      }
 
-        if (rType.kind && rType.kind.endsWith && rType.kind.endsWith('Extension')) {
-          let len = 'Extension'.length;
+      if (!lType) {
+        lAST.definitions.push(rType);
+        continue;
+      }
 
-          rType = (0, _deepmerge2.default)({}, rType);
-          rType.kind = rType.kind.substring(0, rType.kind.length - len) + 'Definition';
-        }
+      switch (lType.kind) {
+        default:
+        case 'ObjectTypeDefinition':
+        case 'ObjectTypeDefinitionExtension':
+        case 'InterfaceTypeDefinition':
+        case 'InterfaceTypeDefinitionExtension':
+        case 'InputObjectTypeDefinition':
+        case 'InputObjectTypeDefinitionExtension':
+          pareTypeAndSubType('directives', lType, rType, resolvers);
+          pareTypeAndSubType('fields', lType, rType, resolvers);
 
-        if (!lType) {
-          lAST.definitions.push(rType);
-          continue;
-        }
-
-        switch (lType.kind) {
-          default:
-          case 'ObjectTypeDefinition':
-          case 'ObjectTypeDefinitionExtension':
-          case 'InterfaceTypeDefinition':
-          case 'InterfaceTypeDefinitionExtension':
-          case 'InputObjectTypeDefinition':
-          case 'InputObjectTypeDefinitionExtension':
-            pareTypeAndSubType('directives', lType, rType, resolvers);
-            pareTypeAndSubType('fields', lType, rType, resolvers);
-
-            if (!lType.fields.length) {
-              let index = lAST.definitions.indexOf(lType);
-
-              if (index !== -1) {
-                lAST.definitions.splice(index, 1);
-              }
-            }
-            break;
-
-          case 'EnumTypeDefinition':
-            pareTypeAndSubType('directives', lType, rType, resolvers);
-            pareTypeAndSubType('values', lType, rType, resolvers);
-
-            if (!lType.values.length) {
-              let index = lAST.definitions.indexOf(lType);
-
-              if (index !== -1) {
-                lAST.definitions.splice(index, 1);
-              }
-            }
-            break;
-
-          case 'UnionTypeDefinition':
-            pareTypeAndSubType('directives', lType, rType, resolvers);
-            pareTypeAndSubType('types', lType, rType, resolvers);
-
-            if (!lType.types.length) {
-              let index = lAST.definitions.indexOf(lType);
-
-              if (index !== -1) {
-                lAST.definitions.splice(index, 1);
-              }
-            }
-            break;
-
-          case 'ScalarTypeDefinitionNode':
+          if (!lType.fields.length) {
             let index = lAST.definitions.indexOf(lType);
 
             if (index !== -1) {
               lAST.definitions.splice(index, 1);
             }
-            break;
-        }
-      }
-    } catch (err) {
-      _didIteratorError5 = true;
-      _iteratorError5 = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion5 && _iterator5.return) {
-          _iterator5.return();
-        }
-      } finally {
-        if (_didIteratorError5) {
-          throw _iteratorError5;
-        }
+          }
+          break;
+
+        case 'EnumTypeDefinition':
+          pareTypeAndSubType('directives', lType, rType, resolvers);
+          pareTypeAndSubType('values', lType, rType, resolvers);
+
+          if (!lType.values.length) {
+            let index = lAST.definitions.indexOf(lType);
+
+            if (index !== -1) {
+              lAST.definitions.splice(index, 1);
+            }
+          }
+          break;
+
+        case 'UnionTypeDefinition':
+          pareTypeAndSubType('directives', lType, rType, resolvers);
+          pareTypeAndSubType('types', lType, rType, resolvers);
+
+          if (!lType.types.length) {
+            let index = lAST.definitions.indexOf(lType);
+
+            if (index !== -1) {
+              lAST.definitions.splice(index, 1);
+            }
+          }
+          break;
+
+        case 'ScalarTypeDefinitionNode':
+          let index = lAST.definitions.indexOf(lType);
+
+          if (index !== -1) {
+            lAST.definitions.splice(index, 1);
+          }
+          break;
       }
     }
 
@@ -1020,82 +909,37 @@ class Schemata extends String {
 
     // Next check to see if we are flattening or simply extending
     if (typeof flattenRootResolversOrFirstParam === 'boolean') {
-      var _arr2 = ['Query', 'Mutation', 'Subscription'];
-
-      for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
-        let rootType = _arr2[_i2];
+      for (let rootType of ['Query', 'Mutation', 'Subscription']) {
         if (flattenRootResolversOrFirstParam) {
           if (resolvers[rootType]) {
-            var _iteratorNormalCompletion6 = true;
-            var _didIteratorError6 = false;
-            var _iteratorError6 = undefined;
-
-            try {
-              for (var _iterator6 = Object.keys(resolvers[rootType])[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                let field = _step6.value;
-
-                resolvers[field] = resolvers[rootType][field];
-                delete resolvers[rootType][field];
-              }
-            } catch (err) {
-              _didIteratorError6 = true;
-              _iteratorError6 = err;
-            } finally {
-              try {
-                if (!_iteratorNormalCompletion6 && _iterator6.return) {
-                  _iterator6.return();
-                }
-              } finally {
-                if (_didIteratorError6) {
-                  throw _iteratorError6;
-                }
-              }
+            for (let field of Object.keys(resolvers[rootType])) {
+              resolvers[field] = resolvers[rootType][field];
+              delete resolvers[rootType][field];
             }
 
             delete resolvers[rootType];
           }
         } else {
-          var _iteratorNormalCompletion7 = true;
-          var _didIteratorError7 = false;
-          var _iteratorError7 = undefined;
-
-          try {
-            for (var _iterator7 = Object.keys(resolvers)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-              let field = _step7.value;
-
-              try {
-                debug_log('[buildResolvers()] finding field in schema');
-                if (schemata.schemaFieldByName(rootType, field)) {
-                  resolvers[rootType] = resolvers[rootType] || {};
-                  resolvers[rootType][field] = resolvers[field];
-                  delete resolvers[field];
-                }
-              } catch (error) {
-                debug_log(_neTagFns.inline`
+          for (let field of Object.keys(resolvers)) {
+            try {
+              debug_log('[buildResolvers()] finding field in schema');
+              if (schemata.schemaFieldByName(rootType, field)) {
+                resolvers[rootType] = resolvers[rootType] || {};
+                resolvers[rootType][field] = resolvers[field];
+                delete resolvers[field];
+              }
+            } catch (error) {
+              debug_log(_neTagFns.inline`
                 [buildResolvers()] Falling back to \`astFieldByName()\`
               `);
-                debug_trace(_neTagFns.inline`
+              debug_trace(_neTagFns.inline`
                 [buildResolvers()] Falling back to \`astFieldByName()\` due to
               `, error);
 
-                if (schemata.astFieldByName(rootType, field)) {
-                  resolvers[rootType] = resolvers[rootType] || {};
-                  resolvers[rootType][field] = resolvers[field];
-                  delete resolvers[field];
-                }
-              }
-            }
-          } catch (err) {
-            _didIteratorError7 = true;
-            _iteratorError7 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion7 && _iterator7.return) {
-                _iterator7.return();
-              }
-            } finally {
-              if (_didIteratorError7) {
-                throw _iteratorError7;
+              if (schemata.astFieldByName(rootType, field)) {
+                resolvers[rootType] = resolvers[rootType] || {};
+                resolvers[rootType][field] = resolvers[field];
+                delete resolvers[field];
               }
             }
           }
@@ -1107,29 +951,8 @@ class Schemata extends String {
 
     // Finally extend with any remaining arguments
     if (extendWith.length) {
-      var _iteratorNormalCompletion8 = true;
-      var _didIteratorError8 = false;
-      var _iteratorError8 = undefined;
-
-      try {
-        for (var _iterator8 = extendWith[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-          let item = _step8.value;
-
-          resolvers = (0, _deepmerge2.default)(resolvers || {}, item || {});
-        }
-      } catch (err) {
-        _didIteratorError8 = true;
-        _iteratorError8 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion8 && _iterator8.return) {
-            _iterator8.return();
-          }
-        } finally {
-          if (_didIteratorError8) {
-            throw _iteratorError8;
-          }
-        }
+      for (let item of extendWith) {
+        resolvers = (0, _deepmerge2.default)(resolvers || {}, item || {});
       }
     }
 
@@ -1626,12 +1449,8 @@ class Schemata extends String {
    * @return {Promise<ExecutionResult>} a Promise contianing the requested
    * results
    */
-  runAsync(query, contextValue, variableValues, rootValue, operationName, fieldResolver) {
-    var _this = this;
-
-    return _asyncToGenerator(function* () {
-      return _this.constructor.gql.graphql(_this.schema, query, _this.resolvers || rootValue, contextValue, variableValues, operationName, fieldResolver);
-    })();
+  async runAsync(query, contextValue, variableValues, rootValue, operationName, fieldResolver) {
+    return this.constructor.gql.graphql(this.schema, query, this.resolvers || rootValue, contextValue, variableValues, operationName, fieldResolver);
   }
 
   /**
@@ -1693,29 +1512,8 @@ class Schemata extends String {
       if (enhance) {
         debug_log('[static parse()] enhancing');
         node[Symbol.iterator] = function* () {
-          var _iteratorNormalCompletion9 = true;
-          var _didIteratorError9 = false;
-          var _iteratorError9 = undefined;
-
-          try {
-            for (var _iterator9 = this.definitions[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-              let node = _step9.value;
-
-              yield node;
-            }
-          } catch (err) {
-            _didIteratorError9 = true;
-            _iteratorError9 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion9 && _iterator9.return) {
-                _iterator9.return();
-              }
-            } finally {
-              if (_didIteratorError9) {
-                throw _iteratorError9;
-              }
-            }
+          for (let node of this.definitions) {
+            yield node;
           }
         };
       }
@@ -1938,29 +1736,8 @@ function runInjectors(config, resolverArgs) {
     config.resolverInjectors = [config.resolverInjectors];
   }
 
-  var _iteratorNormalCompletion10 = true;
-  var _didIteratorError10 = false;
-  var _iteratorError10 = undefined;
-
-  try {
-    for (var _iterator10 = config.resolverInjectors[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
-      let injector = _step10.value;
-
-      args = injector(resolverArgs);
-    }
-  } catch (err) {
-    _didIteratorError10 = true;
-    _iteratorError10 = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion10 && _iterator10.return) {
-        _iterator10.return();
-      }
-    } finally {
-      if (_didIteratorError10) {
-        throw _iteratorError10;
-      }
-    }
+  for (let injector of config.resolverInjectors) {
+    args = injector(resolverArgs);
   }
 
   return args;
@@ -2212,40 +1989,19 @@ subTypeResolverMap.set('scalars', 'scalarMergeResolver');
  */
 function combineTypeAndSubType(subTypeName, lType, rType, conflictResolvers = DefaultConflictResolvers) {
   if (rType[subTypeName]) {
-    var _iteratorNormalCompletion11 = true;
-    var _didIteratorError11 = false;
-    var _iteratorError11 = undefined;
+    for (let rSubType of rType[subTypeName]) {
+      let lSubType = lType[subTypeName].find(f => f.name.value == rSubType.name.value);
 
-    try {
-      for (var _iterator11 = rType[subTypeName][Symbol.iterator](), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
-        let rSubType = _step11.value;
-
-        let lSubType = lType[subTypeName].find(f => f.name.value == rSubType.name.value);
-
-        if (!lSubType) {
-          lType[subTypeName].push(rSubType);
-          continue;
-        }
-
-        let resolver = subTypeResolverMap.get(subTypeName) || 'fieldMergeResolver';
-        let resultingSubType = conflictResolvers[resolver](lType, lSubType, rType, rSubType);
-        let index = lType.fields.indexOf(lSubType);
-
-        lType[subTypeName].splice(index, 1, resultingSubType);
+      if (!lSubType) {
+        lType[subTypeName].push(rSubType);
+        continue;
       }
-    } catch (err) {
-      _didIteratorError11 = true;
-      _iteratorError11 = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion11 && _iterator11.return) {
-          _iterator11.return();
-        }
-      } finally {
-        if (_didIteratorError11) {
-          throw _iteratorError11;
-        }
-      }
+
+      let resolver = subTypeResolverMap.get(subTypeName) || 'fieldMergeResolver';
+      let resultingSubType = conflictResolvers[resolver](lType, lSubType, rType, rSubType);
+      let index = lType.fields.indexOf(lSubType);
+
+      lType[subTypeName].splice(index, 1, resultingSubType);
     }
   }
 }
@@ -2264,41 +2020,20 @@ function combineTypeAndSubType(subTypeName, lType, rType, conflictResolvers = De
  * named union type
  */
 function pareTypeAndSubType(subTypeName, lType, rType, resolvers = {}) {
-  var _iteratorNormalCompletion12 = true;
-  var _didIteratorError12 = false;
-  var _iteratorError12 = undefined;
+  for (let rSubType of rType[subTypeName]) {
+    let lSubType = lType[subTypeName].find(f => f.name.value == rSubType.name.value);
 
-  try {
-    for (var _iterator12 = rType[subTypeName][Symbol.iterator](), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
-      let rSubType = _step12.value;
-
-      let lSubType = lType[subTypeName].find(f => f.name.value == rSubType.name.value);
-
-      if (!lSubType) {
-        continue;
-      }
-
-      let index = lType.fields.indexOf(lSubType);
-      lType[subTypeName].splice(index, 1);
-
-      if (resolvers[lType.name.value] && resolvers[lType.name.value][lSubType.name.value]) {
-        delete resolvers[lType.name.value][lSubType.name.value];
-      } else if (resolvers[lSubType.name.value]) {
-        delete resolvers[lSubType.name.value];
-      }
+    if (!lSubType) {
+      continue;
     }
-  } catch (err) {
-    _didIteratorError12 = true;
-    _iteratorError12 = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion12 && _iterator12.return) {
-        _iterator12.return();
-      }
-    } finally {
-      if (_didIteratorError12) {
-        throw _iteratorError12;
-      }
+
+    let index = lType.fields.indexOf(lSubType);
+    lType[subTypeName].splice(index, 1);
+
+    if (resolvers[lType.name.value] && resolvers[lType.name.value][lSubType.name.value]) {
+      delete resolvers[lType.name.value][lSubType.name.value];
+    } else if (resolvers[lSubType.name.value]) {
+      delete resolvers[lSubType.name.value];
     }
   }
 }

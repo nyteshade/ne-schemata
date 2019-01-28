@@ -1,9 +1,6 @@
 'use strict';
 
-var _require = require('./GraphQLExtension');
-
-const register = _require.register;
-
+const { register } = require('./GraphQLExtension');
 
 register('.graphql');
 //# sourceMappingURL=register.js.map

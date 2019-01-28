@@ -1,9 +1,6 @@
 'use strict';
 
-var _require = require('path');
-
-const resolve = _require.resolve;
-
+const { resolve } = require('path');
 
 module.exports = {
   process: function jestTransformer(sourceText, sourcePath, config, options) {

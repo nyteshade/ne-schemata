@@ -41,29 +41,8 @@ class ExtendedResolverMap {
    */
   get [Symbol.iterator]() {
     return function* () {
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = Object.keys(this.resolvers)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          let key = _step.value;
-
-          yield { key, value: this.resolvers[key] };
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
+      for (let key of Object.keys(this.resolvers)) {
+        yield { key, value: this.resolvers[key] };
       }
     }.bind(this);
   }
@@ -79,9 +58,7 @@ class ExtendedResolverMap {
    */
   static from(config) {
     if (config instanceof _Schemata.Schemata) {
-      const schema = config.schema,
-            sdl = config.sdl;
-
+      const { schema, sdl } = config;
       const resolvers = config.buildResolvers();
 
       return new ExtendedResolverMap({ schema, sdl, resolvers });
