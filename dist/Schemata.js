@@ -212,6 +212,32 @@ function (_String) {
 
 
   (0, _createClass2.default)(Schemata, [{
+    key: "flattenSDL",
+
+    /**
+     * Rewrites the typeDefs or SDL without any `extend type` definitions
+     * and returns the modified instance.
+     *
+     * @return {Schemata} the instance of Schemata this method was called
+     * on with modified typeDefs in place.
+     */
+    value: function flattenSDL() {
+      if (this.schema) {
+        this[TYPEDEFS_KEY] = (0, _graphql.printSchema)(this.schema);
+      }
+
+      return this;
+    }
+    /**
+     * Returns the regenerated SDL representing the Schema object on this
+     * Schemata instance. It does not modify the schemata object instance
+     * in any way.
+     *
+     * @return {String} the regenerated schema SDL from the actual
+     * schema object on this schemata instance.
+     */
+
+  }, {
     key: "schemaResolverFor",
 
     /**
@@ -1405,7 +1431,19 @@ function (_String) {
 
       try {
         debug_log('[get .schema] creating schema from SDL');
-        this[MAP].set(wmkSchema, schema = Class.buildSchema(this.sdl, true));
+        this[MAP].set(wmkSchema, schema = Class.buildSchema(this.sdl, true)); // Now try to handle and ObjectTypeExtensions
+
+        var ast = this.ast;
+        ast.definitions = [].concat(ast.definitions.filter(function (i) {
+          return i.kind == 'ObjectTypeExtension';
+        }));
+
+        try {
+          this[MAP].set(wmkSchema, schema = (0, _graphql.extendSchema)(schema, ast));
+        } catch (error) {
+          debug_log('[get .schema] failed to handle extended types');
+          debug_trace('[get .schema] ERROR!', error);
+        }
       } catch (error) {
         debug_log('[get .schema] failed to create schema');
         debug_trace('[get .schema] ERROR!', error);
@@ -1556,6 +1594,17 @@ function (_String) {
     key: "sdl",
     get: function get() {
       return this[TYPEDEFS_KEY];
+    }
+  }, {
+    key: "flatSDL",
+    get: function get() {
+      var sdl = this[TYPEDEFS_KEY];
+
+      if (this.schema) {
+        sdl = (0, _graphql.printSchema)(this.schema);
+      }
+
+      return sdl;
     }
     /**
      * A synonym or alias for `.sdl`. Placed here for the express purpose of

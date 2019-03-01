@@ -72,7 +72,7 @@ function () {
             return _context.stop();
         }
       }
-    }, _callee, this);
+    }, _callee);
   }));
 
   return function DefaultAsyncEntryInspector(_x, _x2, _x3, _x4) {
@@ -268,7 +268,7 @@ function _asyncWalkResolverMap() {
                       return _context2.stop();
                   }
                 }
-              }, _loop2, this);
+              }, _loop2);
             });
             _i2 = 0;
 
@@ -293,7 +293,7 @@ function _asyncWalkResolverMap() {
             return _context3.stop();
         }
       }
-    }, _callee2, this);
+    }, _callee2);
   }));
   return _asyncWalkResolverMap.apply(this, arguments);
 }

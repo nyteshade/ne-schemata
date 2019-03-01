@@ -113,6 +113,34 @@ let schemata = gql`
 let schema = schemata.schema
 ```
 
+### SDL or typeDefs with `extend type`
+
+SDL or typeDefs with `extend type` in them will honored and types will be extended as directed by the SDL. Calling `.sdl` or `.typeDefs` will contain the `extend type` SDL. `.schema` will return a GraphQLSchema object with the types properly extended however. To modify and update the internal SDL, call `.flattenSDL()`. This will regenerate the SDL on the instance. If, instead, you simply wish to see what the flattened SDL string looks like without modifying the instance, this can be found by accessing the `.flatSDL` property.
+
+```js
+// Create instance with extend type in SDL
+let schemata = gql`type User { name: String } extend type User { age: Int }`
+
+console.log(schemata)
+// Prints
+// type User { name: String } extend type User { age: Int }
+
+console.log(schemata.flatSDL)
+// Prints
+// type User {
+//   name: String
+//   age: Int
+// }
+
+schemata.flattenSDL()
+console.log(schemata)
+// Prints
+// type User {
+//   name: String
+//   age: Int
+// }
+```
+
 ### Using require('file.graphql') with require extensions
 
 The final way to create new instances of Schemata in a helpful and unobtrusive manner is to use the `'.graphql'` extension handler. This handler registers the `'.graphql'` extension with the `require()` function in your local nodeJS environment.
@@ -254,8 +282,8 @@ Even this example has difficulty explaining properly what is happening and why i
 * [Instance properties](#instance-properties)
   * [.ast](#inst-ast): [`?ASTNode`](https://github.com/graphql/graphql-js/blob/master/src/language/ast.js#L88)
   * [.executableSchema](#inst-executable-schema): [`?GraphQLSchema`](https://github.com/graphql/graphql-js/blob/master/src/type/schema.js#L48)
+  * [.flatSDL](#inst-flatsdl): `string`
   * [.graphiql](#inst-graphiql): `boolean`
-  * [.schemaDirectives](#inst-schema-directives): `Object`
   * [.hasAnExecutableSchema](#inst-has-an-executable-schema): `boolean`
   * [.hasFlattenedResolvers](#inst-has-flattened-resolvers): `boolean`
   * [.prevResolverMaps](#inst-prev-resolver-maps): `Array<ExtendedResolverMap>`
@@ -263,9 +291,10 @@ Even this example has difficulty explaining properly what is happening and why i
   * [.rootValue](#inst-root-value): `?ResolverMap`
   * [.schema](#inst-schema): [`?GraphQLSchema`](https://github.com/graphql/graphql-js/blob/master/src/type/schema.js#L48)
   * [.schemaDirectives](#inst-schema-directives): `Object`
+  * [.schemaDirectives](#inst-schema-directives): `Object`
   * [.sdl](#inst-sdl): `string`
-  * [.types](#inst-types): `Object`
   * [.typeDefs](#inst-type-defs): `string`
+  * [.types](#inst-types): `Object`
   * [.valid](#inst-valid): `boolean`
   * [.validSchema](#inst-valid-schema): `boolean`
   * [.validSDL](#inst-valid-sdl): `boolean`
@@ -276,6 +305,7 @@ Even this example has difficulty explaining properly what is happening and why i
   * [buildResolvers](#build-resolvers)
   * [clearResolvers](#clear-resolvers)
   * [clearSchema](#clear-schema)
+  * [flattenSDL](#flatten-sdl)
   * [forEachEnum](#for-each-enum)
   * [forEachField](#for-each-field)
   * [forEachInputObjectField](#for-each-input-object-field)
@@ -389,6 +419,10 @@ The final two parameters are for the case where the Schemata instance is initial
 #### <a name="inst-executable-schema"></a>.executableSchema [✯](#contents)
 
 ![getter](https://github.com/nyteshade/ne-schemata/raw/master/assets/get-left-arrow-24.png) retrieves the internally stored executable schema, if one exists, or it creates one if the `.resolvers` value has been set and if there is valid `.sdl`. This getter is now deprecated. All functionality has been integrated in the single `.schema` property without any loss of functionality. Please use that instead.
+
+#### <a name="inst-flatsdl"></a>.flatSDL [✯](#contents)
+
+![getter](https://github.com/nyteshade/ne-schemata/raw/master/assets/get-left-arrow-24.png) working from the built in `.schema` GraphQLSchema instance, SDL is regenerated and printed. Any `extend type` declarations applied to the schema instance will be merged and only the single type will be shown. This will return a string of SDL but the instance will not be modified in the process.
 
 #### <a name="inst-graphiql"></a>.graphiql [✯](#contents)
 
@@ -540,6 +574,14 @@ clearSchema()
 ```
 
 Removes any existing `.schema` GraphQLSchema instance that might have been assigned to the object instance. This is identical to calling `.schema = null`, and only exists here as a semantic method that may have future functionality added to it.
+
+#### <a name="flatten-sdl"></a>flattenSDL [✯](#contents)
+
+```js
+flattenSDL()
+```
+
+Working from the built in `.schema` GraphQLSchema instance, SDL is regenerated and printed. Any `extend type` declarations applied to the schema instance will be merged and only the single type will be shown. The internal typeDefs will be modified after this call and subsequent calls to `.ast`, `.schema`, `.sdl`, or `.typeDefs` will no longer have the `extend type` directives listed.
 
 #### <a name="for-each-of"></a>forEachOf [✯](#contents)
 

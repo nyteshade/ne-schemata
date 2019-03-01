@@ -1,6 +1,11 @@
 import { gql, Schemata, TYPEDEFS_KEY } from '..'
-import { parse, buildSchema, printSchema, GraphQLScalarType } from 'graphql'
 import { sdl, schema } from './gql/person.graphql'
+import {
+  parse,
+  buildSchema,
+  printSchema,
+  GraphQLScalarType
+} from 'graphql'
 
 describe('testing Schemata', async () => {
   let str = sdl.sdl
@@ -512,5 +517,54 @@ describe('testing Schemata', async () => {
         people: { type: '[Person]', args: [] }
       }
     })
+  })
+
+  it('should support extend type', () => {
+    let schemata = gql`
+      type User {
+        name: String
+      }
+
+      extend type User {
+        age: Int
+      }
+    `
+    let basicSchema = buildSchema(schemata.sdl)
+
+    expect(schemata.includes('extend')).toBe(true)
+    expect(basicSchema._typeMap.User._fields.age).toBeUndefined()
+    expect(schemata.schema._typeMap.User._fields.age).toBeTruthy()
+  })
+
+  it('.flatSDL should show a User with both age and name', () => {
+    let schemata = gql`
+      type User {
+        name: String
+      }
+
+      extend type User {
+        age: Int
+      }
+    `
+    let flatSDL = schemata.flatSDL
+
+    expect(schemata.includes('extend')).toBe(true)
+    expect(flatSDL.includes('extend')).toBe(false)
+  })
+
+  it('should support flattenSDL()', () => {
+    let schemata = gql`
+      type User {
+        name: String
+      }
+
+      extend type User {
+        age: Int
+      }
+    `
+    expect(schemata.includes('extend')).toBe(true)
+    schemata.flattenSDL()
+    expect(schemata.includes('extend')).toBe(false)
+    expect(schemata.schema._typeMap.User._fields.age).toBeTruthy()
   })
 })

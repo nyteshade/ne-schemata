@@ -17,9 +17,9 @@ var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
 
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
@@ -100,9 +100,9 @@ function (_BaseError) {
 
     (0, _classCallCheck2.default)(this, ResolverResultsPatcherError);
     _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ResolverResultsPatcherError).call(this, error));
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "patcher", void 0);
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "context", void 0);
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "results", void 0);
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "patcher", void 0);
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "context", void 0);
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "results", void 0);
     _this.patcher = patcher;
     _this.context = context;
     _this.results = results;

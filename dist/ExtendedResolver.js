@@ -19,9 +19,9 @@ var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
 
 var _wrapNativeSuper2 = _interopRequireDefault(require("@babel/runtime/helpers/wrapNativeSuper"));
 
@@ -81,7 +81,7 @@ function (_Function) {
       _this[patcher] = null;
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, new Proxy((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), ExtendedResolver.handler));
+    return (0, _possibleConstructorReturn2.default)(_this, new Proxy((0, _assertThisInitialized2.default)(_this), ExtendedResolver.handler));
   } // Properties
 
   /**

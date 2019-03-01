@@ -17,9 +17,9 @@ var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
 
 var _wrapNativeSuper2 = _interopRequireDefault(require("@babel/runtime/helpers/wrapNativeSuper"));
 
@@ -71,8 +71,8 @@ function (_Error) {
 
     (0, _classCallCheck2.default)(this, BaseError);
     _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseError).call(this, error.message || error, error.fileName, error.lineNumber));
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), "error", void 0);
-    _this.error = error instanceof String ? (0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)) : error;
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "error", void 0);
+    _this.error = error instanceof String ? (0, _assertThisInitialized2.default)(_this) : error;
 
     if (_this.toString === Error.prototype.toString) {
       console.error((0, _neTagFns.inline)(_templateObject(), _this.constructor.name));
@@ -88,7 +88,7 @@ function (_Error) {
       };
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, new Proxy((0, _assertThisInitialized2.default)((0, _assertThisInitialized2.default)(_this)), {
+    return (0, _possibleConstructorReturn2.default)(_this, new Proxy((0, _assertThisInitialized2.default)(_this), {
       get: function get(target, property, receiver) {
         if (this.error && this.error.hasOwnProperty(property)) {
           return this.error[property];

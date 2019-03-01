@@ -22,6 +22,7 @@ import type {
 
 import {
   defaultFieldResolver,
+  extendSchema,
   GraphQLObjectType,
   GraphQLSchema,
   parse,
@@ -253,6 +254,22 @@ export class Schemata extends String {
     try {
       debug_log('[get .schema] creating schema from SDL')
       this[MAP].set(wmkSchema, (schema = Class.buildSchema(this.sdl, true)))
+
+      // Now try to handle and ObjectTypeExtensions
+      let ast = this.ast
+
+      ast.definitions = [].concat(ast.definitions.filter(
+        i => i.kind == 'ObjectTypeExtension'
+      ))
+
+      try {
+        this[MAP].set(wmkSchema, (schema = extendSchema(schema, ast)))
+      }
+      catch (error) {
+        debug_log('[get .schema] failed to handle extended types')
+        debug_trace('[get .schema] ERROR!', error)
+      }
+
     }
     catch (error) {
       debug_log('[get .schema] failed to create schema')
@@ -413,6 +430,39 @@ export class Schemata extends String {
    */
   get sdl(): string {
     return this[TYPEDEFS_KEY]
+  }
+
+  /**
+   * Rewrites the typeDefs or SDL without any `extend type` definitions
+   * and returns the modified instance.
+   *
+   * @return {Schemata} the instance of Schemata this method was called
+   * on with modified typeDefs in place.
+   */
+  flattenSDL(): Schemata {
+    if (this.schema) {
+      this[TYPEDEFS_KEY] = printSchema(this.schema)
+    }
+
+    return this
+  }
+
+  /**
+   * Returns the regenerated SDL representing the Schema object on this
+   * Schemata instance. It does not modify the schemata object instance
+   * in any way.
+   *
+   * @return {String} the regenerated schema SDL from the actual
+   * schema object on this schemata instance.
+   */
+  get flatSDL(): String {
+    let sdl = this[TYPEDEFS_KEY]
+
+    if (this.schema) {
+      sdl = printSchema(this.schema)
+    }
+
+    return sdl
   }
 
   /**
