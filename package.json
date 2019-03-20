@@ -39,7 +39,7 @@
     "graphql": "^14.1.1",
     "jest": "^24.1.0",
     "jest-environment-node-debug": "^2.0.0",
-    "regenerator-runtime": "^0.12.0"
+    "regenerator-runtime": "^0.13.2"
   },
   "peerDependencies": {
     "graphql": "^14"
