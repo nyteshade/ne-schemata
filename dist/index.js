@@ -92,7 +92,7 @@ Object.defineProperty(exports, "TYPEDEFS_KEY", {
 Object.defineProperty(exports, "jestTransformer", {
   enumerable: true,
   get: function get() {
-    return _jestTransformer.default;
+    return _jestTransformer["default"];
   }
 });
 Object.defineProperty(exports, "ExtendedResolver", {
@@ -185,7 +185,7 @@ Object.defineProperty(exports, "ResolverResultsPatcherError", {
     return _errors.ResolverResultsPatcherError;
   }
 });
-exports.default = exports.SDL = void 0;
+exports["default"] = exports.SDL = void 0;
 
 var _Schemata = require("./Schemata");
 
@@ -210,4 +210,4 @@ var _errors = require("./errors");
 var SDL = _Schemata.Schemata;
 exports.SDL = SDL;
 var _default = _Schemata.Schemata;
-exports.default = _default;
+exports["default"] = _default;

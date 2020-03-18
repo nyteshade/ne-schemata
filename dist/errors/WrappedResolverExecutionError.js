@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.WrappedResolverExecutionError = void 0;
+exports["default"] = exports.WrappedResolverExecutionError = void 0;
 
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 
@@ -32,7 +32,7 @@ var _util = require("util");
 var _prettyError = _interopRequireDefault(require("pretty-error"));
 
 function _templateObject() {
-  var data = (0, _taggedTemplateLiteral2.default)(["\n      The ExtendedResolver execution failed. The resolver that failed was at\n      index ", ". The function had a name of '", "'.\n\n      Was the function likely a big arrow function? ", "\n\n      Arguments at the time were:\n      ", "\n\n      Context at the time was:\n      ", "\n\n      Results before the function was called\n      ", "\n\n      Original Stack Trace\n      ", "\n    "]);
+  var data = (0, _taggedTemplateLiteral2["default"])(["\n      The ExtendedResolver execution failed. The resolver that failed was at\n      index ", ". The function had a name of '", "'.\n\n      Was the function likely a big arrow function? ", "\n\n      Arguments at the time were:\n      ", "\n\n      Context at the time was:\n      ", "\n\n      Results before the function was called\n      ", "\n\n      Original Stack Trace\n      ", "\n    "]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -45,7 +45,7 @@ var isFn = function isFn(o) {
   return /Function\]/.test(Object.prototype.toString.call(o));
 };
 
-var pe = new _prettyError.default();
+var pe = new _prettyError["default"]();
 /**
  * ExtendedResolvers wrap several functions including the original GraphQL
  * field resolver itself. If an exception is thrown by any of the internal
@@ -54,10 +54,8 @@ var pe = new _prettyError.default();
  * @class WrappedResolverExecutionError
  */
 
-var WrappedResolverExecutionError =
-/*#__PURE__*/
-function (_BaseError) {
-  (0, _inherits2.default)(WrappedResolverExecutionError, _BaseError);
+var WrappedResolverExecutionError = /*#__PURE__*/function (_BaseError) {
+  (0, _inherits2["default"])(WrappedResolverExecutionError, _BaseError);
 
   /**
    * The `ExtendedResolver` object that caused the issue
@@ -110,13 +108,13 @@ function (_BaseError) {
   function WrappedResolverExecutionError(error, resolver, index, args, context, results) {
     var _this;
 
-    (0, _classCallCheck2.default)(this, WrappedResolverExecutionError);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(WrappedResolverExecutionError).call(this, error));
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "resolver", void 0);
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "index", void 0);
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "args", void 0);
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "context", void 0);
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "results", void 0);
+    (0, _classCallCheck2["default"])(this, WrappedResolverExecutionError);
+    _this = (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(WrappedResolverExecutionError).call(this, error));
+    (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "resolver", void 0);
+    (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "index", void 0);
+    (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "args", void 0);
+    (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "context", void 0);
+    (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "results", void 0);
     _this.resolver = resolver;
     _this.index = index;
     _this.args = args;
@@ -132,7 +130,7 @@ function (_BaseError) {
    */
 
 
-  (0, _createClass2.default)(WrappedResolverExecutionError, [{
+  (0, _createClass2["default"])(WrappedResolverExecutionError, [{
     key: "toString",
     value: function toString() {
       var fn = this.resolver && this.resolver.order && this.resolver.order[this.index];
@@ -187,4 +185,4 @@ function (_BaseError) {
 
 exports.WrappedResolverExecutionError = WrappedResolverExecutionError;
 var _default = WrappedResolverExecutionError;
-exports.default = _default;
+exports["default"] = _default;

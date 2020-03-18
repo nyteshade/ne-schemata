@@ -47,10 +47,8 @@ var isFn = function isFn(o) {
  */
 
 
-var ExtendedResolver =
-/*#__PURE__*/
-function (_Function) {
-  (0, _inherits2.default)(ExtendedResolver, _Function);
+var ExtendedResolver = /*#__PURE__*/function (_Function) {
+  (0, _inherits2["default"])(ExtendedResolver, _Function);
 
   /**
    * Creates a new instance of `ExtendedResolver` for use with GraphQL. If
@@ -68,8 +66,8 @@ function (_Function) {
     var _this;
 
     var resolver = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _graphql.defaultFieldResolver;
-    (0, _classCallCheck2.default)(this, ExtendedResolver);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ExtendedResolver).call(this));
+    (0, _classCallCheck2["default"])(this, ExtendedResolver);
+    _this = (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(ExtendedResolver).call(this));
 
     if (resolver instanceof ExtendedResolver) {
       _this[listing] = Array.from(resolver[listing]);
@@ -81,7 +79,7 @@ function (_Function) {
       _this[patcher] = null;
     }
 
-    return (0, _possibleConstructorReturn2.default)(_this, new Proxy((0, _assertThisInitialized2.default)(_this), ExtendedResolver.handler));
+    return (0, _possibleConstructorReturn2["default"])(_this, new Proxy((0, _assertThisInitialized2["default"])(_this), ExtendedResolver.handler));
   } // Properties
 
   /**
@@ -93,7 +91,7 @@ function (_Function) {
    */
 
 
-  (0, _createClass2.default)(ExtendedResolver, [{
+  (0, _createClass2["default"])(ExtendedResolver, [{
     key: "prepend",
     // Methods
 
@@ -175,8 +173,8 @@ function (_Function) {
         _iteratorError = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
           }
         } finally {
           if (_didIteratorError) {
@@ -438,13 +436,13 @@ function (_Function) {
          * @return {mixed} either null or some value as would have been returned
          * from the call of a graphql field resolver
          */
-        apply: function () {
-          var _apply = (0, _asyncToGenerator2.default)(
-          /*#__PURE__*/
-          _regenerator.default.mark(function _callee(target, thisArg, args) {
+        apply: function apply(target, thisArg, args) {
+          var _this2 = this;
+
+          return (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
             var myArgs, results, result, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, fn;
 
-            return _regenerator.default.wrap(function _callee$(_context) {
+            return _regenerator["default"].wrap(function _callee$(_context) {
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
@@ -477,7 +475,7 @@ function (_Function) {
                   case 15:
                     _context.prev = 15;
                     _context.t0 = _context["catch"](9);
-                    throw new _errors.WrappedResolverExecutionError(_context.t0, this, target[listing].indexOf(fn), myArgs.concat(results), thisArg || target);
+                    throw new _errors.WrappedResolverExecutionError(_context.t0, _this2, target[listing].indexOf(fn), myArgs.concat(results), thisArg || target);
 
                   case 18:
                     if (results && results instanceof Object && result && result instanceof Object) {
@@ -505,8 +503,8 @@ function (_Function) {
                     _context.prev = 28;
                     _context.prev = 29;
 
-                    if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                      _iterator2.return();
+                    if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+                      _iterator2["return"]();
                     }
 
                   case 31:
@@ -553,19 +551,13 @@ function (_Function) {
                     return _context.stop();
                 }
               }
-            }, _callee, this, [[5, 24, 28, 36], [9, 15], [29,, 31, 35], [37, 43]]);
-          }));
-
-          function apply(_x, _x2, _x3) {
-            return _apply.apply(this, arguments);
-          }
-
-          return apply;
-        }()
+            }, _callee, null, [[5, 24, 28, 36], [9, 15], [29,, 31, 35], [37, 43]]);
+          }))();
+        }
       };
     }
   }]);
   return ExtendedResolver;
-}((0, _wrapNativeSuper2.default)(Function));
+}( /*#__PURE__*/(0, _wrapNativeSuper2["default"])(Function));
 
 exports.ExtendedResolver = ExtendedResolver;

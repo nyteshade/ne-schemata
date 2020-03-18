@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.at = at;
 exports.atNicely = atNicely;
-exports.default = void 0;
+exports["default"] = void 0;
 
 /**
  * This function takes an array of values that are used with `eval` to
@@ -126,4 +126,4 @@ function atNicely(object, path, setTo) {
 
 
 var _default = atNicely;
-exports.default = _default;
+exports["default"] = _default;

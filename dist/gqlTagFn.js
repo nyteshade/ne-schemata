@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.gql = gql;
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _Schemata = require("./Schemata");
 
@@ -32,4 +32,4 @@ function gql(template) {
 }
 
 var _default = gql;
-exports.default = _default;
+exports["default"] = _default;

@@ -14,7 +14,7 @@ exports.DefaultEnumMergeResolver = DefaultEnumMergeResolver;
 exports.DefaultUnionMergeResolver = DefaultUnionMergeResolver;
 exports.DefaultScalarMergeResolver = DefaultScalarMergeResolver;
 exports.normalizeSource = normalizeSource;
-exports.default = exports.DefaultMergeOptions = exports.DefaultConflictResolvers = exports.EXE = exports.MAP = exports.SCHEMA_DIRECTIVES = exports.GRAPHIQL_FLAG = exports.TYPEDEFS_KEY = exports.isRootType = exports.Schemata = void 0;
+exports["default"] = exports.DefaultMergeOptions = exports.DefaultConflictResolvers = exports.EXE = exports.MAP = exports.SCHEMA_DIRECTIVES = exports.GRAPHIQL_FLAG = exports.TYPEDEFS_KEY = exports.isRootType = exports.Schemata = void 0;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
@@ -53,7 +53,7 @@ var _util = _interopRequireDefault(require("util"));
 var _forEachOf2 = require("./forEachOf");
 
 function _templateObject7() {
-  var data = (0, _taggedTemplateLiteral2.default)(["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function `normalizeSource`. Please check your code and try again.\n\n      (received: ", ")\n    "], ["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function \\`normalizeSource\\`. Please check your code and try again.\n\n      (received: ", ")\n    "]);
+  var data = (0, _taggedTemplateLiteral2["default"])(["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function `normalizeSource`. Please check your code and try again.\n\n      (received: ", ")\n    "], ["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function \\`normalizeSource\\`. Please check your code and try again.\n\n      (received: ", ")\n    "]);
 
   _templateObject7 = function _templateObject7() {
     return data;
@@ -63,7 +63,7 @@ function _templateObject7() {
 }
 
 function _templateObject6() {
-  var data = (0, _taggedTemplateLiteral2.default)(["\n        buildResolverForEachField() cannot be called unless there is enough\n        valid SDL in the instance to construct a schema. Please check your\n        code!\n      "]);
+  var data = (0, _taggedTemplateLiteral2["default"])(["\n        buildResolverForEachField() cannot be called unless there is enough\n        valid SDL in the instance to construct a schema. Please check your\n        code!\n      "]);
 
   _templateObject6 = function _templateObject6() {
     return data;
@@ -73,7 +73,7 @@ function _templateObject6() {
 }
 
 function _templateObject5() {
-  var data = (0, _taggedTemplateLiteral2.default)(["\n                [buildResolvers()] Falling back to `astFieldByName()` due to\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\` due to\n              "]);
+  var data = (0, _taggedTemplateLiteral2["default"])(["\n                [buildResolvers()] Falling back to `astFieldByName()` due to\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\` due to\n              "]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -83,7 +83,7 @@ function _templateObject5() {
 }
 
 function _templateObject4() {
-  var data = (0, _taggedTemplateLiteral2.default)(["\n                [buildResolvers()] Falling back to `astFieldByName()`\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\`\n              "]);
+  var data = (0, _taggedTemplateLiteral2["default"])(["\n                [buildResolvers()] Falling back to `astFieldByName()`\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\`\n              "]);
 
   _templateObject4 = function _templateObject4() {
     return data;
@@ -93,7 +93,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = (0, _taggedTemplateLiteral2.default)(["\n        In the call to mergeSchema(schema), ", " was received as a value\n        and the code could not proceed because of it. Please check your code\n        and try again\n      "]);
+  var data = (0, _taggedTemplateLiteral2["default"])(["\n        In the call to mergeSchema(schema), ", " was received as a value\n        and the code could not proceed because of it. Please check your code\n        and try again\n      "]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -103,7 +103,7 @@ function _templateObject3() {
 }
 
 function _templateObject2() {
-  var data = (0, _taggedTemplateLiteral2.default)(["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        `schemaLanguage` could not be parsed.\n      "], ["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        \\`schemaLanguage\\` could not be parsed.\n      "]);
+  var data = (0, _taggedTemplateLiteral2["default"])(["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        `schemaLanguage` could not be parsed.\n      "], ["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        \\`schemaLanguage\\` could not be parsed.\n      "]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -113,7 +113,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = (0, _taggedTemplateLiteral2.default)(["\n        The call to mergeSDL(schemaLanguage, conflictResolvers) received an\n        invalid value for schemaLanguage. Please check your code and try again.\n        Received ", ".\n      "]);
+  var data = (0, _taggedTemplateLiteral2["default"])(["\n        The call to mergeSDL(schemaLanguage, conflictResolvers) received an\n        invalid value for schemaLanguage. Please check your code and try again.\n        Received ", ".\n      "]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -135,10 +135,8 @@ var debug_trace = require('debug')('schemata:trace');
  *
  * @class  Schemata
  */
-var Schemata =
-/*#__PURE__*/
-function (_String) {
-  (0, _inherits2.default)(Schemata, _String);
+var Schemata = /*#__PURE__*/function (_String) {
+  (0, _inherits2["default"])(Schemata, _String);
 
   /**
    * Creates a new `String`, presumably of SDL or IDL. The getter `.valid`
@@ -167,8 +165,8 @@ function (_String) {
     var resolvers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     var buildResolvers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     var flattenResolvers = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    (0, _classCallCheck2.default)(this, Schemata);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Schemata).call(this, normalizeSource(typeDefs)));
+    (0, _classCallCheck2["default"])(this, Schemata);
+    _this = (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(Schemata).call(this, normalizeSource(typeDefs)));
     resolvers = resolvers || typeDefs instanceof Schemata && typeDefs.resolvers || typeDefs instanceof _graphql.GraphQLSchema && stripResolversFromSchema(typeDefs) || null;
     _this[GRAPHIQL_FLAG] = true;
     _this[TYPEDEFS_KEY] = normalizeSource(typeDefs);
@@ -185,7 +183,7 @@ function (_String) {
 
     if (_this[MAP].get(wmkSchema)) {
       _this[MAP].get(wmkSchema)[EXE] = true;
-      _this[MAP].get(wmkSchema)[Symbol.for('constructor-supplied-schema')] = true;
+      _this[MAP].get(wmkSchema)[Symbol["for"]('constructor-supplied-schema')] = true;
     } // If buildResolvers is true, after the rest is already set and done, go
     // ahead and build a new set of resolver functions for this instance
 
@@ -211,7 +209,7 @@ function (_String) {
    */
 
 
-  (0, _createClass2.default)(Schemata, [{
+  (0, _createClass2["default"])(Schemata, [{
     key: "flattenSDL",
 
     /**
@@ -377,7 +375,7 @@ function (_String) {
       var _scalarFns = {}; // Ensure we have default behavior with any custom behavior assigned
       // atop the default ones should only a partial custom be supplied.
 
-      conflictResolvers = (0, _deepmerge.default)(DefaultConflictResolvers, conflictResolvers);
+      conflictResolvers = (0, _deepmerge["default"])(DefaultConflictResolvers, conflictResolvers);
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -390,7 +388,7 @@ function (_String) {
           });
 
           if (rType.kind && rType.kind.endsWith && rType.kind.endsWith('Extension')) {
-            rType = (0, _deepmerge.default)({}, rType);
+            rType = (0, _deepmerge["default"])({}, rType);
             rType.kind = rType.kind.substring(0, rType.kind.length - 9) + 'Definition';
           }
 
@@ -456,8 +454,8 @@ function (_String) {
         _iteratorError = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
           }
         } finally {
           if (_didIteratorError) {
@@ -469,10 +467,8 @@ function (_String) {
       var merged = Schemata.from(this.constructor.gql.print(lAST));
 
       if (Object.keys(_scalarFns).length) {
-        var _arr = Object.keys(_scalarFns);
-
-        for (var _i = 0; _i < _arr.length; _i++) {
-          var typeName = _arr[_i];
+        for (var _i = 0, _Object$keys = Object.keys(_scalarFns); _i < _Object$keys.length; _i++) {
+          var typeName = _Object$keys[_i];
           merged.schema.getType(typeName)._scalarConfig = _scalarConfig[typeName];
         }
       }
@@ -508,7 +504,7 @@ function (_String) {
         resolverMap = stripResolversFromSchema(schemaLanguage);
       }
 
-      var resolvers = (0, _deepmerge.default)({}, resolverMap || this.resolvers || {});
+      var resolvers = (0, _deepmerge["default"])({}, resolverMap || this.resolvers || {});
       var lAST = this.ast;
       var rAST = source.ast;
       var _iteratorNormalCompletion2 = true;
@@ -524,7 +520,7 @@ function (_String) {
 
           if (rType.kind && rType.kind.endsWith && rType.kind.endsWith('Extension')) {
             var len = 'Extension'.length;
-            rType = (0, _deepmerge.default)({}, rType);
+            rType = (0, _deepmerge["default"])({}, rType);
             rType.kind = rType.kind.substring(0, rType.kind.length - len) + 'Definition';
           }
 
@@ -603,8 +599,8 @@ function (_String) {
         _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
+          if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+            _iterator2["return"]();
           }
         } finally {
           if (_didIteratorError2) {
@@ -649,8 +645,8 @@ function (_String) {
       schema = normalizeSource(schema, true);
 
       if (config !== DefaultMergeOptions) {
-        var mergedConfig = (0, _deepmerge.default)({}, DefaultMergeOptions);
-        config = (0, _deepmerge.default)(mergedConfig, config);
+        var mergedConfig = (0, _deepmerge["default"])({}, DefaultMergeOptions);
+        config = (0, _deepmerge["default"])(mergedConfig, config);
       } // Step1: Merge SDL; quit at this point if there are no resolvers
 
 
@@ -673,11 +669,11 @@ function (_String) {
 
       if (prevMaps && prevMaps.length) {
         mergeResolvers = prevMaps.reduce(function (p, c, i, a) {
-          return (0, _deepmerge.default)(p, c.resolvers || {});
+          return (0, _deepmerge["default"])(p, c.resolvers || {});
         }, {});
       } else {
-        (0, _deepmerge.default)(mergeResolvers, left.resolvers);
-        (0, _deepmerge.default)(mergeResolvers, right.resolvers);
+        (0, _deepmerge["default"])(mergeResolvers, left.resolvers);
+        (0, _deepmerge["default"])(mergeResolvers, right.resolvers);
       }
 
       merged.resolvers = mergeResolvers; // Step 4: Trigger a new schema creation
@@ -752,20 +748,16 @@ function (_String) {
     key: "buildResolvers",
     value: function buildResolvers(flattenRootResolversOrFirstParam) {
       var schemata = Schemata.from(this.sdl, this.resolvers);
-      var resolvers = (0, _deepmerge.default)({}, stripResolversFromSchema(schemata.schema) || schemata.resolvers || {}); // Next check to see if we are flattening or simply extending
+      var resolvers = (0, _deepmerge["default"])({}, stripResolversFromSchema(schemata.schema) || schemata.resolvers || {}); // Next check to see if we are flattening or simply extending
 
       if (typeof flattenRootResolversOrFirstParam === 'boolean') {
-        var _arr2 = ['Query', 'Mutation', 'Subscription'];
-
-        for (var _i2 = 0; _i2 < _arr2.length; _i2++) {
-          var rootType = _arr2[_i2];
+        for (var _i2 = 0, _arr = ['Query', 'Mutation', 'Subscription']; _i2 < _arr.length; _i2++) {
+          var rootType = _arr[_i2];
 
           if (flattenRootResolversOrFirstParam) {
             if (resolvers[rootType]) {
-              var _arr3 = Object.keys(resolvers[rootType]);
-
-              for (var _i3 = 0; _i3 < _arr3.length; _i3++) {
-                var field = _arr3[_i3];
+              for (var _i3 = 0, _Object$keys2 = Object.keys(resolvers[rootType]); _i3 < _Object$keys2.length; _i3++) {
+                var field = _Object$keys2[_i3];
                 resolvers[field] = resolvers[rootType][field];
                 delete resolvers[rootType][field];
               }
@@ -773,10 +765,8 @@ function (_String) {
               delete resolvers[rootType];
             }
           } else {
-            var _arr4 = Object.keys(resolvers);
-
-            for (var _i4 = 0; _i4 < _arr4.length; _i4++) {
-              var _field2 = _arr4[_i4];
+            for (var _i4 = 0, _Object$keys3 = Object.keys(resolvers); _i4 < _Object$keys3.length; _i4++) {
+              var _field2 = _Object$keys3[_i4];
 
               try {
                 debug_log('[buildResolvers()] finding field in schema');
@@ -800,7 +790,7 @@ function (_String) {
           }
         }
       } else {
-        resolvers = (0, _deepmerge.default)(resolvers || {}, flattenRootResolversOrFirstParam || {});
+        resolvers = (0, _deepmerge["default"])(resolvers || {}, flattenRootResolversOrFirstParam || {});
       } // Finally extend with any remaining arguments
 
 
@@ -809,9 +799,28 @@ function (_String) {
       }
 
       if (extendWith.length) {
-        for (var _i5 = 0; _i5 < extendWith.length; _i5++) {
-          var item = extendWith[_i5];
-          resolvers = (0, _deepmerge.default)(resolvers || {}, item || {});
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
+
+        try {
+          for (var _iterator3 = extendWith[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var item = _step3.value;
+            resolvers = (0, _deepmerge["default"])(resolvers || {}, item || {});
+          }
+        } catch (err) {
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+              _iterator3["return"]();
+            }
+          } finally {
+            if (_didIteratorError3) {
+              throw _iteratorError3;
+            }
+          }
         }
       }
 
@@ -896,7 +905,7 @@ function (_String) {
      */
 
   }, {
-    key: _util.default.inspect.custom,
+    key: _util["default"].inspect.custom,
     value: function value(depth, options) {
       return this.sdl;
     }
@@ -1277,10 +1286,8 @@ function (_String) {
   }, {
     key: "runAsync",
     value: function () {
-      var _runAsync = (0, _asyncToGenerator2.default)(
-      /*#__PURE__*/
-      _regenerator.default.mark(function _callee(query, contextValue, variableValues, rootValue, operationName, fieldResolver) {
-        return _regenerator.default.wrap(function _callee$(_context) {
+      var _runAsync = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(query, contextValue, variableValues, rootValue, operationName, fieldResolver) {
+        return _regenerator["default"].wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -1325,10 +1332,8 @@ function (_String) {
      * @type {Function}
      */
     get: function get() {
-      return (
-        /*#__PURE__*/
-        _regenerator.default.mark(function _callee2() {
-          return _regenerator.default.wrap(function _callee2$(_context2) {
+      return (/*#__PURE__*/_regenerator["default"].mark(function _callee2() {
+          return _regenerator["default"].wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
@@ -1501,13 +1506,13 @@ function (_String) {
       debug_trace('[set .schema] ', schema);
 
       if (!schema) {
-        this[MAP].delete(wmkSchema);
+        this[MAP]["delete"](wmkSchema);
       } else {
         var schemaResolvers = stripResolversFromSchema(schema);
 
         if (Object.keys(schemaResolvers).length) {
           schema[EXE] = true;
-          (0, _deepmerge.default)(this.resolvers = this.resolvers || {}, schemaResolvers);
+          (0, _deepmerge["default"])(this.resolvers = this.resolvers || {}, schemaResolvers);
         }
 
         this[MAP].set(wmkSchema, schema);
@@ -1665,28 +1670,28 @@ function (_String) {
         var args = [];
 
         if (fa && fa.length) {
-          var _iteratorNormalCompletion3 = true;
-          var _didIteratorError3 = false;
-          var _iteratorError3 = undefined;
+          var _iteratorNormalCompletion4 = true;
+          var _didIteratorError4 = false;
+          var _iteratorError4 = undefined;
 
           try {
-            for (var _iterator3 = fa[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-              var _step3$value = _step3.value,
-                  name = _step3$value.name,
-                  type = _step3$value.type;
-              args.push((0, _defineProperty2.default)({}, name, type.toString()));
+            for (var _iterator4 = fa[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+              var _step4$value = _step4.value,
+                  name = _step4$value.name,
+                  type = _step4$value.type;
+              args.push((0, _defineProperty2["default"])({}, name, type.toString()));
             }
           } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
+            _didIteratorError4 = true;
+            _iteratorError4 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                _iterator3.return();
+              if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+                _iterator4["return"]();
               }
             } finally {
-              if (_didIteratorError3) {
-                throw _iteratorError3;
+              if (_didIteratorError4) {
+                throw _iteratorError4;
               }
             }
           }
@@ -1762,38 +1767,36 @@ function (_String) {
         return false;
       }
 
-      var _arr5 = [query, mutation, subscription];
-
-      for (var _i6 = 0; _i6 < _arr5.length; _i6++) {
-        var type = _arr5[_i6];
+      for (var _i5 = 0, _arr2 = [query, mutation, subscription]; _i5 < _arr2.length; _i5++) {
+        var type = _arr2[_i5];
 
         if (!type || !type.fields) {
           continue;
         }
 
-        var _iteratorNormalCompletion4 = true;
-        var _didIteratorError4 = false;
-        var _iteratorError4 = undefined;
+        var _iteratorNormalCompletion5 = true;
+        var _didIteratorError5 = false;
+        var _iteratorError5 = undefined;
 
         try {
-          for (var _iterator4 = type.fields[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-            var field = _step4.value;
+          for (var _iterator5 = type.fields[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+            var field = _step5.value;
 
             if (field.name.value in resolvers) {
               return true;
             }
           }
         } catch (err) {
-          _didIteratorError4 = true;
-          _iteratorError4 = err;
+          _didIteratorError5 = true;
+          _iteratorError5 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-              _iterator4.return();
+            if (!_iteratorNormalCompletion5 && _iterator5["return"] != null) {
+              _iterator5["return"]();
             }
           } finally {
-            if (_didIteratorError4) {
-              throw _iteratorError4;
+            if (_didIteratorError5) {
+              throw _iteratorError5;
             }
           }
         }
@@ -1915,33 +1918,31 @@ function (_String) {
 
         if (enhance) {
           debug_log('[static parse()] enhancing');
-          node[Symbol.iterator] =
-          /*#__PURE__*/
-          _regenerator.default.mark(function _callee3() {
-            var _iteratorNormalCompletion5, _didIteratorError5, _iteratorError5, _iterator5, _step5, _node;
+          node[Symbol.iterator] = /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+            var _iteratorNormalCompletion6, _didIteratorError6, _iteratorError6, _iterator6, _step6, _node;
 
-            return _regenerator.default.wrap(function _callee3$(_context3) {
+            return _regenerator["default"].wrap(function _callee3$(_context3) {
               while (1) {
                 switch (_context3.prev = _context3.next) {
                   case 0:
-                    _iteratorNormalCompletion5 = true;
-                    _didIteratorError5 = false;
-                    _iteratorError5 = undefined;
+                    _iteratorNormalCompletion6 = true;
+                    _didIteratorError6 = false;
+                    _iteratorError6 = undefined;
                     _context3.prev = 3;
-                    _iterator5 = this.definitions[Symbol.iterator]();
+                    _iterator6 = this.definitions[Symbol.iterator]();
 
                   case 5:
-                    if (_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done) {
+                    if (_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done) {
                       _context3.next = 12;
                       break;
                     }
 
-                    _node = _step5.value;
+                    _node = _step6.value;
                     _context3.next = 9;
                     return _node;
 
                   case 9:
-                    _iteratorNormalCompletion5 = true;
+                    _iteratorNormalCompletion6 = true;
                     _context3.next = 5;
                     break;
 
@@ -1952,26 +1953,26 @@ function (_String) {
                   case 14:
                     _context3.prev = 14;
                     _context3.t0 = _context3["catch"](3);
-                    _didIteratorError5 = true;
-                    _iteratorError5 = _context3.t0;
+                    _didIteratorError6 = true;
+                    _iteratorError6 = _context3.t0;
 
                   case 18:
                     _context3.prev = 18;
                     _context3.prev = 19;
 
-                    if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
-                      _iterator5.return();
+                    if (!_iteratorNormalCompletion6 && _iterator6["return"] != null) {
+                      _iterator6["return"]();
                     }
 
                   case 21:
                     _context3.prev = 21;
 
-                    if (!_didIteratorError5) {
+                    if (!_didIteratorError6) {
                       _context3.next = 24;
                       break;
                     }
 
-                    throw _iteratorError5;
+                    throw _iteratorError6;
 
                   case 24:
                     return _context3.finish(21);
@@ -2207,7 +2208,7 @@ function (_String) {
     }
   }]);
   return Schemata;
-}((0, _wrapNativeSuper2.default)(String));
+}( /*#__PURE__*/(0, _wrapNativeSuper2["default"])(String));
 /**
  * Given an type, determine if the type is a root type; i.e. one of Query,
  * Mutation or Subscription as defined in the `graphql` library.
@@ -2250,26 +2251,26 @@ function runInjectors(config, resolverArgs) {
     config.resolverInjectors = [config.resolverInjectors];
   }
 
-  var _iteratorNormalCompletion6 = true;
-  var _didIteratorError6 = false;
-  var _iteratorError6 = undefined;
+  var _iteratorNormalCompletion7 = true;
+  var _didIteratorError7 = false;
+  var _iteratorError7 = undefined;
 
   try {
-    for (var _iterator6 = config.resolverInjectors[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-      var injector = _step6.value;
+    for (var _iterator7 = config.resolverInjectors[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+      var injector = _step7.value;
       args = injector(resolverArgs);
     }
   } catch (err) {
-    _didIteratorError6 = true;
-    _iteratorError6 = err;
+    _didIteratorError7 = true;
+    _iteratorError7 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
-        _iterator6.return();
+      if (!_iteratorNormalCompletion7 && _iterator7["return"] != null) {
+        _iterator7["return"]();
       }
     } finally {
-      if (_didIteratorError6) {
-        throw _iteratorError6;
+      if (_didIteratorError7) {
+        throw _iteratorError7;
       }
     }
   }
@@ -2357,11 +2358,11 @@ var TYPEDEFS_KEY = Symbol('internal-typedefs-key');
 /** @type {Symbol} a constant symbol used as a key to a flag for express-gql */
 
 exports.TYPEDEFS_KEY = TYPEDEFS_KEY;
-var GRAPHIQL_FLAG = Symbol.for('internal-graphiql-key');
+var GRAPHIQL_FLAG = Symbol["for"]('internal-graphiql-key');
 /** @type {Symbol} a constant symbol used as a key to a flag for express-gql */
 
 exports.GRAPHIQL_FLAG = GRAPHIQL_FLAG;
-var SCHEMA_DIRECTIVES = Symbol.for('internal-directives-key');
+var SCHEMA_DIRECTIVES = Symbol["for"]('internal-directives-key');
 /** @type {Symbol} a unique symbol used as a key to all instance `WeakMap`s */
 
 exports.SCHEMA_DIRECTIVES = SCHEMA_DIRECTIVES;
@@ -2508,14 +2509,14 @@ var DefaultConflictResolvers = {
 
   /** A handler for resolving scalar configs in custom scalars */
   scalarMergeResolver: DefaultScalarMergeResolver
-  /**
-   * A `MergeOptionsConfig` object with an empty array of
-   * `ResolverArgsTransformer` instances
-   *
-   * @type {MergeOptionsConfig}
-   */
-
 };
+/**
+ * A `MergeOptionsConfig` object with an empty array of
+ * `ResolverArgsTransformer` instances
+ *
+ * @type {MergeOptionsConfig}
+ */
+
 exports.DefaultConflictResolvers = DefaultConflictResolvers;
 var DefaultMergeOptions = {
   conflictResolvers: DefaultConflictResolvers,
@@ -2548,13 +2549,13 @@ function combineTypeAndSubType(subTypeName, lType, rType) {
   var conflictResolvers = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : DefaultConflictResolvers;
 
   if (rType[subTypeName]) {
-    var _iteratorNormalCompletion7 = true;
-    var _didIteratorError7 = false;
-    var _iteratorError7 = undefined;
+    var _iteratorNormalCompletion8 = true;
+    var _didIteratorError8 = false;
+    var _iteratorError8 = undefined;
 
     try {
       var _loop3 = function _loop3() {
-        var rSubType = _step7.value;
+        var rSubType = _step8.value;
         var lSubType = lType[subTypeName].find(function (f) {
           return f.name.value == rSubType.name.value;
         });
@@ -2570,22 +2571,22 @@ function combineTypeAndSubType(subTypeName, lType, rType) {
         lType[subTypeName].splice(index, 1, resultingSubType);
       };
 
-      for (var _iterator7 = rType[subTypeName][Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+      for (var _iterator8 = rType[subTypeName][Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
         var _ret3 = _loop3();
 
         if (_ret3 === "continue") continue;
       }
     } catch (err) {
-      _didIteratorError7 = true;
-      _iteratorError7 = err;
+      _didIteratorError8 = true;
+      _iteratorError8 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion7 && _iterator7.return != null) {
-          _iterator7.return();
+        if (!_iteratorNormalCompletion8 && _iterator8["return"] != null) {
+          _iterator8["return"]();
         }
       } finally {
-        if (_didIteratorError7) {
-          throw _iteratorError7;
+        if (_didIteratorError8) {
+          throw _iteratorError8;
         }
       }
     }
@@ -2608,13 +2609,13 @@ function combineTypeAndSubType(subTypeName, lType, rType) {
 
 function pareTypeAndSubType(subTypeName, lType, rType) {
   var resolvers = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
-  var _iteratorNormalCompletion8 = true;
-  var _didIteratorError8 = false;
-  var _iteratorError8 = undefined;
+  var _iteratorNormalCompletion9 = true;
+  var _didIteratorError9 = false;
+  var _iteratorError9 = undefined;
 
   try {
     var _loop4 = function _loop4() {
-      var rSubType = _step8.value;
+      var rSubType = _step9.value;
       var lSubType = lType[subTypeName].find(function (f) {
         return f.name.value == rSubType.name.value;
       });
@@ -2633,22 +2634,22 @@ function pareTypeAndSubType(subTypeName, lType, rType) {
       }
     };
 
-    for (var _iterator8 = rType[subTypeName][Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+    for (var _iterator9 = rType[subTypeName][Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
       var _ret4 = _loop4();
 
       if (_ret4 === "continue") continue;
     }
   } catch (err) {
-    _didIteratorError8 = true;
-    _iteratorError8 = err;
+    _didIteratorError9 = true;
+    _iteratorError9 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion8 && _iterator8.return != null) {
-        _iterator8.return();
+      if (!_iteratorNormalCompletion9 && _iterator9["return"] != null) {
+        _iterator9["return"]();
       }
     } finally {
-      if (_didIteratorError8) {
-        throw _iteratorError8;
+      if (_didIteratorError9) {
+        throw _iteratorError9;
       }
     }
   }
@@ -2676,9 +2677,9 @@ function normalizeSource(typeDefs) {
     return typeDefs;
   }
 
-  var source = (typeDefs.body || typeDefs.sdl || typeof typeDefs === 'string' && typeDefs || (0, _typeof2.default)(typeDefs) === 'object' && Schemata.print(typeDefs) || (typeDefs instanceof _graphql.GraphQLSchema ? (0, _graphql.printSchema)(typeDefs) : typeDefs.toString())).toString().trim();
+  var source = (typeDefs.body || typeDefs.sdl || typeof typeDefs === 'string' && typeDefs || (0, _typeof2["default"])(typeDefs) === 'object' && Schemata.print(typeDefs) || (typeDefs instanceof _graphql.GraphQLSchema ? (0, _graphql.printSchema)(typeDefs) : typeDefs.toString())).toString().trim();
   return wrap ? Schemata.from(source) : source;
 }
 
 var _default = Schemata;
-exports.default = _default;
+exports["default"] = _default;

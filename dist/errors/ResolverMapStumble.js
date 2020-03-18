@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.ResolverMapStumble = void 0;
+exports["default"] = exports.ResolverMapStumble = void 0;
 
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 
@@ -24,7 +24,7 @@ var _neTagFns = require("ne-tag-fns");
 var _BaseError2 = require("../BaseError");
 
 function _templateObject() {
-  var data = (0, _taggedTemplateLiteral2.default)(["\n      This Error represents a scenario wherein while walking a resolver map\n      object, a key was found not to point to either a nested resolver map or\n      a resolver function. This is not allowed.\n    "]);
+  var data = (0, _taggedTemplateLiteral2["default"])(["\n      This Error represents a scenario wherein while walking a resolver map\n      object, a key was found not to point to either a nested resolver map or\n      a resolver function. This is not allowed.\n    "]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -42,17 +42,15 @@ function _templateObject() {
  *
  * @class ResolverMapStumble
  */
-var ResolverMapStumble =
-/*#__PURE__*/
-function (_BaseError) {
-  (0, _inherits2.default)(ResolverMapStumble, _BaseError);
+var ResolverMapStumble = /*#__PURE__*/function (_BaseError) {
+  (0, _inherits2["default"])(ResolverMapStumble, _BaseError);
 
   function ResolverMapStumble() {
-    (0, _classCallCheck2.default)(this, ResolverMapStumble);
-    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ResolverMapStumble).apply(this, arguments));
+    (0, _classCallCheck2["default"])(this, ResolverMapStumble);
+    return (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(ResolverMapStumble).apply(this, arguments));
   }
 
-  (0, _createClass2.default)(ResolverMapStumble, [{
+  (0, _createClass2["default"])(ResolverMapStumble, [{
     key: "toString",
 
     /**
@@ -69,4 +67,4 @@ function (_BaseError) {
 
 exports.ResolverMapStumble = ResolverMapStumble;
 var _default = ResolverMapStumble;
-exports.default = _default;
+exports["default"] = _default;

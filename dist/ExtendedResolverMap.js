@@ -17,7 +17,9 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
 
 var _Schemata = require("./Schemata");
 
-var _Symbol$iterator = Symbol.iterator;
+var _Symbol$iterator;
+
+_Symbol$iterator = Symbol.iterator;
 
 /**
  * A class that stores information about a set of resolvers and their
@@ -27,9 +29,7 @@ var _Symbol$iterator = Symbol.iterator;
  *
  * @class ExtendedResovlerMap
  */
-var ExtendedResolverMap =
-/*#__PURE__*/
-function () {
+var ExtendedResolverMap = /*#__PURE__*/function () {
   /**
    * The constructor takes an object with at least SDL or a GraphQLSchema and
    * a resolver map object of untainted and unbound resolver functions
@@ -39,10 +39,10 @@ function () {
    * flow type `ExtendedResolverMapConfig` as defined above.
    */
   function ExtendedResolverMap(config) {
-    (0, _classCallCheck2.default)(this, ExtendedResolverMap);
-    (0, _defineProperty2.default)(this, "schema", void 0);
-    (0, _defineProperty2.default)(this, "sdl", void 0);
-    (0, _defineProperty2.default)(this, "resolvers", void 0);
+    (0, _classCallCheck2["default"])(this, ExtendedResolverMap);
+    (0, _defineProperty2["default"])(this, "schema", void 0);
+    (0, _defineProperty2["default"])(this, "sdl", void 0);
+    (0, _defineProperty2["default"])(this, "resolvers", void 0);
     this.schema = config.schema;
     this.sdl = config.sdl;
     this.resolvers = config.resolvers;
@@ -57,40 +57,37 @@ function () {
    */
 
 
-  (0, _createClass2.default)(ExtendedResolverMap, [{
+  (0, _createClass2["default"])(ExtendedResolverMap, [{
     key: _Symbol$iterator,
     get: function get() {
-      return (
-        /*#__PURE__*/
-        _regenerator.default.mark(function _callee() {
-          var _arr, _i, key;
+      return (/*#__PURE__*/_regenerator["default"].mark(function _callee() {
+          var _i, _Object$keys, key;
 
-          return _regenerator.default.wrap(function _callee$(_context) {
+          return _regenerator["default"].wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  _arr = Object.keys(this.resolvers);
-                  _i = 0;
+                  _i = 0, _Object$keys = Object.keys(this.resolvers);
 
-                case 2:
-                  if (!(_i < _arr.length)) {
-                    _context.next = 9;
+                case 1:
+                  if (!(_i < _Object$keys.length)) {
+                    _context.next = 8;
                     break;
                   }
 
-                  key = _arr[_i];
-                  _context.next = 6;
+                  key = _Object$keys[_i];
+                  _context.next = 5;
                   return {
                     key: key,
                     value: this.resolvers[key]
                   };
 
-                case 6:
+                case 5:
                   _i++;
-                  _context.next = 2;
+                  _context.next = 1;
                   break;
 
-                case 9:
+                case 8:
                 case "end":
                   return _context.stop();
               }

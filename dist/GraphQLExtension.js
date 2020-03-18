@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.graphQLExtensionHandler = graphQLExtensionHandler;
 exports.register = register;
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
@@ -52,7 +52,7 @@ function graphQLExtensionHandler(module, filename) {
   try {
     jsFilename = filename.replace((0, _path.extname)(filename), '.js');
     jsModule = require((0, _path.resolve)(jsFilename));
-    resolvers = jsModule.resolvers || (0, _typeof2.default)(jsModule) == 'object' && jsModule;
+    resolvers = jsModule.resolvers || (0, _typeof2["default"])(jsModule) == 'object' && jsModule;
   } catch (error) {
     console.error(error);
     process.nextTick(function () {
@@ -75,7 +75,7 @@ function graphQLExtensionHandler(module, filename) {
 
   module.exports = {
     astNode: astNode,
-    default: schemata,
+    "default": schemata,
     resolvers: resolvers,
     schema: schema,
     sdl: schemata,
@@ -91,4 +91,4 @@ function register() {
 }
 
 var _default = register;
-exports.default = _default;
+exports["default"] = _default;

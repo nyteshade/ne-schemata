@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.walkResolverMap = walkResolverMap;
 exports.asyncWalkResolverMap = asyncWalkResolverMap;
-exports.default = exports.DefaultAsyncEntryInspector = exports.DefaultEntryInspector = void 0;
+exports["default"] = exports.DefaultAsyncEntryInspector = exports.DefaultEntryInspector = void 0;
 
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 
@@ -39,7 +39,7 @@ var isFn = function isFn(o) {
 
 
 var DefaultEntryInspector = function DefaultEntryInspector(key, value, path, map) {
-  return (0, _defineProperty2.default)({}, key, value);
+  return (0, _defineProperty2["default"])({}, key, value);
 };
 /**
  * A default implementation of the EntryInspector type for use as a default
@@ -55,17 +55,13 @@ var DefaultEntryInspector = function DefaultEntryInspector(key, value, path, map
 
 exports.DefaultEntryInspector = DefaultEntryInspector;
 
-var DefaultAsyncEntryInspector =
-/*#__PURE__*/
-function () {
-  var _ref2 = (0, _asyncToGenerator2.default)(
-  /*#__PURE__*/
-  _regenerator.default.mark(function _callee(key, value, path, map) {
-    return _regenerator.default.wrap(function _callee$(_context) {
+var DefaultAsyncEntryInspector = /*#__PURE__*/function () {
+  var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(key, value, path, map) {
+    return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            return _context.abrupt("return", (0, _defineProperty2.default)({}, key, value));
+            return _context.abrupt("return", (0, _defineProperty2["default"])({}, key, value));
 
           case 1:
           case "end":
@@ -104,26 +100,24 @@ function walkResolverMap(object) {
   var path = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
   var product = {};
   path.reduce(function (prev, cur, index) {
-    if (!(0, _propAt.default)(product, prev.concat(cur))) {
-      (0, _propAt.default)(product, prev.concat(cur), {});
+    if (!(0, _propAt["default"])(product, prev.concat(cur))) {
+      (0, _propAt["default"])(product, prev.concat(cur), {});
     }
 
     prev.push(cur);
     return prev;
   }, []);
 
-  var _arr = Object.entries(object);
-
   var _loop = function _loop() {
-    var _arr$_i = (0, _slicedToArray2.default)(_arr[_i], 2),
-        key = _arr$_i[0],
-        _value = _arr$_i[1];
+    var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
+        key = _Object$entries$_i[0],
+        _value = _Object$entries$_i[1];
 
     var isObject = _value instanceof Object;
     var isFunction = isObject && isFn(_value);
 
     if (isObject && !isFunction) {
-      (0, _propAt.default)(product, path.concat(key), walkResolverMap(_value, inspector, wrap, path));
+      (0, _propAt["default"])(product, path.concat(key), walkResolverMap(_value, inspector, wrap, path));
     } else {
       if (!isObject && !isFunction) {
         // In the case that we have a string mapping to a non-function and a
@@ -142,12 +136,12 @@ function walkResolverMap(object) {
       var entry = inspector(key, _value, path, object);
 
       if (entry !== undefined) {
-        (0, _propAt.default)(product, path.concat(key), entry[key]);
+        (0, _propAt["default"])(product, path.concat(key), entry[key]);
       }
     }
   };
 
-  for (var _i = 0; _i < _arr.length; _i++) {
+  for (var _i = 0, _Object$entries = Object.entries(object); _i < _Object$entries.length; _i++) {
     _loop();
   }
 
@@ -175,19 +169,17 @@ function asyncWalkResolverMap(_x5) {
 }
 
 function _asyncWalkResolverMap() {
-  _asyncWalkResolverMap = (0, _asyncToGenerator2.default)(
-  /*#__PURE__*/
-  _regenerator.default.mark(function _callee2(object) {
+  _asyncWalkResolverMap = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(object) {
     var inspector,
         wrap,
         path,
         product,
-        _arr2,
         _loop2,
         _i2,
+        _Object$entries2,
         _args3 = arguments;
 
-    return _regenerator.default.wrap(function _callee2$(_context3) {
+    return _regenerator["default"].wrap(function _callee2$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
@@ -196,24 +188,21 @@ function _asyncWalkResolverMap() {
             path = _args3.length > 3 && _args3[3] !== undefined ? _args3[3] : [];
             product = {};
             path.reduce(function (prev, cur, index) {
-              if (!(0, _propAt.default)(product, prev.concat(cur))) {
-                (0, _propAt.default)(product, prev.concat(cur), {});
+              if (!(0, _propAt["default"])(product, prev.concat(cur))) {
+                (0, _propAt["default"])(product, prev.concat(cur), {});
               }
 
               prev.push(cur);
               return prev;
             }, []);
-            _arr2 = Object.entries(object);
-            _loop2 =
-            /*#__PURE__*/
-            _regenerator.default.mark(function _loop2() {
-              var _arr2$_i, key, _value2, isObject, isFunction, entry;
+            _loop2 = /*#__PURE__*/_regenerator["default"].mark(function _loop2() {
+              var _Object$entries2$_i, key, _value2, isObject, isFunction, entry;
 
-              return _regenerator.default.wrap(function _loop2$(_context2) {
+              return _regenerator["default"].wrap(function _loop2$(_context2) {
                 while (1) {
                   switch (_context2.prev = _context2.next) {
                     case 0:
-                      _arr2$_i = (0, _slicedToArray2.default)(_arr2[_i2], 2), key = _arr2$_i[0], _value2 = _arr2$_i[1];
+                      _Object$entries2$_i = (0, _slicedToArray2["default"])(_Object$entries2[_i2], 2), key = _Object$entries2$_i[0], _value2 = _Object$entries2$_i[1];
                       isObject = _value2 instanceof Object;
                       isFunction = isObject && isFn(_value2);
 
@@ -222,7 +211,7 @@ function _asyncWalkResolverMap() {
                         break;
                       }
 
-                      _context2.t0 = _propAt.default;
+                      _context2.t0 = _propAt["default"];
                       _context2.t1 = product;
                       _context2.t2 = path.concat(key);
                       _context2.next = 9;
@@ -260,7 +249,7 @@ function _asyncWalkResolverMap() {
                       entry = _context2.sent;
 
                       if (entry !== undefined) {
-                        (0, _propAt.default)(product, path.concat(key), entry[key]);
+                        (0, _propAt["default"])(product, path.concat(key), entry[key]);
                       }
 
                     case 23:
@@ -270,25 +259,25 @@ function _asyncWalkResolverMap() {
                 }
               }, _loop2);
             });
-            _i2 = 0;
+            _i2 = 0, _Object$entries2 = Object.entries(object);
 
-          case 8:
-            if (!(_i2 < _arr2.length)) {
-              _context3.next = 13;
+          case 7:
+            if (!(_i2 < _Object$entries2.length)) {
+              _context3.next = 12;
               break;
             }
 
-            return _context3.delegateYield(_loop2(), "t0", 10);
+            return _context3.delegateYield(_loop2(), "t0", 9);
 
-          case 10:
+          case 9:
             _i2++;
-            _context3.next = 8;
+            _context3.next = 7;
             break;
 
-          case 13:
+          case 12:
             return _context3.abrupt("return", product);
 
-          case 14:
+          case 13:
           case "end":
             return _context3.stop();
         }
@@ -299,4 +288,4 @@ function _asyncWalkResolverMap() {
 }
 
 var _default = walkResolverMap;
-exports.default = _default;
+exports["default"] = _default;
