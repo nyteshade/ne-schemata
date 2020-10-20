@@ -64,6 +64,6 @@
     "debug": "^4.2.0",
     "deepmerge": "^4.0.0",
     "ne-tag-fns": "^0.6.9",
-    "pretty-error": "^2.1.1"
+    "pretty-error": "^2.1.2"
   }
 }
