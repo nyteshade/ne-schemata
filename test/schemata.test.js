@@ -7,7 +7,7 @@ import {
   GraphQLScalarType
 } from 'graphql'
 
-describe('testing Schemata', async () => {
+describe('testing Schemata', () => {
   let str = sdl.sdl
   let ast = Schemata.parse(str)
   let schema = buildSchema(str)
@@ -32,7 +32,7 @@ describe('testing Schemata', async () => {
     expect(printSchema(sdl.schema)).toEqual(printSchema(schema))
   })
 
-  it('can be queried via run()', () => {
+  it('can be queried via run()', async () => {
     let results = sdl.run('{ peeps { name gender } }')
 
     expect(results.data.peeps[0].name).toBe('Brielle')
@@ -531,8 +531,12 @@ describe('testing Schemata', async () => {
     `
     let basicSchema = buildSchema(schemata.sdl)
 
+    // Note that in some semi-recent build of GraphQL, they started to
+    // natively support `extend type`. Therefore, buildSchema and the
+    // ne-schemata schema code both work and exist here.
+
     expect(schemata.includes('extend')).toBe(true)
-    expect(basicSchema._typeMap.User._fields.age).toBeUndefined()
+    expect(basicSchema._typeMap.User._fields.age).toBeTruthy()
     expect(schemata.schema._typeMap.User._fields.age).toBeTruthy()
   })
 

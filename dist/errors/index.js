@@ -9,16 +9,16 @@ Object.defineProperty(exports, "ResolverMapStumble", {
     return _ResolverMapStumble.ResolverMapStumble;
   }
 });
-Object.defineProperty(exports, "WrappedResolverExecutionError", {
-  enumerable: true,
-  get: function get() {
-    return _WrappedResolverExecutionError.WrappedResolverExecutionError;
-  }
-});
 Object.defineProperty(exports, "ResolverResultsPatcherError", {
   enumerable: true,
   get: function get() {
     return _ResolverResultsPatcherError.ResolverResultsPatcherError;
+  }
+});
+Object.defineProperty(exports, "WrappedResolverExecutionError", {
+  enumerable: true,
+  get: function get() {
+    return _WrappedResolverExecutionError.WrappedResolverExecutionError;
   }
 });
 

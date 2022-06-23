@@ -3,8 +3,8 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.gql = gql;
 exports["default"] = void 0;
+exports.gql = gql;
 
 var _Schemata = require("./Schemata");
 

@@ -5,10 +5,16 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-Object.defineProperty(exports, "Schemata", {
+Object.defineProperty(exports, "BaseError", {
   enumerable: true,
   get: function get() {
-    return _Schemata.Schemata;
+    return _BaseError.BaseError;
+  }
+});
+Object.defineProperty(exports, "DefaultAsyncEntryInspector", {
+  enumerable: true,
+  get: function get() {
+    return _walkResolverMap.DefaultAsyncEntryInspector;
   }
 });
 Object.defineProperty(exports, "DefaultConflictResolvers", {
@@ -21,6 +27,12 @@ Object.defineProperty(exports, "DefaultDirectiveMergeResolver", {
   enumerable: true,
   get: function get() {
     return _Schemata.DefaultDirectiveMergeResolver;
+  }
+});
+Object.defineProperty(exports, "DefaultEntryInspector", {
+  enumerable: true,
+  get: function get() {
+    return _walkResolverMap.DefaultEntryInspector;
   }
 });
 Object.defineProperty(exports, "DefaultEnumMergeResolver", {
@@ -53,48 +65,6 @@ Object.defineProperty(exports, "DefaultUnionMergeResolver", {
     return _Schemata.DefaultUnionMergeResolver;
   }
 });
-Object.defineProperty(exports, "isRootType", {
-  enumerable: true,
-  get: function get() {
-    return _Schemata.isRootType;
-  }
-});
-Object.defineProperty(exports, "normalizeSource", {
-  enumerable: true,
-  get: function get() {
-    return _Schemata.normalizeSource;
-  }
-});
-Object.defineProperty(exports, "runInjectors", {
-  enumerable: true,
-  get: function get() {
-    return _Schemata.runInjectors;
-  }
-});
-Object.defineProperty(exports, "SchemaInjectorConfig", {
-  enumerable: true,
-  get: function get() {
-    return _Schemata.SchemaInjectorConfig;
-  }
-});
-Object.defineProperty(exports, "stripResolversFromSchema", {
-  enumerable: true,
-  get: function get() {
-    return _Schemata.stripResolversFromSchema;
-  }
-});
-Object.defineProperty(exports, "TYPEDEFS_KEY", {
-  enumerable: true,
-  get: function get() {
-    return _Schemata.TYPEDEFS_KEY;
-  }
-});
-Object.defineProperty(exports, "jestTransformer", {
-  enumerable: true,
-  get: function get() {
-    return _jestTransformer["default"];
-  }
-});
 Object.defineProperty(exports, "ExtendedResolver", {
   enumerable: true,
   get: function get() {
@@ -107,22 +77,47 @@ Object.defineProperty(exports, "ExtendedResolverMap", {
     return _ExtendedResolverMap.ExtendedResolverMap;
   }
 });
-Object.defineProperty(exports, "register", {
+Object.defineProperty(exports, "ResolverMapStumble", {
   enumerable: true,
   get: function get() {
-    return _GraphQLExtension.register;
+    return _errors.ResolverMapStumble;
   }
 });
-Object.defineProperty(exports, "graphQLExtensionHandler", {
+Object.defineProperty(exports, "ResolverResultsPatcherError", {
   enumerable: true,
   get: function get() {
-    return _GraphQLExtension.graphQLExtensionHandler;
+    return _errors.ResolverResultsPatcherError;
   }
 });
-Object.defineProperty(exports, "gql", {
+exports.SDL = void 0;
+Object.defineProperty(exports, "SchemaInjectorConfig", {
   enumerable: true,
   get: function get() {
-    return _gqlTagFn.gql;
+    return _Schemata.SchemaInjectorConfig;
+  }
+});
+Object.defineProperty(exports, "Schemata", {
+  enumerable: true,
+  get: function get() {
+    return _Schemata.Schemata;
+  }
+});
+Object.defineProperty(exports, "TYPEDEFS_KEY", {
+  enumerable: true,
+  get: function get() {
+    return _Schemata.TYPEDEFS_KEY;
+  }
+});
+Object.defineProperty(exports, "WrappedResolverExecutionError", {
+  enumerable: true,
+  get: function get() {
+    return _errors.WrappedResolverExecutionError;
+  }
+});
+Object.defineProperty(exports, "asyncWalkResolverMap", {
+  enumerable: true,
+  get: function get() {
+    return _walkResolverMap.asyncWalkResolverMap;
   }
 });
 Object.defineProperty(exports, "at", {
@@ -137,55 +132,61 @@ Object.defineProperty(exports, "atNicely", {
     return _propAt.atNicely;
   }
 });
+exports["default"] = void 0;
+Object.defineProperty(exports, "gql", {
+  enumerable: true,
+  get: function get() {
+    return _gqlTagFn.gql;
+  }
+});
+Object.defineProperty(exports, "graphQLExtensionHandler", {
+  enumerable: true,
+  get: function get() {
+    return _GraphQLExtension.graphQLExtensionHandler;
+  }
+});
+Object.defineProperty(exports, "isRootType", {
+  enumerable: true,
+  get: function get() {
+    return _Schemata.isRootType;
+  }
+});
+Object.defineProperty(exports, "jestTransformer", {
+  enumerable: true,
+  get: function get() {
+    return _jestTransformer["default"];
+  }
+});
+Object.defineProperty(exports, "normalizeSource", {
+  enumerable: true,
+  get: function get() {
+    return _Schemata.normalizeSource;
+  }
+});
+Object.defineProperty(exports, "register", {
+  enumerable: true,
+  get: function get() {
+    return _GraphQLExtension.register;
+  }
+});
+Object.defineProperty(exports, "runInjectors", {
+  enumerable: true,
+  get: function get() {
+    return _Schemata.runInjectors;
+  }
+});
+Object.defineProperty(exports, "stripResolversFromSchema", {
+  enumerable: true,
+  get: function get() {
+    return _Schemata.stripResolversFromSchema;
+  }
+});
 Object.defineProperty(exports, "walkResolverMap", {
   enumerable: true,
   get: function get() {
     return _walkResolverMap.walkResolverMap;
   }
 });
-Object.defineProperty(exports, "asyncWalkResolverMap", {
-  enumerable: true,
-  get: function get() {
-    return _walkResolverMap.asyncWalkResolverMap;
-  }
-});
-Object.defineProperty(exports, "DefaultEntryInspector", {
-  enumerable: true,
-  get: function get() {
-    return _walkResolverMap.DefaultEntryInspector;
-  }
-});
-Object.defineProperty(exports, "DefaultAsyncEntryInspector", {
-  enumerable: true,
-  get: function get() {
-    return _walkResolverMap.DefaultAsyncEntryInspector;
-  }
-});
-Object.defineProperty(exports, "BaseError", {
-  enumerable: true,
-  get: function get() {
-    return _BaseError.BaseError;
-  }
-});
-Object.defineProperty(exports, "ResolverMapStumble", {
-  enumerable: true,
-  get: function get() {
-    return _errors.ResolverMapStumble;
-  }
-});
-Object.defineProperty(exports, "WrappedResolverExecutionError", {
-  enumerable: true,
-  get: function get() {
-    return _errors.WrappedResolverExecutionError;
-  }
-});
-Object.defineProperty(exports, "ResolverResultsPatcherError", {
-  enumerable: true,
-  get: function get() {
-    return _errors.ResolverResultsPatcherError;
-  }
-});
-exports["default"] = exports.SDL = void 0;
 
 var _Schemata = require("./Schemata");
 

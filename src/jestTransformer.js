@@ -9,7 +9,7 @@ module.exports = {
   ) {
     let source = sourceText.replace(/\'/gm, "\\'").replace(/\r?\n/gm, ' ')
 
-    return `
+    return { code: `
       let { resolve, extname } = require('path')
       let { Schemata } = require('../../dist')
 
@@ -49,6 +49,6 @@ module.exports = {
         sdl: schemata,
         typeDefs: schemata
       }
-    `
+    `}
   }
 }

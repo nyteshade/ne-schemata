@@ -13,13 +13,13 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
@@ -31,15 +31,11 @@ var _util = require("util");
 
 var _prettyError = _interopRequireDefault(require("pretty-error"));
 
-function _templateObject() {
-  var data = (0, _taggedTemplateLiteral2["default"])(["\n      The patcher function failed to execute against the results of the\n      'ExtendedResolver' execution. The patcher function had a name of\n      '", "'.\n\n      The context of the patcher was:\n      ", "\n\n      The results passed to the function were:\n      ", "\n\n      Original Stack Trace\n      ", "\n\n    "]);
+var _templateObject;
 
-  _templateObject = function _templateObject() {
-    return data;
-  };
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
 
-  return data;
-}
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 var isFn = function isFn(o) {
   return /Function\]/.test(Object.prototype.toString.call(o));
@@ -58,6 +54,8 @@ var pe = new _prettyError["default"]();
 
 var ResolverResultsPatcherError = /*#__PURE__*/function (_BaseError) {
   (0, _inherits2["default"])(ResolverResultsPatcherError, _BaseError);
+
+  var _super = _createSuper(ResolverResultsPatcherError);
 
   /**
    * The `ResolverResultsPatcher` function that failed.
@@ -97,7 +95,7 @@ var ResolverResultsPatcherError = /*#__PURE__*/function (_BaseError) {
     var _this;
 
     (0, _classCallCheck2["default"])(this, ResolverResultsPatcherError);
-    _this = (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(ResolverResultsPatcherError).call(this, error));
+    _this = _super.call(this, error);
     (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "patcher", void 0);
     (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "context", void 0);
     (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "results", void 0);
@@ -117,7 +115,7 @@ var ResolverResultsPatcherError = /*#__PURE__*/function (_BaseError) {
   (0, _createClass2["default"])(ResolverResultsPatcherError, [{
     key: "toString",
     value: function toString() {
-      return (0, _neTagFns.dropLowest)(_templateObject(), this.patcher && this.patcher.name || null, (0, _util.inspect)(this.context, {
+      return (0, _neTagFns.dropLowest)(_templateObject || (_templateObject = (0, _taggedTemplateLiteral2["default"])(["\n      The patcher function failed to execute against the results of the\n      'ExtendedResolver' execution. The patcher function had a name of\n      '", "'.\n\n      The context of the patcher was:\n      ", "\n\n      The results passed to the function were:\n      ", "\n\n      Original Stack Trace\n      ", "\n\n    "])), this.patcher && this.patcher.name || null, (0, _util.inspect)(this.context, {
         colors: true,
         depth: 8
       }), (0, _util.inspect)(this.results, {

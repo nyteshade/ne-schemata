@@ -13,13 +13,13 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
@@ -31,15 +31,11 @@ var _util = require("util");
 
 var _prettyError = _interopRequireDefault(require("pretty-error"));
 
-function _templateObject() {
-  var data = (0, _taggedTemplateLiteral2["default"])(["\n      The ExtendedResolver execution failed. The resolver that failed was at\n      index ", ". The function had a name of '", "'.\n\n      Was the function likely a big arrow function? ", "\n\n      Arguments at the time were:\n      ", "\n\n      Context at the time was:\n      ", "\n\n      Results before the function was called\n      ", "\n\n      Original Stack Trace\n      ", "\n    "]);
+var _templateObject;
 
-  _templateObject = function _templateObject() {
-    return data;
-  };
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
 
-  return data;
-}
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 var isFn = function isFn(o) {
   return /Function\]/.test(Object.prototype.toString.call(o));
@@ -56,6 +52,8 @@ var pe = new _prettyError["default"]();
 
 var WrappedResolverExecutionError = /*#__PURE__*/function (_BaseError) {
   (0, _inherits2["default"])(WrappedResolverExecutionError, _BaseError);
+
+  var _super = _createSuper(WrappedResolverExecutionError);
 
   /**
    * The `ExtendedResolver` object that caused the issue
@@ -109,7 +107,7 @@ var WrappedResolverExecutionError = /*#__PURE__*/function (_BaseError) {
     var _this;
 
     (0, _classCallCheck2["default"])(this, WrappedResolverExecutionError);
-    _this = (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(WrappedResolverExecutionError).call(this, error));
+    _this = _super.call(this, error);
     (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "resolver", void 0);
     (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "index", void 0);
     (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "args", void 0);
@@ -134,7 +132,7 @@ var WrappedResolverExecutionError = /*#__PURE__*/function (_BaseError) {
     key: "toString",
     value: function toString() {
       var fn = this.resolver && this.resolver.order && this.resolver.order[this.index];
-      return (0, _neTagFns.dropLowest)(_templateObject(), this.index, fn && fn.name, this.wasBigArrowFunction ? '\x1b[33mtrue\x1b[0m' : '\x1b[31mfalse\x1b[0m', (0, _util.inspect)(this.args, {
+      return (0, _neTagFns.dropLowest)(_templateObject || (_templateObject = (0, _taggedTemplateLiteral2["default"])(["\n      The ExtendedResolver execution failed. The resolver that failed was at\n      index ", ". The function had a name of '", "'.\n\n      Was the function likely a big arrow function? ", "\n\n      Arguments at the time were:\n      ", "\n\n      Context at the time was:\n      ", "\n\n      Results before the function was called\n      ", "\n\n      Original Stack Trace\n      ", "\n    "])), this.index, fn && fn.name, this.wasBigArrowFunction ? '\x1b[33mtrue\x1b[0m' : '\x1b[31mfalse\x1b[0m', (0, _util.inspect)(this.args, {
         colors: true,
         depth: 8
       }), (0, _util.inspect)(this.context, {

@@ -60,41 +60,40 @@ var ExtendedResolverMap = /*#__PURE__*/function () {
   (0, _createClass2["default"])(ExtendedResolverMap, [{
     key: _Symbol$iterator,
     get: function get() {
-      return (/*#__PURE__*/_regenerator["default"].mark(function _callee() {
-          var _i, _Object$keys, key;
+      return /*#__PURE__*/_regenerator["default"].mark(function _callee() {
+        var _i, _Object$keys, key;
 
-          return _regenerator["default"].wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _i = 0, _Object$keys = Object.keys(this.resolvers);
+        return _regenerator["default"].wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _i = 0, _Object$keys = Object.keys(this.resolvers);
 
-                case 1:
-                  if (!(_i < _Object$keys.length)) {
-                    _context.next = 8;
-                    break;
-                  }
-
-                  key = _Object$keys[_i];
-                  _context.next = 5;
-                  return {
-                    key: key,
-                    value: this.resolvers[key]
-                  };
-
-                case 5:
-                  _i++;
-                  _context.next = 1;
+              case 1:
+                if (!(_i < _Object$keys.length)) {
+                  _context.next = 8;
                   break;
+                }
 
-                case 8:
-                case "end":
-                  return _context.stop();
-              }
+                key = _Object$keys[_i];
+                _context.next = 5;
+                return {
+                  key: key,
+                  value: this.resolvers[key]
+                };
+
+              case 5:
+                _i++;
+                _context.next = 1;
+                break;
+
+              case 8:
+              case "end":
+                return _context.stop();
             }
-          }, _callee, this);
-        }).bind(this)
-      );
+          }
+        }, _callee, this);
+      }).bind(this);
     }
     /**
      * A shorthand way to create a new instance of `ExtendedResolverMap`. In

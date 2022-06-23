@@ -1679,17 +1679,19 @@ export class Schemata extends String {
     variableValues?: ?ObjMap<mixed>,
     rootValue?: mixed,
     operationName?: ?string,
-    fieldResolver?: ?GraphQLFieldResolver<any, any>
+    fieldResolver?: ?GraphQLFieldResolver<any, any>,
+    typeResolver?: ?GraphQLTypeResolver<any, any>
   ): ExecutionResult {
-    return this.constructor.gql.graphqlSync(
-      this.schema,
-      query,
-      this.resolvers || rootValue,
+    return this.constructor.gql.graphqlSync({
+      schema: this.schema,
+      source: query,
+      rootValue: this.resolvers || rootValue,
       contextValue,
       variableValues,
       operationName,
-      fieldResolver
-    )
+      fieldResolver,
+      typeResolver
+    })
   }
 
   /**
@@ -1719,17 +1721,19 @@ export class Schemata extends String {
     variableValues?: ?ObjMap<mixed>,
     rootValue?: mixed,
     operationName?: ?string,
-    fieldResolver?: ?GraphQLFieldResolver<any, any>
+    fieldResolver?: ?GraphQLFieldResolver<any, any>,
+    typeResolver?: ?GraphQLTypeResolver<any, any>
   ): Promise<ExecutionResult> {
-    return this.constructor.gql.graphql(
-      this.schema,
-      query,
-      this.resolvers || rootValue,
+    return this.constructor.gql.graphql({
+      schema: this.schema,
+      source: query,
+      rootValue: this.resolvers || rootValue,
       contextValue,
       variableValues,
       operationName,
-      fieldResolver
-    )
+      fieldResolver,
+      typeResolver
+    })
   }
 
   /**

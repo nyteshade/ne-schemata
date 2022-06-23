@@ -53,7 +53,7 @@ describe('Extending a resolver', () => {
     )
 
     er().catch(error => {
-      expect(error instanceof ResolverResultsPatcherError).toBeTrue()
+      expect(error instanceof ResolverResultsPatcherError).toBeTruthy()
     })
   })
 
@@ -64,7 +64,7 @@ describe('Extending a resolver', () => {
     )
 
     er().catch(error => {
-      expect(error instanceof WrappedResolverExecutionError).toBeTrue()
+      expect(error instanceof WrappedResolverExecutionError).toBeTruthy()
     })
   })
 

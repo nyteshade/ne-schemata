@@ -15,13 +15,13 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 
 var _wrapNativeSuper2 = _interopRequireDefault(require("@babel/runtime/helpers/wrapNativeSuper"));
 
@@ -30,6 +30,16 @@ var _graphql = require("graphql");
 var _Schemata = require("./Schemata");
 
 var _errors = require("./errors");
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 var original = Symbol('Original Resolver');
 var listing = Symbol('List of Resolvers');
@@ -47,8 +57,10 @@ var isFn = function isFn(o) {
  */
 
 
-var ExtendedResolver = /*#__PURE__*/function (_Function) {
+var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
   (0, _inherits2["default"])(ExtendedResolver, _Function);
+
+  var _super = _createSuper(ExtendedResolver);
 
   /**
    * Creates a new instance of `ExtendedResolver` for use with GraphQL. If
@@ -67,7 +79,7 @@ var ExtendedResolver = /*#__PURE__*/function (_Function) {
 
     var resolver = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _graphql.defaultFieldResolver;
     (0, _classCallCheck2["default"])(this, ExtendedResolver);
-    _this = (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(ExtendedResolver).call(this));
+    _this = _super.call(this);
 
     if (resolver instanceof ExtendedResolver) {
       _this[listing] = Array.from(resolver[listing]);
@@ -92,121 +104,6 @@ var ExtendedResolver = /*#__PURE__*/function (_Function) {
 
 
   (0, _createClass2["default"])(ExtendedResolver, [{
-    key: "prepend",
-    // Methods
-
-    /**
-     * Guaranteed to insert the supplied field resolver after any other prepended
-     * field resolvers and before the original internal field resolver.
-     *
-     * @param {GraphQLFieldResolver} preresolver a field resolver to run before
-     * the original field resolver executes.
-     */
-    value: function prepend(preresolver) {
-      if (preresolver && isFn(preresolver)) {
-        var index = this[listing].indexOf(this[original]);
-        index = ~index ? index : 0;
-        this[listing].splice(index, 0, preresolver);
-      }
-    }
-    /**
-     * Inserts the supplied field resolver function after the original resolver
-     * but before any previously added post resolvers. If you simply wish to
-     * push another entry to the list, use `.push`
-     *
-     * @param {GraphQLFieldResolver} postresolver a field resolver that should
-     * run after the original but before other postresolvers previously added.
-     */
-
-  }, {
-    key: "append",
-    value: function append(postresolver) {
-      if (postresolver && isFn(postresolver)) {
-        var index = this[listing].indexOf(this[original]);
-        index = ~index ? index + 1 : this[listing].length;
-        this[listing].splice(index, 0, postresolver);
-      }
-    }
-    /**
-     * Simply adds a field resolver to the end of the list rather than trying
-     * to put it as close to the original resolver as possible.
-     *
-     * @param {GraphQLFieldResolver} postresolver a field resolver that should
-     * run after the original
-     */
-
-  }, {
-    key: "push",
-    value: function push(postresolver) {
-      if (postresolver && isFn(postresolver)) {
-        this[listing].push(postresolver);
-      }
-    }
-    /**
-     * The `.toString()` functionality of the ExtendedResolver dutifily lists the
-     * source of each function to be executed in order.
-     *
-     * @method toString
-     *
-     * @return {string} a combined toString() functionality for each item in
-     * order
-     */
-
-  }, {
-    key: "toString",
-    value: function toString() {
-      var strings = [];
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = this.order[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var fn = _step.value;
-          strings.push("Function: ".concat(fn.name));
-          strings.push("---------".concat('-'.repeat(fn.name.length ? fn.name.length + 1 : 0)));
-          strings.push(fn.toString());
-          strings.push('');
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-            _iterator["return"]();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      return strings.join('\n');
-    }
-    /**
-     * After having to repeatedly console.log the toString output, this function
-     * now does that easier for me so I don't end up with carpal tunnel earlier
-     * than necessary.
-     *
-     * @method show
-     */
-
-  }, {
-    key: "show",
-    value: function show() {
-      console.log(this.toString());
-    } // Symbols
-
-    /**
-     * Ensure that when inspected with Object.prototype.toString.call/apply
-     * that instances of ExtendedResolver return `'[object ExtendedResolver]'`
-     *
-     * @type {Symbol}
-     */
-
-  }, {
     key: "order",
     get: function get() {
       return this[listing];
@@ -285,9 +182,115 @@ var ExtendedResolver = /*#__PURE__*/function (_Function) {
     key: "originalIndex",
     get: function get() {
       return this[listing].indexOf(this[original]);
-    }
+    } // Methods
+
+    /**
+     * Guaranteed to insert the supplied field resolver after any other prepended
+     * field resolvers and before the original internal field resolver.
+     *
+     * @param {GraphQLFieldResolver} preresolver a field resolver to run before
+     * the original field resolver executes.
+     */
+
   }, {
-    key: Symbol.toStringTag,
+    key: "prepend",
+    value: function prepend(preresolver) {
+      if (preresolver && isFn(preresolver)) {
+        var index = this[listing].indexOf(this[original]);
+        index = ~index ? index : 0;
+        this[listing].splice(index, 0, preresolver);
+      }
+    }
+    /**
+     * Inserts the supplied field resolver function after the original resolver
+     * but before any previously added post resolvers. If you simply wish to
+     * push another entry to the list, use `.push`
+     *
+     * @param {GraphQLFieldResolver} postresolver a field resolver that should
+     * run after the original but before other postresolvers previously added.
+     */
+
+  }, {
+    key: "append",
+    value: function append(postresolver) {
+      if (postresolver && isFn(postresolver)) {
+        var index = this[listing].indexOf(this[original]);
+        index = ~index ? index + 1 : this[listing].length;
+        this[listing].splice(index, 0, postresolver);
+      }
+    }
+    /**
+     * Simply adds a field resolver to the end of the list rather than trying
+     * to put it as close to the original resolver as possible.
+     *
+     * @param {GraphQLFieldResolver} postresolver a field resolver that should
+     * run after the original
+     */
+
+  }, {
+    key: "push",
+    value: function push(postresolver) {
+      if (postresolver && isFn(postresolver)) {
+        this[listing].push(postresolver);
+      }
+    }
+    /**
+     * The `.toString()` functionality of the ExtendedResolver dutifily lists the
+     * source of each function to be executed in order.
+     *
+     * @method toString
+     *
+     * @return {string} a combined toString() functionality for each item in
+     * order
+     */
+
+  }, {
+    key: "toString",
+    value: function toString() {
+      var strings = [];
+
+      var _iterator = _createForOfIteratorHelper(this.order),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var fn = _step.value;
+          strings.push("Function: ".concat(fn.name));
+          strings.push("---------".concat('-'.repeat(fn.name.length ? fn.name.length + 1 : 0)));
+          strings.push(fn.toString());
+          strings.push('');
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      return strings.join('\n');
+    }
+    /**
+     * After having to repeatedly console.log the toString output, this function
+     * now does that easier for me so I don't end up with carpal tunnel earlier
+     * than necessary.
+     *
+     * @method show
+     */
+
+  }, {
+    key: "show",
+    value: function show() {
+      console.log(this.toString());
+    } // Symbols
+
+    /**
+     * Ensure that when inspected with Object.prototype.toString.call/apply
+     * that instances of ExtendedResolver return `'[object ExtendedResolver]'`
+     *
+     * @type {Symbol}
+     */
+
+  }, {
+    key: _Symbol$toStringTag,
     get: function get() {
       return this.constructor.name;
     } // Statics
@@ -440,7 +443,7 @@ var ExtendedResolver = /*#__PURE__*/function (_Function) {
           var _this2 = this;
 
           return (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
-            var myArgs, results, result, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, fn;
+            var myArgs, results, result, _iterator2, _step2, fn;
 
             return _regenerator["default"].wrap(function _callee$(_context) {
               while (1) {
@@ -450,114 +453,95 @@ var ExtendedResolver = /*#__PURE__*/function (_Function) {
                     // each pass of the reduction process
                     myArgs = Array.isArray(args) ? args : Array.from(args && args || []);
                     results = {};
-                    _iteratorNormalCompletion2 = true;
-                    _didIteratorError2 = false;
-                    _iteratorError2 = undefined;
-                    _context.prev = 5;
-                    _iterator2 = target[listing][Symbol.iterator]();
+                    _iterator2 = _createForOfIteratorHelper(target[listing]);
+                    _context.prev = 3;
 
-                  case 7:
-                    if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
-                      _context.next = 22;
+                    _iterator2.s();
+
+                  case 5:
+                    if ((_step2 = _iterator2.n()).done) {
+                      _context.next = 19;
                       break;
                     }
 
                     fn = _step2.value;
-                    _context.prev = 9;
-                    _context.next = 12;
+                    _context.prev = 7;
+                    _context.next = 10;
                     return fn.apply(thisArg || target, myArgs.concat(results));
 
-                  case 12:
+                  case 10:
                     result = _context.sent;
-                    _context.next = 18;
+                    _context.next = 16;
                     break;
 
-                  case 15:
-                    _context.prev = 15;
-                    _context.t0 = _context["catch"](9);
+                  case 13:
+                    _context.prev = 13;
+                    _context.t0 = _context["catch"](7);
                     throw new _errors.WrappedResolverExecutionError(_context.t0, _this2, target[listing].indexOf(fn), myArgs.concat(results), thisArg || target);
 
-                  case 18:
+                  case 16:
                     if (results && results instanceof Object && result && result instanceof Object) {
                       Object.assign(results, result);
                     } else {
                       results = result;
                     }
 
-                  case 19:
-                    _iteratorNormalCompletion2 = true;
-                    _context.next = 7;
+                  case 17:
+                    _context.next = 5;
                     break;
 
-                  case 22:
-                    _context.next = 28;
+                  case 19:
+                    _context.next = 24;
                     break;
+
+                  case 21:
+                    _context.prev = 21;
+                    _context.t1 = _context["catch"](3);
+
+                    _iterator2.e(_context.t1);
 
                   case 24:
                     _context.prev = 24;
-                    _context.t1 = _context["catch"](5);
-                    _didIteratorError2 = true;
-                    _iteratorError2 = _context.t1;
 
-                  case 28:
-                    _context.prev = 28;
-                    _context.prev = 29;
+                    _iterator2.f();
 
-                    if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-                      _iterator2["return"]();
-                    }
+                    return _context.finish(24);
 
-                  case 31:
-                    _context.prev = 31;
-
-                    if (!_didIteratorError2) {
-                      _context.next = 34;
-                      break;
-                    }
-
-                    throw _iteratorError2;
-
-                  case 34:
-                    return _context.finish(31);
-
-                  case 35:
-                    return _context.finish(28);
-
-                  case 36:
+                  case 27:
                     if (!(target[patcher] && target[patcher] instanceof Function)) {
-                      _context.next = 46;
+                      _context.next = 37;
                       break;
                     }
 
-                    _context.prev = 37;
-                    _context.next = 40;
+                    _context.prev = 28;
+                    _context.next = 31;
                     return target[patcher].call(thisArg || target, results);
 
-                  case 40:
+                  case 31:
                     results = _context.sent;
-                    _context.next = 46;
+                    _context.next = 37;
                     break;
 
-                  case 43:
-                    _context.prev = 43;
-                    _context.t2 = _context["catch"](37);
+                  case 34:
+                    _context.prev = 34;
+                    _context.t2 = _context["catch"](28);
                     throw new _errors.ResolverResultsPatcherError(_context.t2, target[patcher], thisArg || target, results);
 
-                  case 46:
+                  case 37:
                     return _context.abrupt("return", results);
 
-                  case 47:
+                  case 38:
                   case "end":
                     return _context.stop();
                 }
               }
-            }, _callee, null, [[5, 24, 28, 36], [9, 15], [29,, 31, 35], [37, 43]]);
+            }, _callee, null, [[3, 21, 24, 27], [7, 13], [28, 34]]);
           }))();
         }
       };
     }
   }]);
   return ExtendedResolver;
-}( /*#__PURE__*/(0, _wrapNativeSuper2["default"])(Function));
+}( /*#__PURE__*/(0, _wrapNativeSuper2["default"])(Function), Symbol.toStringTag);
 
 exports.ExtendedResolver = ExtendedResolver;
