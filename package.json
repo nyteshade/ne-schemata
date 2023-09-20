@@ -36,7 +36,7 @@
     "eslint-plugin-flowtype": "^4.6.0",
     "eslint-plugin-import": "^2.20.1",
     "flow-bin": "^0.103.0",
-    "graphql": "^16",
+    "graphql": "^16.8.1",
     "jest": "^28.1.1",
     "jest-environment-node-debug": "^2.0.0",
     "minimist": "^1.2.2",
