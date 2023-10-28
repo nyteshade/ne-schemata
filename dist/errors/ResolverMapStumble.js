@@ -1,5 +1,9 @@
 "use strict";
 
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.reflect.to-string-tag.js");
+require("core-js/modules/es.reflect.construct.js");
+require("core-js/modules/es.object.define-property.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true

@@ -1,5 +1,8 @@
 "use strict";
 
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.string.replace.js");
+require("core-js/modules/es.array.concat.js");
 var _require = require('path'),
   resolve = _require.resolve;
 module.exports = {

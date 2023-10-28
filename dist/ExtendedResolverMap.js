@@ -1,11 +1,21 @@
 "use strict";
 
+require("core-js/modules/es.object.define-property.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ExtendedResolverMap = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+require("core-js/modules/es.function.bind.js");
+require("core-js/modules/es.object.keys.js");
+require("core-js/modules/es.symbol.iterator.js");
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/es.symbol.js");
+require("core-js/modules/es.symbol.description.js");
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));

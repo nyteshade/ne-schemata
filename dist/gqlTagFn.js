@@ -1,10 +1,18 @@
 "use strict";
 
+require("core-js/modules/es.object.define-property.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
 exports.gql = gql;
+require("core-js/modules/es.array.concat.js");
+require("core-js/modules/es.object.get-own-property-names.js");
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.reflect.get.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.reflect.to-string-tag.js");
 var _Schemata = require("./Schemata");
 var _neTagFns = require("ne-tag-fns");
 /**
@@ -34,10 +42,13 @@ function gql(template) {
         return schemata;
       }
       if (prop === "string") {
-        return string;
+        return String(schemata);
       }
       if (schemataProps.includes(prop)) {
-        return schemata[prop];
+        var targetProps = Object.getOwnPropertyNames(target);
+        if (!targetProps.includes(prop)) {
+          return schemata[prop];
+        }
       }
       return Reflect.get(target, prop, receiver);
     }

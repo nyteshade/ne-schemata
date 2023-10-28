@@ -1,5 +1,6 @@
 "use strict";
 
+require("core-js/modules/es.object.define-property.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -12,6 +13,20 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.regexp.test.js");
+require("core-js/modules/es.error.to-string.js");
+require("core-js/modules/es.date.to-string.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.regexp.to-string.js");
+require("core-js/modules/es.array.reduce.js");
+require("core-js/modules/es.array.concat.js");
+require("core-js/modules/es.array.push.js");
+require("core-js/modules/es.object.entries.js");
+require("core-js/modules/es.error.cause.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/web.dom-collections.iterator.js");
 var _errors = require("./errors");
 var _propAt = _interopRequireDefault(require("./propAt"));
 var _deepmerge = _interopRequireDefault(require("deepmerge"));

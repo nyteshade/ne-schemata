@@ -1,11 +1,19 @@
 "use strict";
 
+require("core-js/modules/es.object.define-property.js");
+require("core-js/modules/es.array.at.js");
+require("core-js/modules/es.string.at-alternative.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.at = at;
 exports.atNicely = atNicely;
 exports["default"] = void 0;
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.array.reduce.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.array.concat.js");
 /**
  * This function takes an array of values that are used with `eval` to
  * dynamically, and programmatically, access the value of an object in a nested

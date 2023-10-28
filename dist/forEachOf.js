@@ -1,5 +1,6 @@
 "use strict";
 
+require("core-js/modules/es.object.define-property.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -8,6 +9,24 @@ exports["default"] = exports.UNIONS = exports.TypeMap = exports.TYPES = exports.
 exports.forEachField = forEachField;
 exports.forEachOf = forEachOf;
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.map.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/es.array.for-each.js");
+require("core-js/modules/web.dom-collections.for-each.js");
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.symbol.js");
+require("core-js/modules/es.symbol.to-string-tag.js");
+require("core-js/modules/es.json.to-string-tag.js");
+require("core-js/modules/es.math.to-string-tag.js");
+require("core-js/modules/es.symbol.description.js");
+require("core-js/modules/es.object.define-properties.js");
+require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.object.keys.js");
+require("core-js/modules/es.string.starts-with.js");
 var _graphql = require("graphql");
 // Create constants for each of the types allowed, over which one might
 // iterate. These can be bitmasked to include multiple types; i.e. for both

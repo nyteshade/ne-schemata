@@ -8,7 +8,7 @@ import {
 } from 'graphql'
 
 describe('testing Schemata', () => {
-  let str = sdl.sdl
+  let str = String(sdl)
   let ast = Schemata.parse(str)
   let schema = buildSchema(str)
 
@@ -95,26 +95,24 @@ describe('testing Schemata', () => {
   })
 
   it('should return null if .schema is invoked with bad values', () => {
-    let sdlString = gql`
+    let astNode = gql`
       type Something {
         fieldOf: Undefined
       }
     `
-    let astNode = sdlString.ast
-    let schema = sdlString.schema
+    let schema = astNode.schema
 
     expect(schema).toBe(null)
     expect(astNode).not.toBe(null)
   })
 
   it('should return null if .schema is used with bad values', () => {
-    let sdlString = gql`
+    let astNode = gql`
       type Something {
         fieldOf: Undefined
       }
     `
-    let astNode = sdlString.ast
-    let schema = sdlString.schema
+    let schema = astNode.schema
 
     expect(schema).toBe(null)
     expect(astNode).not.toBe(null)
@@ -213,7 +211,7 @@ describe('testing Schemata', () => {
       type Person {
         name: String
       }
-    `
+    `.schemata
 
     let sdlB = gql`
       enum Gender {
@@ -224,7 +222,7 @@ describe('testing Schemata', () => {
       type Person {
         gender: Gender
       }
-    `
+    `.schemata
 
     let merged = sdlA.mergeSDL(sdlB)
     let schema = merged.schema
@@ -528,7 +526,7 @@ describe('testing Schemata', () => {
       extend type User {
         age: Int
       }
-    `
+    `.schemata
     let basicSchema = buildSchema(schemata.sdl)
 
     // Note that in some semi-recent build of GraphQL, they started to
@@ -549,7 +547,7 @@ describe('testing Schemata', () => {
       extend type User {
         age: Int
       }
-    `
+    `.schemata
     let flatSDL = schemata.flatSDL
 
     expect(schemata.includes('extend')).toBe(true)
@@ -565,7 +563,7 @@ describe('testing Schemata', () => {
       extend type User {
         age: Int
       }
-    `
+    `.schemata
     expect(schemata.includes('extend')).toBe(true)
     schemata.flattenSDL()
     expect(schemata.includes('extend')).toBe(false)

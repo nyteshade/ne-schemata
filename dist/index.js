@@ -1,5 +1,8 @@
 "use strict";
 
+require("core-js/modules/es.object.define-property.js");
+require("core-js/modules/es.array.at.js");
+require("core-js/modules/es.string.at-alternative.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true

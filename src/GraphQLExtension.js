@@ -1,5 +1,5 @@
-import { Schemata, stripResolversFromSchema } from './Schemata'
-import { readFileSync } from 'fs'
+import { Schemata } from './Schemata'
+import { readFileSync, existsSync } from 'fs'
 import { extname, resolve } from 'path'
 
 /**
@@ -32,18 +32,28 @@ export function graphQLExtensionHandler(module, filename) {
   let astNode = schemata.ast
   let resolvers
   let jsFilename
+  let tsFilename
   let jsModule
 
   try {
-    jsFilename = filename.replace(extname(filename), '.js')
-    jsModule = require(resolve(jsFilename))
-    resolvers = jsModule.resolvers || typeof jsModule == 'object' && jsModule
+    jsFilename = resolve(filename.replace(extname(filename), '.js'))
+    if (existsSync(jsFilename)) {
+      jsModule = require(jsFilename)
+    }
+
+    tsFilename = resolve(filename.replace(extname(filename), '.ts'))
+    if (existsSync(tsFilename)) {
+      jsModule = require(tsFilename)
+    }
+
+    resolvers = jsModule?.resolvers ?? (typeof jsModule == 'object' && jsModule)
   }
   catch (error) {
     console.error(error)
 
     process.nextTick(() => {
-      delete require.cache[resolve(jsFilename)]
+      delete require.cache[jsFilename]
+      delete require.cache[tsFilename]
     })
 
     resolvers = null
@@ -71,9 +81,66 @@ export function graphQLExtensionHandler(module, filename) {
   }
 }
 
-export function register(extension = '.graphql') {
-  require.extensions = require.extensions || {}
-  require.extensions[extension] = graphQLExtensionHandler
+/**
+ * Acts as a higher order function that wraps the .js extension handler. 
+ */
+export function jsExtensionWrapper() {
+  if (require.originalJSExtensionHandler) { return }
+
+  require.originalJSExtensionHandler = require.extensions['.js']
+
+  /**
+   * The handler will first check to see if there is a .graphql file with the same
+   * name as the .js file. If there is, it will use the .graphql file instead
+   * of the .js file by deferrring to the function graphQLExtensionHandler. The
+   * original JS extension wrapper is stored such that unregister can be 
+   * called to undo the changes. 
+   */
+  require.extensions['.js'] = function(module, filename) {
+    const graphqlFilename = filename.replace(extname(filename), '.graphql')
+    if (existsSync(graphqlFilename)) {
+      return graphQLExtensionHandler(module, graphqlFilename)
+    }
+    return require.originalJSExtensionHandler(module, filename)
+  }
 }
 
+/**
+ * Registers the custom extension handlers for `.graphql`, `.sdl`, and `.gql` files,
+ * and wraps the original `.js` extension handler to support `.graphql` files with
+ * the same name.
+ */
+export function register() {
+  require.extensions = require.extensions || {}
+
+  if (!require.originalJSExtensionHandler) {
+    jsExtensionWrapper()
+  }
+  require.extensions['.graphql'] = graphQLExtensionHandler
+  require.extensions['.sdl'] = graphQLExtensionHandler
+  require.extensions['.gql'] = graphQLExtensionHandler
+}
+
+/**
+ * Deregisters the custom extension handlers for `.graphql`, `.sdl`, and `.gql` files,
+ * and restores the original `.js` extension handler.
+ */
+export function deregister() {
+  if (require.originalJSExtensionHandler) {
+    require.extensions['.js'] = require.originalJSExtensionHandler
+    delete require.originalJSExtensionHandler
+  }
+
+  delete require.extensions['.graphql']
+  delete require.extensions['.sdl']
+  delete require.extensions['.gql']
+}
+
+/**
+ * Sets up custom extension handlers for `.graphql`, `.sdl`, and `.gql` files,
+ * and wraps the original `.js` extension handler to support `.graphql` files
+ * with the same name.
+ *
+ * @type {Function}
+ */
 export default register

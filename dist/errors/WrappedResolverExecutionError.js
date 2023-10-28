@@ -1,5 +1,8 @@
 "use strict";
 
+require("core-js/modules/es.reflect.to-string-tag.js");
+require("core-js/modules/es.reflect.construct.js");
+require("core-js/modules/es.object.define-property.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -13,6 +16,13 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.regexp.test.js");
+require("core-js/modules/es.error.to-string.js");
+require("core-js/modules/es.date.to-string.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.regexp.to-string.js");
+require("core-js/modules/es.function.name.js");
 var _neTagFns = require("ne-tag-fns");
 var _BaseError2 = require("../BaseError");
 var _util = require("util");

@@ -1,11 +1,26 @@
 "use strict";
 
+require("core-js/modules/es.reflect.construct.js");
+require("core-js/modules/es.object.define-property.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = exports.BaseError = void 0;
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
+require("core-js/modules/es.error.to-string.js");
+require("core-js/modules/es.date.to-string.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.regexp.to-string.js");
+require("core-js/modules/es.error.cause.js");
+require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.reflect.get.js");
+require("core-js/modules/es.reflect.to-string-tag.js");
+require("core-js/modules/es.symbol.to-string-tag.js");
+require("core-js/modules/es.json.to-string-tag.js");
+require("core-js/modules/es.math.to-string-tag.js");
+require("core-js/modules/es.symbol.js");
+require("core-js/modules/es.symbol.description.js");
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));

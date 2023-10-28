@@ -27,6 +27,8 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-decorators": "^7.23.2",
     "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@babel/plugin-syntax-top-level-await": "^7.14.5",
+    "@babel/plugin-transform-class-static-block": "^7.22.11",
     "@babel/plugin-transform-classes": "^7.22.15",
     "@babel/plugin-transform-runtime": "^7.23.2",
     "@babel/preset-env": "^7.23.2",
@@ -58,6 +60,7 @@
   "dependencies": {
     "@babel/runtime": "^7.23.2",
     "babel-eslint": "^10.1.0",
+    "core-js": "^3.33.1",
     "debug": "^4.3.4",
     "deepmerge": "^4.3.1",
     "flow-parser": "^0.220.0",

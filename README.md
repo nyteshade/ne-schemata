@@ -26,6 +26,58 @@ Biggest selling points of working with the Schemata class
 * [x] Merge multple GraphQLSchemas via AST parsing
 * [x] Pare down one SDL/Schema using another as a guide
 
+## Recent Breaking Changes
+
+### 2.4.0, 2.4.1 -> 3.0.0
+2.4.0 and 2.4.1 are both actually breaking changes. Tests have been updated and version
+updated appropriately for 3.0.0. The breaking changes are as follows:
+
+```js
+// Previously
+let schemata = gql`type Query { name: String }` // -> Schemata instance
+
+// Currently
+let ast = gql`type Query { name: String }` // -> Proxy(ASTNode) with access to Schemata
+```
+
+The `gql` template string function no returns an AST node as is inline with with 
+Apollo GraphQL's implementation of a template string with the same name. This allows
+compatibility to be increased.
+
+The returned AST object is wrapped in a Proxy instance allowing access to schemata
+instance properties, a `string` and `schemata` property accessor that provide access
+to a `String` representation of the SDL and the instance of `Schemata` that represents
+the templated string
+
+The Proxy instance allows direct access to any `Schemata` instance property that does
+not directly conflict with a AST node property of the same name. If the AST node 
+property conflicts, access will be limited to `ast.schemata.property` where `ast` is
+the result of calling `gql` and `property` is the desired conflicting property.
+
+#### New Changes
+
+You can now require files with `.graphql`, `.gql`, and `.sdl` extensions. If found, the
+contents of the file will be used as parameters for a call to `new Schemata()`. Various
+obvious aspects of the file can be imported specifically as follows
+
+  astNode   - an ASTNode document object representing the SDL contents
+              of the .graphql file contents. Null if the text is invalid
+  resovlers - if there is an adjacent file with the same name, ending in
+              .js and it exports either a `resolvers` key or an object by
+              default, this value will be set on the sdl object as its set
+              resolvers/rootObj
+  schema    - a GraphQLSchema instance object if the contents of the .graphql
+              file represent both valid SDL and contain at least one root
+              type such as Query, Mutation or Subscription
+  sdl       - the string of SDL wrapped in an instance of Schemata
+  typeDefs  - the raw string used that `sdl` wraps
+  default   - the sdl string wrapped in an instance of Schemata is the
+              default export
+
+Notably, in 3.x and onward, if one of these extensions is require'd or imported, and 
+adjacent to the file is a `.js` file with the same name, its contents (or .resolvers 
+if present) will be used as the resolvers for the generated `Schemata` instance.
+
 ## Installation
 
 Simply npm or yarn install the package

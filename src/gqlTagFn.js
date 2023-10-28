@@ -23,8 +23,13 @@ export function gql(template, ...substitutions) {
   return new Proxy(ast, {
     get(target, prop, receiver) {
       if (prop === "schemata")          { return schemata }    
-      if (prop === "string")            { return string }      
-      if (schemataProps.includes(prop)) { return schemata[prop] }
+      if (prop === "string")            { return String(schemata) }      
+      if (schemataProps.includes(prop)) {
+        const targetProps = Object.getOwnPropertyNames(target)
+        if (!targetProps.includes(prop)) { 
+          return schemata[prop] 
+        }
+      }
       
       return Reflect.get(target, prop, receiver)
     }

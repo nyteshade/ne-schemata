@@ -1,13 +1,22 @@
 "use strict";
 
+require("core-js/modules/es.object.define-property.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
+exports.deregister = deregister;
 exports.graphQLExtensionHandler = graphQLExtensionHandler;
+exports.jsExtensionWrapper = jsExtensionWrapper;
 exports.register = register;
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
+require("core-js/modules/es.error.to-string.js");
+require("core-js/modules/es.date.to-string.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.regexp.to-string.js");
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.string.replace.js");
 var _Schemata = require("./Schemata");
 var _fs = require("fs");
 var _path = require("path");
@@ -41,15 +50,24 @@ function graphQLExtensionHandler(module, filename) {
   var astNode = schemata.ast;
   var resolvers;
   var jsFilename;
+  var tsFilename;
   var jsModule;
   try {
-    jsFilename = filename.replace((0, _path.extname)(filename), '.js');
-    jsModule = require((0, _path.resolve)(jsFilename));
-    resolvers = jsModule.resolvers || (0, _typeof2["default"])(jsModule) == 'object' && jsModule;
+    var _jsModule$resolvers, _jsModule;
+    jsFilename = (0, _path.resolve)(filename.replace((0, _path.extname)(filename), '.js'));
+    if ((0, _fs.existsSync)(jsFilename)) {
+      jsModule = require(jsFilename);
+    }
+    tsFilename = (0, _path.resolve)(filename.replace((0, _path.extname)(filename), '.ts'));
+    if ((0, _fs.existsSync)(tsFilename)) {
+      jsModule = require(tsFilename);
+    }
+    resolvers = (_jsModule$resolvers = (_jsModule = jsModule) === null || _jsModule === void 0 ? void 0 : _jsModule.resolvers) !== null && _jsModule$resolvers !== void 0 ? _jsModule$resolvers : (0, _typeof2["default"])(jsModule) == 'object' && jsModule;
   } catch (error) {
     console.error(error);
     process.nextTick(function () {
-      delete require.cache[(0, _path.resolve)(jsFilename)];
+      delete require.cache[jsFilename];
+      delete require.cache[tsFilename];
     });
     resolvers = null;
   }
@@ -75,9 +93,66 @@ function graphQLExtensionHandler(module, filename) {
     typeDefs: schemata
   };
 }
-function register() {
-  var extension = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '.graphql';
-  require.extensions = require.extensions || {};
-  require.extensions[extension] = graphQLExtensionHandler;
+
+/**
+ * Acts as a higher order function that wraps the .js extension handler. 
+ */
+function jsExtensionWrapper() {
+  if (require.originalJSExtensionHandler) {
+    return;
+  }
+  require.originalJSExtensionHandler = require.extensions['.js'];
+
+  /**
+   * The handler will first check to see if there is a .graphql file with the same
+   * name as the .js file. If there is, it will use the .graphql file instead
+   * of the .js file by deferrring to the function graphQLExtensionHandler. The
+   * original JS extension wrapper is stored such that unregister can be 
+   * called to undo the changes. 
+   */
+  require.extensions['.js'] = function (module, filename) {
+    var graphqlFilename = filename.replace((0, _path.extname)(filename), '.graphql');
+    if ((0, _fs.existsSync)(graphqlFilename)) {
+      return graphQLExtensionHandler(module, graphqlFilename);
+    }
+    return require.originalJSExtensionHandler(module, filename);
+  };
 }
+
+/**
+ * Registers the custom extension handlers for `.graphql`, `.sdl`, and `.gql` files,
+ * and wraps the original `.js` extension handler to support `.graphql` files with
+ * the same name.
+ */
+function register() {
+  require.extensions = require.extensions || {};
+  if (!require.originalJSExtensionHandler) {
+    jsExtensionWrapper();
+  }
+  require.extensions['.graphql'] = graphQLExtensionHandler;
+  require.extensions['.sdl'] = graphQLExtensionHandler;
+  require.extensions['.gql'] = graphQLExtensionHandler;
+}
+
+/**
+ * Deregisters the custom extension handlers for `.graphql`, `.sdl`, and `.gql` files,
+ * and restores the original `.js` extension handler.
+ */
+function deregister() {
+  if (require.originalJSExtensionHandler) {
+    require.extensions['.js'] = require.originalJSExtensionHandler;
+    delete require.originalJSExtensionHandler;
+  }
+  delete require.extensions['.graphql'];
+  delete require.extensions['.sdl'];
+  delete require.extensions['.gql'];
+}
+
+/**
+ * Sets up custom extension handlers for `.graphql`, `.sdl`, and `.gql` files,
+ * and wraps the original `.js` extension handler to support `.graphql` files
+ * with the same name.
+ *
+ * @type {Function}
+ */
 var _default = exports["default"] = register;
