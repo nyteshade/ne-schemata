@@ -8,6 +8,9 @@
     "test": "jest",
     "build": "babel src --out-dir dist"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },  
   "keywords": [
     "SDL",
     "IDL",
