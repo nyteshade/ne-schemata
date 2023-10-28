@@ -15,7 +15,21 @@ import { handleSubstitutions } from 'ne-tag-fns'
  * template
  */
 export function gql(template, ...substitutions) {
-  return Schemata.from(handleSubstitutions(template, ...substitutions))
+  const string = handleSubstitutions(template, ...substitutions)
+  const schemata = Schemata.from(string) 
+  const ast = schemata.ast 
+  const schemataProps = Object.getOwnPropertyNames(Schemata.prototype)
+  
+  return new Proxy(ast, {
+    get(target, prop, receiver) {
+      if (prop === "schemata")          { return schemata }    
+      if (prop === "string")            { return string }      
+      if (schemataProps.includes(prop)) { return schemata[prop] }
+      
+      return Reflect.get(target, prop, receiver)
+    }
+  })
+  //return Schemata.from(handleSubstitutions(template, ...substitutions))
 }
 
 export default gql

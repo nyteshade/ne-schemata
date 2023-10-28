@@ -24,6 +24,24 @@ function gql(template) {
   for (var _len = arguments.length, substitutions = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     substitutions[_key - 1] = arguments[_key];
   }
-  return _Schemata.Schemata.from(_neTagFns.handleSubstitutions.apply(void 0, [template].concat(substitutions)));
+  var string = _neTagFns.handleSubstitutions.apply(void 0, [template].concat(substitutions));
+  var schemata = _Schemata.Schemata.from(string);
+  var ast = schemata.ast;
+  var schemataProps = Object.getOwnPropertyNames(_Schemata.Schemata.prototype);
+  return new Proxy(ast, {
+    get: function get(target, prop, receiver) {
+      if (prop === "schemata") {
+        return schemata;
+      }
+      if (prop === "string") {
+        return string;
+      }
+      if (schemataProps.includes(prop)) {
+        return schemata[prop];
+      }
+      return Reflect.get(target, prop, receiver);
+    }
+  });
+  //return Schemata.from(handleSubstitutions(template, ...substitutions))
 }
 var _default = exports["default"] = gql;
