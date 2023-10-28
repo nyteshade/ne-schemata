@@ -8,7 +8,6 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = void 0;
 exports.deregister = deregister;
 exports.graphQLExtensionHandler = graphQLExtensionHandler;
-exports.jsExtensionWrapper = jsExtensionWrapper;
 exports.register = register;
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 require("core-js/modules/es.error.to-string.js");
@@ -95,40 +94,12 @@ function graphQLExtensionHandler(module, filename) {
 }
 
 /**
- * Acts as a higher order function that wraps the .js extension handler. 
- */
-function jsExtensionWrapper() {
-  if (require.originalJSExtensionHandler) {
-    return;
-  }
-  require.originalJSExtensionHandler = require.extensions['.js'];
-
-  /**
-   * The handler will first check to see if there is a .graphql file with the same
-   * name as the .js file. If there is, it will use the .graphql file instead
-   * of the .js file by deferrring to the function graphQLExtensionHandler. The
-   * original JS extension wrapper is stored such that unregister can be 
-   * called to undo the changes. 
-   */
-  require.extensions['.js'] = function (module, filename) {
-    var graphqlFilename = filename.replace((0, _path.extname)(filename), '.graphql');
-    if ((0, _fs.existsSync)(graphqlFilename)) {
-      return graphQLExtensionHandler(module, graphqlFilename);
-    }
-    return require.originalJSExtensionHandler(module, filename);
-  };
-}
-
-/**
  * Registers the custom extension handlers for `.graphql`, `.sdl`, and `.gql` files,
  * and wraps the original `.js` extension handler to support `.graphql` files with
  * the same name.
  */
 function register() {
   require.extensions = require.extensions || {};
-  if (!require.originalJSExtensionHandler) {
-    jsExtensionWrapper();
-  }
   require.extensions['.graphql'] = graphQLExtensionHandler;
   require.extensions['.sdl'] = graphQLExtensionHandler;
   require.extensions['.gql'] = graphQLExtensionHandler;
@@ -139,10 +110,6 @@ function register() {
  * and restores the original `.js` extension handler.
  */
 function deregister() {
-  if (require.originalJSExtensionHandler) {
-    require.extensions['.js'] = require.originalJSExtensionHandler;
-    delete require.originalJSExtensionHandler;
-  }
   delete require.extensions['.graphql'];
   delete require.extensions['.sdl'];
   delete require.extensions['.gql'];

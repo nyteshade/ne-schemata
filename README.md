@@ -28,7 +28,7 @@ Biggest selling points of working with the Schemata class
 
 ## Recent Breaking Changes
 
-### 2.4.0, 2.4.1 -> 3.0.0
+### 2.4.0, 2.4.1 -> 3.0.1
 2.4.0 and 2.4.1 are both actually breaking changes. Tests have been updated and version
 updated appropriately for 3.0.0. The breaking changes are as follows:
 
@@ -76,7 +76,7 @@ obvious aspects of the file can be imported specifically as follows
               default export
 ```
 
-Notably, in 3.x and onward, if one of these extensions is require'd or imported, and 
+Notably, in 3.x and onward, if one of these extensions is require'd, and 
 adjacent to the file is a `.js` file with the same name, its contents (or .resolvers 
 if present) will be used as the resolvers for the generated `Schemata` instance.
 
