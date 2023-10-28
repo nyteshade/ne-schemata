@@ -1,22 +1,16 @@
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
 exports.graphQLExtensionHandler = graphQLExtensionHandler;
 exports.register = register;
-
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
-
 var _Schemata = require("./Schemata");
-
 var _fs = require("fs");
-
 var _path = require("path");
-
 /**
  * Adds the ability to `require` or `import` files ending in a `.graphql`
  * extension. The exports returned from such an import consist of four
@@ -48,7 +42,6 @@ function graphQLExtensionHandler(module, filename) {
   var resolvers;
   var jsFilename;
   var jsModule;
-
   try {
     jsFilename = filename.replace((0, _path.extname)(filename), '.js');
     jsModule = require((0, _path.resolve)(jsFilename));
@@ -59,20 +52,19 @@ function graphQLExtensionHandler(module, filename) {
       delete require.cache[(0, _path.resolve)(jsFilename)];
     });
     resolvers = null;
-  } // Assign the resolvers to the sdl string
+  }
 
-
+  // Assign the resolvers to the sdl string
   schemata.resolvers = resolvers;
-
   if (schemata.resolvers) {
     schemata.clearSchema();
     schema = schemata.schema;
-  } // For all intents and purposes this is an object that can be treated like
+  }
+
+  // For all intents and purposes this is an object that can be treated like
   // a string but that also has three extra properties; sdl, ast and schema.
   // `ast` and `schema` invoke the functions `parse` and `buildSchema` from
   // the 'graphql' module, respectively
-
-
   module.exports = {
     astNode: astNode,
     "default": schemata,
@@ -83,12 +75,9 @@ function graphQLExtensionHandler(module, filename) {
     typeDefs: schemata
   };
 }
-
 function register() {
   var extension = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '.graphql';
   require.extensions = require.extensions || {};
   require.extensions[extension] = graphQLExtensionHandler;
 }
-
-var _default = register;
-exports["default"] = _default;
+var _default = exports["default"] = register;

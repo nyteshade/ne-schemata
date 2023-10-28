@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.at = at;
 exports.atNicely = atNicely;
 exports["default"] = void 0;
-
 /**
  * This function takes an array of values that are used with `eval` to
  * dynamically, and programmatically, access the value of an object in a nested
@@ -56,7 +55,6 @@ exports["default"] = void 0;
  */
 function at(object, path, setTo) {
   var playNice = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-
   if (typeof path === 'string') {
     if (path.includes('.')) {
       path = path.split('.');
@@ -64,14 +62,12 @@ function at(object, path, setTo) {
       path = [path];
     }
   }
-
   try {
     if (setTo !== undefined) {
       eval("(object".concat(path.reduce(function (p, c) {
         return "".concat(p, "['").concat(c, "']");
       }, ''), " = setTo)"));
     }
-
     return eval("(object".concat(path.reduce(function (p, c) {
       return "".concat(p, "['").concat(c, "']");
     }, ''), ")"));
@@ -79,7 +75,6 @@ function at(object, path, setTo) {
     if (playNice) {
       return undefined;
     }
-
     console.error("[ERROR:at] Cannot reach into the beyond!");
     console.error("Tried: object".concat(path.reduce(function (p, c) {
       return "".concat(p, "['").concat(c, "']");
@@ -87,6 +82,7 @@ function at(object, path, setTo) {
     throw error;
   }
 }
+
 /**
  * `atNicely()` is a shorthand version of calling `at()` but specifying `true`
  * for the argument `playNice`. This can make reads normally performed with
@@ -104,11 +100,10 @@ function at(object, path, setTo) {
  * will be modified to this value before it is returned
  * @return {mixed} either the requested value or undefined
  */
-
-
 function atNicely(object, path, setTo) {
   return at(object, path, setTo, true);
 }
+
 /**
  * Default export is atNicely; as long as you know what you want, this leaves
  * cleaner code in your repository. Simply add this to the top of your module
@@ -123,7 +118,4 @@ function atNicely(object, path, setTo) {
  * import { at } from './propAt'
  * ```
  */
-
-
-var _default = atNicely;
-exports["default"] = _default;
+var _default = exports["default"] = atNicely;

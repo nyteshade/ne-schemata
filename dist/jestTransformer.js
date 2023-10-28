@@ -1,8 +1,7 @@
 "use strict";
 
 var _require = require('path'),
-    resolve = _require.resolve;
-
+  resolve = _require.resolve;
 module.exports = {
   process: function jestTransformer(sourceText, sourcePath, config, options) {
     var source = sourceText.replace(/\'/gm, "\\'").replace(/\r?\n/gm, ' ');

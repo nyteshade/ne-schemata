@@ -1,53 +1,34 @@
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ExtendedResolver = void 0;
-
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
-
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
-
 var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-
 var _wrapNativeSuper2 = _interopRequireDefault(require("@babel/runtime/helpers/wrapNativeSuper"));
-
 var _graphql = require("graphql");
-
 var _Schemata = require("./Schemata");
-
 var _errors = require("./errors");
-
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
-
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 var original = Symbol('Original Resolver');
 var listing = Symbol('List of Resolvers');
 var patcher = Symbol('Resolver Result Patcher');
-
 var isFn = function isFn(o) {
   return /Function\]/.test(Object.prototype.toString.call(o));
 };
+
 /**
  * Higher order, or wrapped, GraphQL field resolvers are a technique that
  * is becoming increasingly common these days. This class attempts to wrap
@@ -55,13 +36,9 @@ var isFn = function isFn(o) {
  *
  * @extends Function
  */
-
-
-var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
+var ExtendedResolver = exports.ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
   (0, _inherits2["default"])(ExtendedResolver, _Function);
-
   var _super = _createSuper(ExtendedResolver);
-
   /**
    * Creates a new instance of `ExtendedResolver` for use with GraphQL. If
    * the supplied resolver is already an instance of `ExtendedResolver`, its
@@ -76,11 +53,9 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
    */
   function ExtendedResolver() {
     var _this;
-
     var resolver = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _graphql.defaultFieldResolver;
     (0, _classCallCheck2["default"])(this, ExtendedResolver);
     _this = _super.call(this);
-
     if (resolver instanceof ExtendedResolver) {
       _this[listing] = Array.from(resolver[listing]);
       _this[original] = resolver[original];
@@ -90,9 +65,10 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
       _this[original] = resolver;
       _this[patcher] = null;
     }
-
     return (0, _possibleConstructorReturn2["default"])(_this, new Proxy((0, _assertThisInitialized2["default"])(_this), ExtendedResolver.handler));
-  } // Properties
+  }
+
+  // Properties
 
   /**
    * Returns a handle to the internal array of ordered resolver
@@ -101,13 +77,12 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
    * @return  {Array<GraphQLFieldResolver>} the internal list of
    * resolvers to execute in order as though it were a single resolver
    */
-
-
   (0, _createClass2["default"])(ExtendedResolver, [{
     key: "order",
     get: function get() {
       return this[listing];
     }
+
     /**
      * An accessor that writes a new resolver to the internal list of
      * resolvers that combine into a single resolver for inclusion elsewhere.
@@ -117,11 +92,11 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      * to the end? Allow all in some configurable manner?
      *
      * @param  {Array<GraphQLFieldResolver>} value the new array
-     */
-    ,
+     */,
     set: function set(value) {
       this[listing] = value;
     }
+
     /**
      * Retrieve the internal result value patcher function. By default, this
      * value is null and nonexistent. When present, it is a function that will
@@ -134,22 +109,22 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      *
      * @return {ResolverResultsPatcher} a function or null
      */
-
   }, {
     key: "resultPatcher",
     get: function get() {
       return this[patcher];
     }
+
     /**
      * Sets the internal patcher function.
      *
      * @see resultPatcher getter above
      * @param {ResolverResultsPatcher} value a new patcher function
-     */
-    ,
+     */,
     set: function set(value) {
       this[patcher] = value;
     }
+
     /**
      * A getter that retrieves the original resolver from within the
      * `ExtendedResolver` instance.
@@ -159,12 +134,12 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      *
      * @return {GraphQLFieldResolver} the originally wrapped field resolver
      */
-
   }, {
     key: "original",
     get: function get() {
       return this[original];
     }
+
     /**
      * The dynamic index of the original resolver inside the internal listing.
      * As prepended and appended resolvers are added to the `ExtendedResolver`,
@@ -177,12 +152,13 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      * internal listing. -1 indicates that the original resolver is missing
      * which, in and of itself, indicates an invalid state.
      */
-
   }, {
     key: "originalIndex",
     get: function get() {
       return this[listing].indexOf(this[original]);
-    } // Methods
+    }
+
+    // Methods
 
     /**
      * Guaranteed to insert the supplied field resolver after any other prepended
@@ -191,7 +167,6 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      * @param {GraphQLFieldResolver} preresolver a field resolver to run before
      * the original field resolver executes.
      */
-
   }, {
     key: "prepend",
     value: function prepend(preresolver) {
@@ -201,6 +176,7 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
         this[listing].splice(index, 0, preresolver);
       }
     }
+
     /**
      * Inserts the supplied field resolver function after the original resolver
      * but before any previously added post resolvers. If you simply wish to
@@ -209,7 +185,6 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      * @param {GraphQLFieldResolver} postresolver a field resolver that should
      * run after the original but before other postresolvers previously added.
      */
-
   }, {
     key: "append",
     value: function append(postresolver) {
@@ -219,6 +194,7 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
         this[listing].splice(index, 0, postresolver);
       }
     }
+
     /**
      * Simply adds a field resolver to the end of the list rather than trying
      * to put it as close to the original resolver as possible.
@@ -226,7 +202,6 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      * @param {GraphQLFieldResolver} postresolver a field resolver that should
      * run after the original
      */
-
   }, {
     key: "push",
     value: function push(postresolver) {
@@ -234,6 +209,7 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
         this[listing].push(postresolver);
       }
     }
+
     /**
      * The `.toString()` functionality of the ExtendedResolver dutifily lists the
      * source of each function to be executed in order.
@@ -243,15 +219,12 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      * @return {string} a combined toString() functionality for each item in
      * order
      */
-
   }, {
     key: "toString",
     value: function toString() {
       var strings = [];
-
       var _iterator = _createForOfIteratorHelper(this.order),
-          _step;
-
+        _step;
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var fn = _step.value;
@@ -265,9 +238,9 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
       } finally {
         _iterator.f();
       }
-
       return strings.join('\n');
     }
+
     /**
      * After having to repeatedly console.log the toString output, this function
      * now does that easier for me so I don't end up with carpal tunnel earlier
@@ -275,12 +248,13 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      *
      * @method show
      */
-
   }, {
     key: "show",
     value: function show() {
       console.log(this.toString());
-    } // Symbols
+    }
+
+    // Symbols
 
     /**
      * Ensure that when inspected with Object.prototype.toString.call/apply
@@ -288,12 +262,13 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      *
      * @type {Symbol}
      */
-
   }, {
     key: _Symbol$toStringTag,
     get: function get() {
       return this.constructor.name;
-    } // Statics
+    }
+
+    // Statics
 
     /**
      * Shorthand static initializer that allows the ExtendedResolver class to
@@ -309,18 +284,16 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      * @return {ExtendedResolver} a newly minted instance of the class
      * `ExtendedResolver`
      */
-
   }], [{
     key: "from",
     value: function from(resolver, patcher) {
       var newResolver = new ExtendedResolver(resolver);
-
       if (patcher) {
         newResolver.resultPatcher = patcher;
       }
-
       return newResolver;
     }
+
     /**
      * Similar to the `.from` static initializer, the `.wrap` initializer
      * takes an original field resolver, an optional patcher as in `.from`
@@ -340,7 +313,6 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      * original field resolver executes
      * @return {[type]}          [description]
      */
-
   }, {
     key: "wrap",
     value: function wrap(original) {
@@ -348,37 +320,32 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
       var appends = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
       var patcher = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
       var resolver = ExtendedResolver.from(original);
-
       if (patcher && isFn(patcher)) {
         resolver.resultPatcher = patcher;
       }
-
       if (prepends) {
         if (!Array.isArray(prepends)) {
           prepends = [prepends];
         }
-
         if (prepends.length) {
           prepends.forEach(function (fn) {
             return resolver.prepend(fn);
           });
         }
       }
-
       if (appends) {
         if (!Array.isArray(appends)) {
           appends = [appends];
         }
-
         if (appends.length) {
           appends.forEach(function (fn) {
             return resolver.append(fn);
           });
         }
       }
-
       return resolver;
     }
+
     /**
      * In the process of schema stitching, it is possible and likely that
      * a given schema has been extended or enlarged during the merging process
@@ -399,7 +366,6 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      * @param {ResolverResultsPatcher} patcher a function that will allow you to
      * modify the
      */
-
   }, {
     key: "SchemaInjector",
     value: function SchemaInjector(originalResolver, newSchema) {
@@ -414,6 +380,7 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
         }
       }], [], patcher);
     }
+
     /**
      * All instances of `ExtendedResolver` are Proxies to the instantiated
      * class with a specially defined `.apply` handler to make their custom
@@ -421,7 +388,6 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
      *
      * @type {Object}
      */
-
   }, {
     key: "handler",
     get: function get() {
@@ -441,99 +407,76 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
          */
         apply: function apply(target, thisArg, args) {
           var _this2 = this;
-
           return (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
             var myArgs, results, result, _iterator2, _step2, fn;
-
             return _regenerator["default"].wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    // Ensure we have arguments as an array so we can concat results in
-                    // each pass of the reduction process
-                    myArgs = Array.isArray(args) ? args : Array.from(args && args || []);
-                    results = {};
-                    _iterator2 = _createForOfIteratorHelper(target[listing]);
-                    _context.prev = 3;
-
-                    _iterator2.s();
-
-                  case 5:
-                    if ((_step2 = _iterator2.n()).done) {
-                      _context.next = 19;
-                      break;
-                    }
-
-                    fn = _step2.value;
-                    _context.prev = 7;
-                    _context.next = 10;
-                    return fn.apply(thisArg || target, myArgs.concat(results));
-
-                  case 10:
-                    result = _context.sent;
-                    _context.next = 16;
+              while (1) switch (_context.prev = _context.next) {
+                case 0:
+                  // Ensure we have arguments as an array so we can concat results in
+                  // each pass of the reduction process
+                  myArgs = Array.isArray(args) ? args : Array.from(args && args || []);
+                  results = {};
+                  _iterator2 = _createForOfIteratorHelper(target[listing]);
+                  _context.prev = 3;
+                  _iterator2.s();
+                case 5:
+                  if ((_step2 = _iterator2.n()).done) {
+                    _context.next = 19;
                     break;
-
-                  case 13:
-                    _context.prev = 13;
-                    _context.t0 = _context["catch"](7);
-                    throw new _errors.WrappedResolverExecutionError(_context.t0, _this2, target[listing].indexOf(fn), myArgs.concat(results), thisArg || target);
-
-                  case 16:
-                    if (results && results instanceof Object && result && result instanceof Object) {
-                      Object.assign(results, result);
-                    } else {
-                      results = result;
-                    }
-
-                  case 17:
-                    _context.next = 5;
-                    break;
-
-                  case 19:
-                    _context.next = 24;
-                    break;
-
-                  case 21:
-                    _context.prev = 21;
-                    _context.t1 = _context["catch"](3);
-
-                    _iterator2.e(_context.t1);
-
-                  case 24:
-                    _context.prev = 24;
-
-                    _iterator2.f();
-
-                    return _context.finish(24);
-
-                  case 27:
-                    if (!(target[patcher] && target[patcher] instanceof Function)) {
-                      _context.next = 37;
-                      break;
-                    }
-
-                    _context.prev = 28;
-                    _context.next = 31;
-                    return target[patcher].call(thisArg || target, results);
-
-                  case 31:
-                    results = _context.sent;
+                  }
+                  fn = _step2.value;
+                  _context.prev = 7;
+                  _context.next = 10;
+                  return fn.apply(thisArg || target, myArgs.concat(results));
+                case 10:
+                  result = _context.sent;
+                  _context.next = 16;
+                  break;
+                case 13:
+                  _context.prev = 13;
+                  _context.t0 = _context["catch"](7);
+                  throw new _errors.WrappedResolverExecutionError(_context.t0, _this2, target[listing].indexOf(fn), myArgs.concat(results), thisArg || target);
+                case 16:
+                  if (results && results instanceof Object && result && result instanceof Object) {
+                    Object.assign(results, result);
+                  } else {
+                    results = result;
+                  }
+                case 17:
+                  _context.next = 5;
+                  break;
+                case 19:
+                  _context.next = 24;
+                  break;
+                case 21:
+                  _context.prev = 21;
+                  _context.t1 = _context["catch"](3);
+                  _iterator2.e(_context.t1);
+                case 24:
+                  _context.prev = 24;
+                  _iterator2.f();
+                  return _context.finish(24);
+                case 27:
+                  if (!(target[patcher] && target[patcher] instanceof Function)) {
                     _context.next = 37;
                     break;
-
-                  case 34:
-                    _context.prev = 34;
-                    _context.t2 = _context["catch"](28);
-                    throw new _errors.ResolverResultsPatcherError(_context.t2, target[patcher], thisArg || target, results);
-
-                  case 37:
-                    return _context.abrupt("return", results);
-
-                  case 38:
-                  case "end":
-                    return _context.stop();
-                }
+                  }
+                  _context.prev = 28;
+                  _context.next = 31;
+                  return target[patcher].call(thisArg || target, results);
+                case 31:
+                  results = _context.sent;
+                  _context.next = 37;
+                  break;
+                case 34:
+                  _context.prev = 34;
+                  _context.t2 = _context["catch"](28);
+                  throw new _errors.ResolverResultsPatcherError(_context.t2, target[patcher], thisArg || target, results);
+                case 37:
+                  return _context.abrupt("return", results);
+                case 38:
+                case "end":
+                  return _context.stop();
               }
             }, _callee, null, [[3, 21, 24, 27], [7, 13], [28, 34]]);
           }))();
@@ -543,5 +486,3 @@ var ExtendedResolver = /*#__PURE__*/function (_Function, _Symbol$toStringTag) {
   }]);
   return ExtendedResolver;
 }( /*#__PURE__*/(0, _wrapNativeSuper2["default"])(Function), Symbol.toStringTag);
-
-exports.ExtendedResolver = ExtendedResolver;

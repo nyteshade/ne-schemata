@@ -1,7 +1,6 @@
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -187,28 +186,15 @@ Object.defineProperty(exports, "walkResolverMap", {
     return _walkResolverMap.walkResolverMap;
   }
 });
-
 var _Schemata = require("./Schemata");
-
 var _jestTransformer = _interopRequireDefault(require("./jestTransformer"));
-
 var _ExtendedResolver = require("./ExtendedResolver");
-
 var _ExtendedResolverMap = require("./ExtendedResolverMap");
-
 var _GraphQLExtension = require("./GraphQLExtension");
-
 var _gqlTagFn = require("./gqlTagFn");
-
 var _propAt = require("./propAt");
-
 var _walkResolverMap = require("./walkResolverMap");
-
 var _BaseError = require("./BaseError");
-
 var _errors = require("./errors");
-
-var SDL = _Schemata.Schemata;
-exports.SDL = SDL;
-var _default = _Schemata.Schemata;
-exports["default"] = _default;
+var SDL = exports.SDL = _Schemata.Schemata;
+var _default = exports["default"] = _Schemata.Schemata;
