@@ -60,6 +60,7 @@ You can now require files with `.graphql`, `.gql`, and `.sdl` extensions. If fou
 contents of the file will be used as parameters for a call to `new Schemata()`. Various
 obvious aspects of the file can be imported specifically as follows
 
+```
   astNode   - an ASTNode document object representing the SDL contents
               of the .graphql file contents. Null if the text is invalid
   resovlers - if there is an adjacent file with the same name, ending in
@@ -73,6 +74,7 @@ obvious aspects of the file can be imported specifically as follows
   typeDefs  - the raw string used that `sdl` wraps
   default   - the sdl string wrapped in an instance of Schemata is the
               default export
+```
 
 Notably, in 3.x and onward, if one of these extensions is require'd or imported, and 
 adjacent to the file is a `.js` file with the same name, its contents (or .resolvers 
