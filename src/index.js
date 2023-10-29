@@ -1,40 +1,18 @@
 import { Schemata } from './Schemata'
 import jestTransformer from './jestTransformer'
 
-export {
-  DefaultConflictResolvers,
-  DefaultDirectiveMergeResolver,
-  DefaultEnumMergeResolver,
-  DefaultFieldMergeResolver,
-  DefaultMergeOptions,
-  DefaultScalarMergeResolver,
-  DefaultUnionMergeResolver,
-  isRootType,
-  normalizeSource,
-  runInjectors,
-  SchemaInjectorConfig,
-  stripResolversFromSchema,
-  TYPEDEFS_KEY
-} from './Schemata'
+export * from './Schemata'
+export * from './dynamicImport'
+export * from './GraphQLExtension'
 
-export { ExtendedResolver } from './ExtendedResolver'
-export { ExtendedResolverMap } from './ExtendedResolverMap'
-export { register, graphQLExtensionHandler } from './GraphQLExtension'
-export { gql } from './gqlTagFn'
-export { at, atNicely } from './propAt'
-export {
-  walkResolverMap,
-  asyncWalkResolverMap,
-  DefaultEntryInspector,
-  DefaultAsyncEntryInspector,
-} from './walkResolverMap'
+export * from './ExtendedResolver'
+export * from './ExtendedResolverMap'
+export * from './gqlTagFn'
+export * from './propAt'
+export * from './walkResolverMap'
 
-export { BaseError } from './BaseError'
-export {
-  ResolverMapStumble,
-  WrappedResolverExecutionError,
-  ResolverResultsPatcherError,
-} from './errors'
+export * from './BaseError'
+export * from './errors'
 
 export type {
   AsyncEntryInspector,
@@ -52,6 +30,7 @@ export type {
   SchemaSource,
   UnionMergeResolver,
 } from './types'
+
 
 const SDL = Schemata
 

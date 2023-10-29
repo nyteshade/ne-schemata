@@ -40,7 +40,7 @@ let schemata = gql`type Query { name: String }` // -> Schemata instance
 let ast = gql`type Query { name: String }` // -> Proxy(ASTNode) with access to Schemata
 ```
 
-The `gql` template string function no returns an AST node as is inline with with 
+The `gql` template string function no returns an AST node as is inline with with
 Apollo GraphQL's implementation of a template string with the same name. This allows
 compatibility to be increased.
 
@@ -50,7 +50,7 @@ to a `String` representation of the SDL and the instance of `Schemata` that repr
 the templated string
 
 The Proxy instance allows direct access to any `Schemata` instance property that does
-not directly conflict with a AST node property of the same name. If the AST node 
+not directly conflict with a AST node property of the same name. If the AST node
 property conflicts, access will be limited to `ast.schemata.property` where `ast` is
 the result of calling `gql` and `property` is the desired conflicting property.
 
@@ -76,8 +76,8 @@ obvious aspects of the file can be imported specifically as follows
               default export
 ```
 
-Notably, in 3.x and onward, if one of these extensions is require'd, and 
-adjacent to the file is a `.js` file with the same name, its contents (or .resolvers 
+Notably, in 3.x and onward, if one of these extensions is require'd, and
+adjacent to the file is a `.js` file with the same name, its contents (or .resolvers
 if present) will be used as the resolvers for the generated `Schemata` instance.
 
 ## Installation
@@ -396,8 +396,10 @@ Even this example has difficulty explaining properly what is happening and why i
   * [.iterator](#symbol-iterator)
   * [.toStringTag](#symbol-to-string-tag)
 * [Static methods](#static-methods)
+  * [buildFromDir()](#fn-buildFromDir)
   * [buildSchema()](#fn-buildSchema)
   * [from()](#fn-from)
+  * [fromContentsOf()](#fn-fromContentsOf)
   * [parse()](#fn-parse)
   * [print()](#fn-print)
 * [Exported types](#exported-types)
@@ -969,6 +971,24 @@ Ensures that instances of Schemata report internally as `Schemata` object. Speci
 
 ## <a name="static-methods"></a>Static methods [✯](#contents)
 
+#### <a name="fn-buildFromDir"></a>buildFromDir [✯](#contents)
+
+```js
+static async buildFromDir(
+  path: string
+): Promise<Schemata>
+```
+
+Finally a way to recursively look through a directory for any `.graphql`, `.gql`, or any `.sdl` files
+and use their contents for a merged typeDefs. It also will build up an object of resolvers to be set
+on the final instance of `Schemata`.
+
+Loading the schema for the site has now become as easy as
+
+```js
+let siteSchemata = await Schemata.buildFromDir('/path/to/src/with/.graphql/files')
+```
+
 #### <a name="fn-buildSchema"></a>buildSchema [✯](#contents)
 
 ```js
@@ -1027,6 +1047,16 @@ static from(
 An alterate way of creating a new instance of `Schemata`. Effectively equivalent to `new Schemata(...)`
 
 ## <a name="exported-types"></a>Exported Types [✯](#contents)
+
+#### <a name="fn-fromContentsOf"></a>fromContentsOf [✯](#contents)
+
+```js
+static async fromContentsOf(
+  path: string
+): Promise<Schemata>
+```
+
+Sometimes you just want to grab the contents of the SDL from disk and pass it to `Schemata.from()`
 
 #### <a name="type-conflict-resolvers"></a>ConflictResolvers [✯](#contents)
 

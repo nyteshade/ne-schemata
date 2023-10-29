@@ -3,6 +3,18 @@
 const debug_log = require('debug')('schemata:normal')
 const debug_trace = require('debug')('schemata:trace')
 
+import {
+  readdir,
+  readFile,
+  stat
+} from 'fs/promises'
+
+import {
+  format as pathFormat,
+  resolve as pathResolve,
+  join as pathJoin
+} from 'path'
+
 import type {
   ASTNode,
   BuildSchemaOptions,
@@ -30,6 +42,14 @@ import {
   printType,
   typeFromAST,
 } from 'graphql'
+
+import {
+  importGraphQL
+} from './GraphQLExtension'
+
+import {
+  pathParse
+} from './dynamicImport'
 
 import type {
   ConflictResolvers,
@@ -1906,6 +1926,66 @@ export class Schemata extends String {
     flattenResolvers: boolean = false
   ): Schemata {
     return new this(typeDefs, resolvers, buildResolvers, flattenResolvers)
+  }
+
+  /**
+   * Shorthand way of invoking `new Schemata()` after the function reads the
+   * contents of the file specified at the supplied path.
+   *
+   * @param {string} path path to the file to read the contents of
+   * @return {Schemata} an instance of Schemata
+   */
+  static async fromContentsOf(
+    path: string
+  ): Schemata {
+    const parsed = await pathParse(path)
+    const contents = (await readFile(parsed.fullPath)).toString()
+
+    return Schemata.from(contents)
+  }
+
+  static async buildFromDir(
+    path: string
+  ): ?Schemata {
+    const rePath = pathResolve(path)
+    const gqExts = ['.graphql', '.gql', '.sdl', '.typedefs']
+
+    const files = await (Array.from(await readdir(rePath, { recursive: true })).reduce(async (ap,c) => {
+      const previous = await ap
+      const parsed = await pathParse(pathJoin(rePath, c))
+
+      if (!parsed.isDir && gqExts.some(ext => parsed.ext === ext)) {
+        previous.push(parsed.fullPath)
+      }
+
+      return previous
+    }, []))
+
+    let schemata = null
+    let resolvers = {}
+
+    for (let file of files) {
+      try {
+        let data = await importGraphQL(file)
+
+        if (data.schemata) {
+          schemata = !schemata ? data.schemata : schemata.mergeSDL(data.schemata)
+        }
+
+        if (data.resolvers) {
+          resolvers = { ...resolvers, ...data.resolvers }
+        }
+      }
+      catch (ignore) {
+        console.error(ignore)
+      }
+    }
+
+    if (schemata && resolvers) {
+      schemata.resolvers = resolvers
+    }
+
+    return schemata
   }
 
   /**

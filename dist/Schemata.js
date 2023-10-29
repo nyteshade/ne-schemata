@@ -1,11 +1,16 @@
 "use strict";
 
+require("core-js/modules/es.array.join.js");
 require("core-js/modules/es.reflect.to-string-tag.js");
 require("core-js/modules/es.reflect.construct.js");
 require("core-js/modules/es.array.slice.js");
-require("core-js/modules/es.array.from.js");
 require("core-js/modules/es.regexp.exec.js");
 require("core-js/modules/es.regexp.test.js");
+require("core-js/modules/es.object.get-own-property-descriptor.js");
+require("core-js/modules/es.array.for-each.js");
+require("core-js/modules/web.dom-collections.for-each.js");
+require("core-js/modules/es.object.get-own-property-descriptors.js");
+require("core-js/modules/es.object.define-properties.js");
 require("core-js/modules/es.object.define-property.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
@@ -51,6 +56,8 @@ require("core-js/modules/es.array.index-of.js");
 require("core-js/modules/es.array.splice.js");
 require("core-js/modules/es.array.reduce.js");
 require("core-js/modules/es.symbol.iterator.js");
+require("core-js/modules/es.array.from.js");
+require("core-js/modules/es.array.some.js");
 require("core-js/modules/es.symbol.species.js");
 require("core-js/modules/es.array.species.js");
 require("core-js/modules/es.symbol.to-string-tag.js");
@@ -66,7 +73,11 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 var _wrapNativeSuper2 = _interopRequireDefault(require("@babel/runtime/helpers/wrapNativeSuper"));
+var _promises = require("fs/promises");
+var _path = require("path");
 var _graphql = require("graphql");
+var _GraphQLExtension = require("./GraphQLExtension");
+var _dynamicImport = require("./dynamicImport");
 var _ExtendedResolverMap = require("./ExtendedResolverMap");
 var _ExtendedResolver = require("./ExtendedResolver");
 var _neTagFns = require("ne-tag-fns");
@@ -74,6 +85,8 @@ var _deepmerge = _interopRequireDefault(require("deepmerge"));
 var _util = _interopRequireDefault(require("util"));
 var _forEachOf2 = require("./forEachOf");
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7;
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2["default"])(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
@@ -1880,6 +1893,149 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
     }
 
     /**
+     * Shorthand way of invoking `new Schemata()` after the function reads the
+     * contents of the file specified at the supplied path.
+     *
+     * @param {string} path path to the file to read the contents of
+     * @return {Schemata} an instance of Schemata
+     */
+  }, {
+    key: "fromContentsOf",
+    value: function () {
+      var _fromContentsOf = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(path) {
+        var parsed, contents;
+        return _regenerator["default"].wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return (0, _dynamicImport.pathParse)(path);
+            case 2:
+              parsed = _context4.sent;
+              _context4.next = 5;
+              return (0, _promises.readFile)(parsed.fullPath);
+            case 5:
+              contents = _context4.sent.toString();
+              return _context4.abrupt("return", Schemata.from(contents));
+            case 7:
+            case "end":
+              return _context4.stop();
+          }
+        }, _callee4);
+      }));
+      function fromContentsOf(_x8) {
+        return _fromContentsOf.apply(this, arguments);
+      }
+      return fromContentsOf;
+    }()
+  }, {
+    key: "buildFromDir",
+    value: function () {
+      var _buildFromDir = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6(path) {
+        var rePath, gqExts, files, schemata, resolvers, _iterator7, _step7, file, data;
+        return _regenerator["default"].wrap(function _callee6$(_context6) {
+          while (1) switch (_context6.prev = _context6.next) {
+            case 0:
+              rePath = (0, _path.resolve)(path);
+              gqExts = ['.graphql', '.gql', '.sdl', '.typedefs'];
+              _context6.t0 = Array;
+              _context6.next = 5;
+              return (0, _promises.readdir)(rePath, {
+                recursive: true
+              });
+            case 5:
+              _context6.t1 = _context6.sent;
+              _context6.next = 8;
+              return _context6.t0.from.call(_context6.t0, _context6.t1).reduce( /*#__PURE__*/function () {
+                var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5(ap, c) {
+                  var previous, parsed;
+                  return _regenerator["default"].wrap(function _callee5$(_context5) {
+                    while (1) switch (_context5.prev = _context5.next) {
+                      case 0:
+                        _context5.next = 2;
+                        return ap;
+                      case 2:
+                        previous = _context5.sent;
+                        _context5.next = 5;
+                        return (0, _dynamicImport.pathParse)((0, _path.join)(rePath, c));
+                      case 5:
+                        parsed = _context5.sent;
+                        if (!parsed.isDir && gqExts.some(function (ext) {
+                          return parsed.ext === ext;
+                        })) {
+                          previous.push(parsed.fullPath);
+                        }
+                        return _context5.abrupt("return", previous);
+                      case 8:
+                      case "end":
+                        return _context5.stop();
+                    }
+                  }, _callee5);
+                }));
+                return function (_x10, _x11) {
+                  return _ref.apply(this, arguments);
+                };
+              }(), []);
+            case 8:
+              files = _context6.sent;
+              schemata = null;
+              resolvers = {};
+              _iterator7 = _createForOfIteratorHelper(files);
+              _context6.prev = 12;
+              _iterator7.s();
+            case 14:
+              if ((_step7 = _iterator7.n()).done) {
+                _context6.next = 29;
+                break;
+              }
+              file = _step7.value;
+              _context6.prev = 16;
+              _context6.next = 19;
+              return (0, _GraphQLExtension.importGraphQL)(file);
+            case 19:
+              data = _context6.sent;
+              if (data.schemata) {
+                schemata = !schemata ? data.schemata : schemata.mergeSDL(data.schemata);
+              }
+              if (data.resolvers) {
+                resolvers = _objectSpread(_objectSpread({}, resolvers), data.resolvers);
+              }
+              _context6.next = 27;
+              break;
+            case 24:
+              _context6.prev = 24;
+              _context6.t2 = _context6["catch"](16);
+              console.error(_context6.t2);
+            case 27:
+              _context6.next = 14;
+              break;
+            case 29:
+              _context6.next = 34;
+              break;
+            case 31:
+              _context6.prev = 31;
+              _context6.t3 = _context6["catch"](12);
+              _iterator7.e(_context6.t3);
+            case 34:
+              _context6.prev = 34;
+              _iterator7.f();
+              return _context6.finish(34);
+            case 37:
+              if (schemata && resolvers) {
+                schemata.resolvers = resolvers;
+              }
+              return _context6.abrupt("return", schemata);
+            case 39:
+            case "end":
+              return _context6.stop();
+          }
+        }, _callee6, null, [[12, 31, 34, 37], [16, 24]]);
+      }));
+      function buildFromDir(_x9) {
+        return _buildFromDir.apply(this, arguments);
+      }
+      return buildFromDir;
+    }()
+    /**
      * Constant used with `forEachOf()` that signifies you wish to iterate
      * over every available type within the schema.
      *
@@ -2024,17 +2180,17 @@ function runInjectors(config, resolverArgs) {
   if (!Array.isArray(config.resolverInjectors)) {
     config.resolverInjectors = [config.resolverInjectors];
   }
-  var _iterator7 = _createForOfIteratorHelper(config.resolverInjectors),
-    _step7;
+  var _iterator8 = _createForOfIteratorHelper(config.resolverInjectors),
+    _step8;
   try {
-    for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
-      var injector = _step7.value;
+    for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+      var injector = _step8.value;
       args = injector(resolverArgs);
     }
   } catch (err) {
-    _iterator7.e(err);
+    _iterator8.e(err);
   } finally {
-    _iterator7.f();
+    _iterator8.f();
   }
   return args;
 }
@@ -2057,11 +2213,11 @@ function runInjectors(config, resolverArgs) {
  */
 function SchemaInjectorConfig(schema, extraConfig) {
   var baseConfig = {
-    resolverInjectors: [function __schema_injector__(_ref) {
-      var source = _ref.source,
-        args = _ref.args,
-        context = _ref.context,
-        info = _ref.info;
+    resolverInjectors: [function __schema_injector__(_ref2) {
+      var source = _ref2.source,
+        args = _ref2.args,
+        context = _ref2.context,
+        info = _ref2.info;
       info.schema = schema || info.schema;
       return {
         source: source,
@@ -2286,11 +2442,11 @@ subTypeResolverMap.set('scalars', 'scalarMergeResolver');
 function combineTypeAndSubType(subTypeName, lType, rType) {
   var conflictResolvers = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : DefaultConflictResolvers;
   if (rType[subTypeName]) {
-    var _iterator8 = _createForOfIteratorHelper(rType[subTypeName]),
-      _step8;
+    var _iterator9 = _createForOfIteratorHelper(rType[subTypeName]),
+      _step9;
     try {
       var _loop3 = function _loop3() {
-        var rSubType = _step8.value;
+        var rSubType = _step9.value;
         var lSubType = lType[subTypeName].find(function (f) {
           return f.name.value == rSubType.name.value;
         });
@@ -2303,13 +2459,13 @@ function combineTypeAndSubType(subTypeName, lType, rType) {
         var index = lType.fields.indexOf(lSubType);
         lType[subTypeName].splice(index, 1, resultingSubType);
       };
-      for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+      for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
         if (_loop3()) continue;
       }
     } catch (err) {
-      _iterator8.e(err);
+      _iterator9.e(err);
     } finally {
-      _iterator8.f();
+      _iterator9.f();
     }
   }
 }
@@ -2329,11 +2485,11 @@ function combineTypeAndSubType(subTypeName, lType, rType) {
  */
 function pareTypeAndSubType(subTypeName, lType, rType) {
   var resolvers = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
-  var _iterator9 = _createForOfIteratorHelper(rType[subTypeName]),
-    _step9;
+  var _iterator10 = _createForOfIteratorHelper(rType[subTypeName]),
+    _step10;
   try {
     var _loop4 = function _loop4() {
-      var rSubType = _step9.value;
+      var rSubType = _step10.value;
       var lSubType = lType[subTypeName].find(function (f) {
         return f.name.value == rSubType.name.value;
       });
@@ -2348,13 +2504,13 @@ function pareTypeAndSubType(subTypeName, lType, rType) {
         delete resolvers[lSubType.name.value];
       }
     };
-    for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
+    for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
       if (_loop4()) continue;
     }
   } catch (err) {
-    _iterator9.e(err);
+    _iterator10.e(err);
   } finally {
-    _iterator9.f();
+    _iterator10.f();
   }
 }
 
