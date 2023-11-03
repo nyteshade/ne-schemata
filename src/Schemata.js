@@ -1983,7 +1983,10 @@ export class Schemata extends String {
         }
 
         if (newResolvers) {
-          resolvers = mergeResolvers(resolvers, newResolvers)
+          resolvers = mergeResolvers(resolvers, newResolvers, (e, n) => {
+            console.log('CONFLICT')
+            return n.value
+          })
         }
       }
       catch (ignore) {
