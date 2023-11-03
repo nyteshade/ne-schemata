@@ -1971,15 +1971,15 @@ export class Schemata extends String {
 
     for (let file of files) {
       try {
-        let { schemata, resolvers: newResolvers, typeDefs } = await importGraphQL(file)
+        let { schemata: newSchemata, resolvers: newResolvers, typeDefs } = await importGraphQL(file)
         let context = {
           file,
           typeDefs,
           resolvers
         }
 
-        if (schemata) {
-          schemata = !schemata ? data.schemata : schemata.mergeSDL(data.schemata)
+        if (newSchemata) {
+          schemata = !schemata ? newSchemata : schemata.mergeSDL(newSchemata)
         }
 
         if (newResolvers) {
