@@ -1,5 +1,9 @@
 // @flow
 
+import { InvalidObjectError, InvalidPathError } from './errors'
+
+export const DoNotSet = Symbol.for('DoNotSet')
+
 /**
  * This function takes an array of values that are used with `eval` to
  * dynamically, and programmatically, access the value of an object in a nested
@@ -50,9 +54,15 @@
 export function at(
   object: Object,
   path: string | Array<string>,
-  setTo?: mixed,
+  setTo?: mixed = DoNotSet,
   playNice?: boolean = false
 ): mixed {
+  console.log({object, path, setTo, playNice})
+
+  if (typeof object !== 'object' || object === null || object === undefined) {
+    throw new TypeError(`The first argument must be an object`)
+  }
+
   if (typeof path === 'string') {
     if (path.includes('.')) {
       path = path.split('.')
@@ -62,23 +72,39 @@ export function at(
     }
   }
 
-  try {
-    if (setTo !== undefined) {
-      eval(`(object${path.reduce((p, c) => `${p}['${c}']`, '')} = setTo)`)
+  let target = object;
+
+  // Iterate through the path, except the last key
+  for (let i = 0; i < path.length - 1; i++) {
+    const key = path[i];
+    if (key in target) {
+      target = target[key];
+    } else if (playNice) {
+      return undefined;
+    } else {
+      throw new InvalidPathError(`Invalid path: ${path.slice(0, i + 1).join('.')}`);
     }
-
-    return eval(`(object${path.reduce((p, c) => `${p}['${c}']`, '')})`)
   }
-  catch (error) {
-    if (playNice) {
-      return undefined
+
+  const lastKey = path[path.length - 1];
+
+  // Handle setTo, if provided
+  if (setTo !== DoNotSet) {
+    // Ensure the path is valid before setting the value
+    if (!(Reflect.has(target, lastKey)) && !playNice) {
+      throw new InvalidPathError(`Invalid path: ${path.join('.')}`);
     }
-
-    console.error(`[ERROR:at] Cannot reach into the beyond!`)
-    console.error(`Tried: object${path.reduce((p, c) => `${p}['${c}']`, '')}`)
-
-    throw error
+    target[lastKey] = setTo;
   }
+
+  if (!Reflect.has(target, lastKey) && !playNice) {
+    throw new InvalidPathError(`Invalid path: ${path.join('.')}`)
+  }
+
+  // Return the value at the specified path, or undefined if playNice is true and the path is invalid
+  return Reflect.has(target, lastKey)
+    ? target[lastKey]
+    : undefined
 }
 
 /**
@@ -120,4 +146,4 @@ export function atNicely(
  * import { at } from './propAt'
  * ```
  */
-export default atNicely
+export default { atNicely }

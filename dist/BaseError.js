@@ -48,15 +48,15 @@ var BaseError = exports.BaseError = /*#__PURE__*/function (_Error) {
   (0, _inherits2["default"])(BaseError, _Error);
   var _super = _createSuper(BaseError);
   /**
-   * Creates a new BaseError type that wraps either an existing error or 
-   * uses this error instantiation with the given error message. 
-   * 
+   * Creates a new BaseError type that wraps either an existing error or
+   * uses this error instantiation with the given error message.
+   *
    * @constructor
    */
   function BaseError(error) {
     var _this;
     (0, _classCallCheck2["default"])(this, BaseError);
-    _this = _super.call(this, error.message || error, error.fileName, error.lineNumber);
+    _this = _super.call(this, error.message || error, error === null || error === void 0 ? void 0 : error.fileName, error === null || error === void 0 ? void 0 : error.lineNumber);
     /**
      * The error this error wraps.
      *
@@ -88,9 +88,9 @@ var BaseError = exports.BaseError = /*#__PURE__*/function (_Error) {
   }
 
   /**
-   * All BaseError children will show `[object <class name>]` as their internal 
+   * All BaseError children will show `[object <class name>]` as their internal
    * class naming when used with `Object.prototype.toString.call` or `apply`.
-   * 
+   *
    * @type {String}
    */
   (0, _createClass2["default"])(BaseError, [{

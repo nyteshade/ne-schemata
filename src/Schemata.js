@@ -68,6 +68,7 @@ import type {
 import { ExtendedResolverMap } from './ExtendedResolverMap'
 import { ExtendedResolver } from './ExtendedResolver'
 import { inline } from 'ne-tag-fns'
+import { mergeResolvers, ResolverProperty } from './walkResolverMap'
 import merge from 'deepmerge'
 import Util from 'util'
 
@@ -1945,7 +1946,11 @@ export class Schemata extends String {
   }
 
   static async buildFromDir(
-    path: string
+    path: string,
+    conflictResolver?: (
+      existingResolvers: ResolverProperty,
+      newResolvers: ResolverProperty
+    ) => Object
   ): ?Schemata {
     const rePath = pathResolve(path)
     const gqExts = ['.graphql', '.gql', '.sdl', '.typedefs']
@@ -1966,14 +1971,19 @@ export class Schemata extends String {
 
     for (let file of files) {
       try {
-        let data = await importGraphQL(file)
+        let { schemata, resolvers: newResolvers, typeDefs } = await importGraphQL(file)
+        let context = {
+          file,
+          typeDefs,
+          resolvers
+        }
 
-        if (data.schemata) {
+        if (schemata) {
           schemata = !schemata ? data.schemata : schemata.mergeSDL(data.schemata)
         }
 
-        if (data.resolvers) {
-          resolvers = { ...resolvers, ...data.resolvers }
+        if (newResolvers) {
+          resolvers = mergeResolvers(resolvers, newResolvers)
         }
       }
       catch (ignore) {

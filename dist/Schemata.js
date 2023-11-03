@@ -6,11 +6,6 @@ require("core-js/modules/es.reflect.construct.js");
 require("core-js/modules/es.array.slice.js");
 require("core-js/modules/es.regexp.exec.js");
 require("core-js/modules/es.regexp.test.js");
-require("core-js/modules/es.object.get-own-property-descriptor.js");
-require("core-js/modules/es.array.for-each.js");
-require("core-js/modules/web.dom-collections.for-each.js");
-require("core-js/modules/es.object.get-own-property-descriptors.js");
-require("core-js/modules/es.object.define-properties.js");
 require("core-js/modules/es.object.define-property.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
@@ -81,12 +76,11 @@ var _dynamicImport = require("./dynamicImport");
 var _ExtendedResolverMap = require("./ExtendedResolverMap");
 var _ExtendedResolver = require("./ExtendedResolver");
 var _neTagFns = require("ne-tag-fns");
+var _walkResolverMap = require("./walkResolverMap");
 var _deepmerge = _interopRequireDefault(require("deepmerge"));
 var _util = _interopRequireDefault(require("util"));
 var _forEachOf2 = require("./forEachOf");
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7;
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2["default"])(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
@@ -1930,8 +1924,8 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
   }, {
     key: "buildFromDir",
     value: function () {
-      var _buildFromDir = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6(path) {
-        var rePath, gqExts, files, schemata, resolvers, _iterator7, _step7, file, data;
+      var _buildFromDir = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6(path, conflictResolver) {
+        var rePath, gqExts, files, schemata, resolvers, _iterator7, _step7, file, _yield$importGraphQL, _schemata, _newResolvers, typeDefs, context;
         return _regenerator["default"].wrap(function _callee6$(_context6) {
           while (1) switch (_context6.prev = _context6.next) {
             case 0:
@@ -1971,7 +1965,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
                     }
                   }, _callee5);
                 }));
-                return function (_x10, _x11) {
+                return function (_x11, _x12) {
                   return _ref.apply(this, arguments);
                 };
               }(), []);
@@ -1984,7 +1978,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
               _iterator7.s();
             case 14:
               if ((_step7 = _iterator7.n()).done) {
-                _context6.next = 29;
+                _context6.next = 33;
                 break;
               }
               file = _step7.value;
@@ -1992,45 +1986,53 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
               _context6.next = 19;
               return (0, _GraphQLExtension.importGraphQL)(file);
             case 19:
-              data = _context6.sent;
-              if (data.schemata) {
-                schemata = !schemata ? data.schemata : schemata.mergeSDL(data.schemata);
+              _yield$importGraphQL = _context6.sent;
+              _schemata = _yield$importGraphQL.schemata;
+              _newResolvers = _yield$importGraphQL.resolvers;
+              typeDefs = _yield$importGraphQL.typeDefs;
+              context = {
+                file: file,
+                typeDefs: typeDefs,
+                resolvers: resolvers
+              };
+              if (_schemata) {
+                _schemata = !_schemata ? data.schemata : _schemata.mergeSDL(data.schemata);
               }
-              if (data.resolvers) {
-                resolvers = _objectSpread(_objectSpread({}, resolvers), data.resolvers);
+              if (_newResolvers) {
+                resolvers = (0, _walkResolverMap.mergeResolvers)(resolvers, _newResolvers);
               }
-              _context6.next = 27;
+              _context6.next = 31;
               break;
-            case 24:
-              _context6.prev = 24;
+            case 28:
+              _context6.prev = 28;
               _context6.t2 = _context6["catch"](16);
               console.error(_context6.t2);
-            case 27:
+            case 31:
               _context6.next = 14;
               break;
-            case 29:
-              _context6.next = 34;
+            case 33:
+              _context6.next = 38;
               break;
-            case 31:
-              _context6.prev = 31;
+            case 35:
+              _context6.prev = 35;
               _context6.t3 = _context6["catch"](12);
               _iterator7.e(_context6.t3);
-            case 34:
-              _context6.prev = 34;
+            case 38:
+              _context6.prev = 38;
               _iterator7.f();
-              return _context6.finish(34);
-            case 37:
+              return _context6.finish(38);
+            case 41:
               if (schemata && resolvers) {
                 schemata.resolvers = resolvers;
               }
               return _context6.abrupt("return", schemata);
-            case 39:
+            case 43:
             case "end":
               return _context6.stop();
           }
-        }, _callee6, null, [[12, 31, 34, 37], [16, 24]]);
+        }, _callee6, null, [[12, 35, 38, 41], [16, 28]]);
       }));
-      function buildFromDir(_x9) {
+      function buildFromDir(_x9, _x10) {
         return _buildFromDir.apply(this, arguments);
       }
       return buildFromDir;

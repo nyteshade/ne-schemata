@@ -3,17 +3,29 @@
 require("core-js/modules/es.object.define-property.js");
 require("core-js/modules/es.array.at.js");
 require("core-js/modules/es.string.at-alternative.js");
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.DoNotSet = void 0;
 exports.at = at;
 exports.atNicely = atNicely;
 exports["default"] = void 0;
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
+require("core-js/modules/es.symbol.js");
+require("core-js/modules/es.symbol.description.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.error.cause.js");
+require("core-js/modules/es.error.to-string.js");
 require("core-js/modules/es.array.includes.js");
 require("core-js/modules/es.string.includes.js");
-require("core-js/modules/es.array.reduce.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.array.concat.js");
+require("core-js/modules/es.array.join.js");
+require("core-js/modules/es.array.slice.js");
+require("core-js/modules/es.reflect.has.js");
+require("core-js/modules/es.reflect.to-string-tag.js");
+var _errors = require("./errors");
+var DoNotSet = exports.DoNotSet = Symbol["for"]('DoNotSet');
+
 /**
  * This function takes an array of values that are used with `eval` to
  * dynamically, and programmatically, access the value of an object in a nested
@@ -61,8 +73,18 @@ require("core-js/modules/es.array.concat.js");
  * invalid access was requested. Otherwise an error is thrown if try to deeply
  * reach into a space where no value exists.
  */
-function at(object, path, setTo) {
+function at(object, path) {
+  var setTo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : DoNotSet;
   var playNice = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+  console.log({
+    object: object,
+    path: path,
+    setTo: setTo,
+    playNice: playNice
+  });
+  if ((0, _typeof2["default"])(object) !== 'object' || object === null || object === undefined) {
+    throw new TypeError("The first argument must be an object");
+  }
   if (typeof path === 'string') {
     if (path.includes('.')) {
       path = path.split('.');
@@ -70,25 +92,35 @@ function at(object, path, setTo) {
       path = [path];
     }
   }
-  try {
-    if (setTo !== undefined) {
-      eval("(object".concat(path.reduce(function (p, c) {
-        return "".concat(p, "['").concat(c, "']");
-      }, ''), " = setTo)"));
-    }
-    return eval("(object".concat(path.reduce(function (p, c) {
-      return "".concat(p, "['").concat(c, "']");
-    }, ''), ")"));
-  } catch (error) {
-    if (playNice) {
+  var target = object;
+
+  // Iterate through the path, except the last key
+  for (var i = 0; i < path.length - 1; i++) {
+    var key = path[i];
+    if (key in target) {
+      target = target[key];
+    } else if (playNice) {
       return undefined;
+    } else {
+      throw new _errors.InvalidPathError("Invalid path: ".concat(path.slice(0, i + 1).join('.')));
     }
-    console.error("[ERROR:at] Cannot reach into the beyond!");
-    console.error("Tried: object".concat(path.reduce(function (p, c) {
-      return "".concat(p, "['").concat(c, "']");
-    }, '')));
-    throw error;
   }
+  var lastKey = path[path.length - 1];
+
+  // Handle setTo, if provided
+  if (setTo !== DoNotSet) {
+    // Ensure the path is valid before setting the value
+    if (!Reflect.has(target, lastKey) && !playNice) {
+      throw new _errors.InvalidPathError("Invalid path: ".concat(path.join('.')));
+    }
+    target[lastKey] = setTo;
+  }
+  if (!Reflect.has(target, lastKey) && !playNice) {
+    throw new _errors.InvalidPathError("Invalid path: ".concat(path.join('.')));
+  }
+
+  // Return the value at the specified path, or undefined if playNice is true and the path is invalid
+  return Reflect.has(target, lastKey) ? target[lastKey] : undefined;
 }
 
 /**
@@ -126,4 +158,6 @@ function atNicely(object, path, setTo) {
  * import { at } from './propAt'
  * ```
  */
-var _default = exports["default"] = atNicely;
+var _default = exports["default"] = {
+  atNicely: atNicely
+};

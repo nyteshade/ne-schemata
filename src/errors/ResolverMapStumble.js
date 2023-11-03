@@ -13,6 +13,24 @@ import { BaseError } from '../BaseError'
  * @class ResolverMapStumble
  */
 export class ResolverMapStumble extends BaseError {
+  /** A context object can be anything that adds more info about the problem */
+  context: any
+
+  /**
+   * Creates a new instance of ResolverMapStumble
+   *
+   * @param {Error|string} error - the error or message to wrap this instance
+   * around
+   * @param {any} context - any additional information that helps describe or
+   * provide enlightenment around the problem at hand.
+   */
+  constructor(error: Error | string, context?: any) {
+    super(error)
+    if (context) {
+      this.context = context
+    }
+  }
+
   /**
    * Description of the ResolverMapStumble error and likely cause and fix.
    *
