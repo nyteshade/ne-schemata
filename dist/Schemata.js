@@ -1925,7 +1925,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
     key: "buildFromDir",
     value: function () {
       var _buildFromDir = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6(path, conflictResolver) {
-        var rePath, gqExts, files, schemata, resolvers, _iterator7, _step7, file, _yield$importGraphQL, _schemata, _newResolvers, typeDefs, context;
+        var rePath, gqExts, files, schemata, resolvers, _iterator7, _step7, file, _yield$importGraphQL, newSchemata, _newResolvers, typeDefs, context;
         return _regenerator["default"].wrap(function _callee6$(_context6) {
           while (1) switch (_context6.prev = _context6.next) {
             case 0:
@@ -1987,7 +1987,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
               return (0, _GraphQLExtension.importGraphQL)(file);
             case 19:
               _yield$importGraphQL = _context6.sent;
-              _schemata = _yield$importGraphQL.schemata;
+              newSchemata = _yield$importGraphQL.schemata;
               _newResolvers = _yield$importGraphQL.resolvers;
               typeDefs = _yield$importGraphQL.typeDefs;
               context = {
@@ -1995,11 +1995,14 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
                 typeDefs: typeDefs,
                 resolvers: resolvers
               };
-              if (_schemata) {
-                _schemata = !_schemata ? data.schemata : _schemata.mergeSDL(data.schemata);
+              if (newSchemata) {
+                schemata = !schemata ? newSchemata : schemata.mergeSDL(newSchemata);
               }
               if (_newResolvers) {
-                resolvers = (0, _walkResolverMap.mergeResolvers)(resolvers, _newResolvers);
+                resolvers = (0, _walkResolverMap.mergeResolvers)(resolvers, _newResolvers, function (e, n) {
+                  console.log('CONFLICT');
+                  return n.value;
+                });
               }
               _context6.next = 31;
               break;
