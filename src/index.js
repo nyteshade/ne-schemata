@@ -10,6 +10,8 @@ export * from './ExtendedResolverMap'
 export * from './gqlTagFn'
 export * from './propAt'
 export * from './walkResolverMap'
+export * from './utils/signatures'
+export * from './utils/typework'
 
 export * from './BaseError'
 export * from './errors'
@@ -30,7 +32,6 @@ export type {
   SchemaSource,
   UnionMergeResolver,
 } from './types'
-
 
 const SDL = Schemata
 

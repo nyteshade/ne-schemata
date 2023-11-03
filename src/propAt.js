@@ -1,6 +1,6 @@
 // @flow
 
-import { InvalidObjectError, InvalidPathError } from './errors'
+import { InvalidPathError } from './errors'
 
 export const DoNotSet = Symbol.for('DoNotSet')
 
@@ -57,8 +57,6 @@ export function at(
   setTo?: mixed = DoNotSet,
   playNice?: boolean = false
 ): mixed {
-  console.log({object, path, setTo, playNice})
-
   if (typeof object !== 'object' || object === null || object === undefined) {
     throw new TypeError(`The first argument must be an object`)
   }
@@ -146,4 +144,4 @@ export function atNicely(
  * import { at } from './propAt'
  * ```
  */
-export default { atNicely }
+export default atNicely

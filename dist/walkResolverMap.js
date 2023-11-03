@@ -9,31 +9,14 @@ exports.DefaultEntryInspector = exports.DefaultAsyncEntryInspector = void 0;
 exports.asyncWalkResolverMap = asyncWalkResolverMap;
 exports["default"] = void 0;
 exports.mergeResolvers = mergeResolvers;
-exports.protoChain = protoChain;
 exports.walkResolverMap = walkResolverMap;
-var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
-var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-require("core-js/modules/es.regexp.exec.js");
-require("core-js/modules/es.regexp.test.js");
-require("core-js/modules/es.error.to-string.js");
-require("core-js/modules/es.date.to-string.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.regexp.to-string.js");
-require("core-js/modules/es.object.get-prototype-of.js");
-require("core-js/modules/es.array.push.js");
-require("core-js/modules/es.array.filter.js");
-require("core-js/modules/es.array.map.js");
-require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.object.define-properties.js");
-require("core-js/modules/es.array.includes.js");
-require("core-js/modules/es.string.includes.js");
 require("core-js/modules/es.array.reduce.js");
+require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/es.array.concat.js");
+require("core-js/modules/es.array.push.js");
 require("core-js/modules/es.object.entries.js");
 require("core-js/modules/es.error.cause.js");
+require("core-js/modules/es.error.to-string.js");
 require("core-js/modules/es.array.join.js");
 require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.reflect.has.js");
@@ -42,93 +25,14 @@ require("core-js/modules/es.array.is-array.js");
 require("core-js/modules/es.string.iterator.js");
 require("core-js/modules/es.array.iterator.js");
 require("core-js/modules/web.dom-collections.iterator.js");
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _errors = require("./errors");
+var _typework = require("./utils/typework");
 var _propAt = _interopRequireDefault(require("./propAt"));
-var isFn = function isFn(o) {
-  return /Function\]/.test(Object.prototype.toString.call(o));
-};
-var getType = function getType(o) {
-  var _exec;
-  return (_exec = /t (\w+)/.exec(Object.prototype.toString.call(o))) === null || _exec === void 0 ? void 0 : _exec[1];
-};
-
-/**
- * Given an input of any type, `protoChain` constructs an array representing
- * the prototype chain of the input. This array consists of constructor names
- * for each type in the chain. The resulting array also includes a non-standard
- * `isa` method that checks if a given constructor name is part of the chain.
- * Additionally, an `actual` getter is defined to attempt evaluation of the
- * prototype chain names to their actual type references, where possible.
- *
- * 
- * @param {mixed} object - The input value for which the prototype chain is
- * desired.
- * @returns {Array<string> & { isa: Function, actual: Array<any> }} An
- * array of constructor names
- *          with appended `isa` method and `actual` getter.
- *
- * @note The `isa` method allows checking if a given type name is in the
- * prototype chain. The `actual` getter attempts to convert type names back
- * to their evaluated types.
- */
-function protoChain(object) {
-  if (object === null || object === undefined) {
-    return [getType(object)];
-  }
-  var chain = [Object.getPrototypeOf(object)];
-  var current = chain[0];
-  while (current != null) {
-    current = Object.getPrototypeOf(current);
-    chain.push(current);
-  }
-  var results = chain.map(function (c) {
-    var _c$constructor;
-    return (c === null || c === void 0 ? void 0 : (_c$constructor = c.constructor) === null || _c$constructor === void 0 ? void 0 : _c$constructor.name) || c;
-  }).filter(function (c) {
-    return !!c;
-  });
-  Object.defineProperties(results, {
-    isa: {
-      value: function isa(type) {
-        var derived = getType(type);
-        switch (derived) {
-          case [Function.name]:
-            derived = type.name;
-            break;
-          default:
-            break;
-        }
-        return this.includes(derived);
-      }
-    },
-    actual: {
-      get: function get() {
-        var evalOrBust = function evalOrBust(o) {
-          try {
-            return eval(o);
-          } catch (_unused) {
-            return o;
-          }
-        };
-        var revert = function revert(o) {
-          switch (o) {
-            case 'Null':
-              return null;
-            case 'Undefined':
-              return undefined;
-            default:
-              return o;
-          }
-        };
-        console.log(this.map(revert));
-        console.log(this.map(revert).map(evalOrBust));
-        return this.map(revert).map(evalOrBust);
-      }
-    }
-  });
-  return results;
-}
-
 /**
  * A default implementation of the EntryInspector type for use as a default
  * to `walkResolverMap`. While not immediately useful, a default implementation
@@ -205,7 +109,7 @@ function walkResolverMap(object) {
       key = _Object$entries$_i[0],
       _value = _Object$entries$_i[1];
     var isObject = _value instanceof Object;
-    var isFunction = isObject && isFn(_value);
+    var isFunction = isObject && (0, _typework.isFn)(_value);
     if (isObject && !isFunction) {
       var newPath = path.concat(key);
       (0, _propAt["default"])(product, newPath, walkResolverMap(_value, inspector, wrap, newPath));
@@ -299,7 +203,7 @@ function _asyncWalkResolverMap() {
                 case 0:
                   _Object$entries2$_i = (0, _slicedToArray2["default"])(_Object$entries2[_i3], 2), key = _Object$entries2$_i[0], _value2 = _Object$entries2$_i[1];
                   isObject = _value2 instanceof Object;
-                  isFunction = isObject && isFn(_value2);
+                  isFunction = isObject && (0, _typework.isFn)(_value2);
                   if (!(isObject && !isFunction)) {
                     _context2.next = 19;
                     break;
@@ -406,7 +310,7 @@ function mergeResolvers(existingResolvers, newResolvers) {
       if (Reflect.has(current, key)) {
         var existingValue = current[key];
         var incomingValue = incoming[key];
-        if (existingValue && (0, _typeof2["default"])(existingValue) === 'object' && !Array.isArray(existingValue) && !isFn(existingValue)) {
+        if (existingValue && (0, _typeof2["default"])(existingValue) === 'object' && !Array.isArray(existingValue) && !(0, _typework.isFn)(existingValue)) {
           // If both are objects, we need to go deeper
           walkAndMerge(existingValue, incomingValue, newPath);
         } else {

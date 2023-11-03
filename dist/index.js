@@ -125,6 +125,30 @@ Object.keys(_walkResolverMap).forEach(function (key) {
     }
   });
 });
+var _signatures = require("./utils/signatures");
+Object.keys(_signatures).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _signatures[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _signatures[key];
+    }
+  });
+});
+var _typework = require("./utils/typework");
+Object.keys(_typework).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _typework[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _typework[key];
+    }
+  });
+});
 var _BaseError = require("./BaseError");
 Object.keys(_BaseError).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;

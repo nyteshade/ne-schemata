@@ -76,12 +76,6 @@ var DoNotSet = exports.DoNotSet = Symbol["for"]('DoNotSet');
 function at(object, path) {
   var setTo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : DoNotSet;
   var playNice = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  console.log({
-    object: object,
-    path: path,
-    setTo: setTo,
-    playNice: playNice
-  });
   if ((0, _typeof2["default"])(object) !== 'object' || object === null || object === undefined) {
     throw new TypeError("The first argument must be an object");
   }
@@ -158,6 +152,4 @@ function atNicely(object, path, setTo) {
  * import { at } from './propAt'
  * ```
  */
-var _default = exports["default"] = {
-  atNicely: atNicely
-};
+var _default = exports["default"] = atNicely;
