@@ -2,6 +2,21 @@ import type { Schemata } from './Schemata'
 import type { Source, GraphQLSchema, ASTNode } from 'graphql'
 
 /**
+ * The ResolverInfo type declares the properties that will likely
+ * need to be applied to schema after the executableSchema has
+ * been created. This needs to be expanded to also include handlers
+ * for directives and custom scalars.
+ *
+ * @type {ResolverInfo}
+ */
+export type ResolverInfo = {
+  type: string,
+  resolveType?: (obj, contextValue, info) => string,
+  isTypeOf?: (obj, context, info) => boolean,
+  description?: () => string
+}
+
+/**
  * An object that specifies the various types of resolvers that might occur
  * during a given conflict resolution
  */

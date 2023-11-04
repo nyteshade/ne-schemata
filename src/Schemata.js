@@ -59,12 +59,14 @@ import type {
   MergeOptionsConfig,
   ResolverArgs,
   ResolverArgsTransformer,
+  ResolverInfo,
   ResolverMap,
   ScalarMergeResolver,
   SchemaSource,
   UnionMergeResolver,
 } from './types'
 
+import { extractResolverInfo } from './utils/resolverwork'
 import { ExtendedResolverMap } from './ExtendedResolverMap'
 import { ExtendedResolver } from './ExtendedResolver'
 import { inline } from 'ne-tag-fns'
@@ -329,6 +331,10 @@ export class Schemata extends String {
         }
       )
 
+      this.resolverInfo.forEach(resolverInfo => {
+        resolverInfo.applyTo(schema)
+      })
+
       schema[EXE] = true
     }
 
@@ -572,6 +578,17 @@ export class Schemata extends String {
    */
   get resolvers(): ResolverMap {
     return this[MAP].get(wmkResolvers)
+  }
+
+  /**
+   * Parses the resolvers object, if present, for any items that need to
+   * be applied after the schema is constructed.
+   *
+   * @return {Array<Object>} an array of objects to process or an empty
+   * array if there is nothing to work on
+   */
+  get resolverInfo(): Array<ResolverInfo> {
+    return extractResolverInfo(this.resolvers)
   }
 
   /**

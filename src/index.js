@@ -12,6 +12,7 @@ export * from './propAt'
 export * from './walkResolverMap'
 export * from './utils/signatures'
 export * from './utils/typework'
+export * from './utils/resolverwork'
 
 export * from './BaseError'
 export * from './errors'

@@ -42,6 +42,8 @@ require("core-js/modules/es.regexp.to-string.js");
 require("core-js/modules/es.function.name.js");
 require("core-js/modules/es.array.concat.js");
 require("core-js/modules/es.array.filter.js");
+require("core-js/modules/es.array.for-each.js");
+require("core-js/modules/web.dom-collections.for-each.js");
 require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.array.push.js");
 require("core-js/modules/es.array.find.js");
@@ -73,6 +75,7 @@ var _path = require("path");
 var _graphql = require("graphql");
 var _GraphQLExtension = require("./GraphQLExtension");
 var _dynamicImport = require("./dynamicImport");
+var _resolverwork = require("./utils/resolverwork");
 var _ExtendedResolverMap = require("./ExtendedResolverMap");
 var _ExtendedResolver = require("./ExtendedResolver");
 var _neTagFns = require("ne-tag-fns");
@@ -310,6 +313,9 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
             field.resolve = resolvers[typeName][fieldName];
             field.astNode.resolve = resolvers[typeName][fieldName];
           }
+        });
+        this.resolverInfo.forEach(function (resolverInfo) {
+          resolverInfo.applyTo(schema);
         });
         schema[EXE] = true;
       }
@@ -580,6 +586,19 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
     key: "resolvers",
     get: function get() {
       return this[MAP].get(wmkResolvers);
+    }
+
+    /**
+     * Parses the resolvers object, if present, for any items that need to
+     * be applied after the schema is constructed.
+     *
+     * @return {Array<Object>} an array of objects to process or an empty
+     * array if there is nothing to work on
+     */
+  }, {
+    key: "resolverInfo",
+    get: function get() {
+      return (0, _resolverwork.extractResolverInfo)(this.resolvers);
     }
 
     /**
