@@ -73,7 +73,10 @@ export function protoChain(object: mixed): Array<string> {
             break
         }
 
-        return this.includes(derived)
+        return (
+          this.includes(derived) ||
+          type?.name && this.includes(type.name)
+        )
       }
     },
 
@@ -86,8 +89,6 @@ export function protoChain(object: mixed): Array<string> {
             case 'Undefined': return undefined
             default: return o
         }}
-        console.log(this.map(revert))
-        console.log(this.map(revert).map(evalOrBust))
         return this.map(revert).map(evalOrBust)
       }
     }

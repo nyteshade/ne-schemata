@@ -97,7 +97,7 @@ function protoChain(object) {
           default:
             break;
         }
-        return this.includes(derived);
+        return this.includes(derived) || (type === null || type === void 0 ? void 0 : type.name) && this.includes(type.name);
       }
     },
     actual: {
@@ -119,8 +119,6 @@ function protoChain(object) {
               return o;
           }
         };
-        console.log(this.map(revert));
-        console.log(this.map(revert).map(evalOrBust));
         return this.map(revert).map(evalOrBust);
       }
     }

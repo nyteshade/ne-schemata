@@ -13,7 +13,9 @@ export type ResolverInfo = {
   type: string,
   resolveType?: (obj, contextValue, info) => string,
   isTypeOf?: (obj, context, info) => boolean,
-  description?: () => string
+  description?: () => string,
+  fieldDescriptions?: { string: () => string|string },
+  applyTo: (schema: GraphQLSchema, overwrite?: boolean) => void
 }
 
 /**
