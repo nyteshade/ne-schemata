@@ -1,13 +1,24 @@
 "use strict";
 
 require("core-js/modules/es.array.join.js");
+require("core-js/modules/es.object.set-prototype-of.js");
+require("core-js/modules/es.object.get-prototype-of.js");
+require("core-js/modules/es.object.proto.js");
 require("core-js/modules/es.reflect.to-string-tag.js");
 require("core-js/modules/es.reflect.construct.js");
+require("core-js/modules/es.object.create.js");
+require("core-js/modules/es.object.define-property.js");
+require("core-js/modules/es.symbol.to-primitive.js");
+require("core-js/modules/es.date.to-primitive.js");
+require("core-js/modules/es.number.constructor.js");
+require("core-js/modules/es.symbol.async-iterator.js");
+require("core-js/modules/es.promise.js");
+require("core-js/modules/es.array.reverse.js");
 require("core-js/modules/es.array.slice.js");
 require("core-js/modules/es.regexp.exec.js");
 require("core-js/modules/es.regexp.test.js");
-require("core-js/modules/es.object.define-property.js");
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+require("core-js/modules/es.object.freeze.js");
+require("core-js/modules/es.object.define-properties.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -24,10 +35,6 @@ exports.isRootType = exports["default"] = exports.TYPEDEFS_KEY = exports.Schemat
 exports.normalizeSource = normalizeSource;
 exports.runInjectors = runInjectors;
 exports.stripResolversFromSchema = stripResolversFromSchema;
-var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
-var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
-var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 require("core-js/modules/es.array.iterator.js");
 require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/es.string.iterator.js");
@@ -40,36 +47,31 @@ require("core-js/modules/es.error.to-string.js");
 require("core-js/modules/es.date.to-string.js");
 require("core-js/modules/es.regexp.to-string.js");
 require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.array.concat.js");
-require("core-js/modules/es.array.filter.js");
-require("core-js/modules/es.array.for-each.js");
-require("core-js/modules/web.dom-collections.for-each.js");
 require("core-js/modules/es.object.keys.js");
+require("core-js/modules/es.array.filter.js");
 require("core-js/modules/es.array.push.js");
 require("core-js/modules/es.array.find.js");
 require("core-js/modules/es.error.cause.js");
 require("core-js/modules/es.string.ends-with.js");
 require("core-js/modules/es.array.index-of.js");
 require("core-js/modules/es.array.splice.js");
+require("core-js/modules/es.array.concat.js");
 require("core-js/modules/es.array.reduce.js");
 require("core-js/modules/es.symbol.iterator.js");
 require("core-js/modules/es.array.from.js");
 require("core-js/modules/es.array.some.js");
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.array.is-array.js");
+require("core-js/modules/es.map.js");
+require("core-js/modules/es.string.trim.js");
+require("core-js/modules/es.weak-set.js");
 require("core-js/modules/es.symbol.species.js");
 require("core-js/modules/es.array.species.js");
 require("core-js/modules/es.symbol.to-string-tag.js");
 require("core-js/modules/es.json.to-string-tag.js");
 require("core-js/modules/es.math.to-string-tag.js");
-require("core-js/modules/es.array.is-array.js");
-require("core-js/modules/es.map.js");
-require("core-js/modules/es.string.trim.js");
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-var _wrapNativeSuper2 = _interopRequireDefault(require("@babel/runtime/helpers/wrapNativeSuper"));
+require("core-js/modules/es.array.for-each.js");
+require("core-js/modules/web.dom-collections.for-each.js");
 var _promises = require("fs/promises");
 var _path = require("path");
 var _graphql = require("graphql");
@@ -84,13 +86,42 @@ var _deepmerge = _interopRequireDefault(require("deepmerge"));
 var _util = _interopRequireDefault(require("util"));
 var _forEachOf2 = require("./forEachOf");
 var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7;
+var _Symbol$species, _Symbol$iterator, _Symbol$toStringTag, _Util$inspect$custom;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw new Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw new Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
+function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct.bind(); } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _isNativeFunction(fn) { try { return Function.toString.call(fn).indexOf("[native code]") !== -1; } catch (e) { return typeof fn === "function"; } }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 var debug_log = require('debug')('schemata:normal');
 var debug_trace = require('debug')('schemata:trace');
+var _generateSchema = /*#__PURE__*/new WeakSet();
+_Symbol$species = Symbol.species;
+_Symbol$iterator = Symbol.iterator;
+_Symbol$toStringTag = Symbol.toStringTag;
+_Util$inspect$custom = _util["default"].inspect.custom;
 /**
  * A small `String` extension that makes working with SDL/IDL text far easier
  * in both your own libraries as well as in a nodeJS REPL. Built-in to what
@@ -100,8 +131,8 @@ var debug_trace = require('debug')('schemata:trace');
  *
  * @class  Schemata
  */
-var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$species, _Symbol$iterator, _Symbol$toStringTag, _Util$inspect$custom) {
-  (0, _inherits2["default"])(Schemata, _String);
+var Schemata = exports.Schemata = /*#__PURE__*/function (_String) {
+  _inherits(Schemata, _String);
   var _super = _createSuper(Schemata);
   /**
    * Creates a new `String`, presumably of SDL or IDL. The getter `.valid`
@@ -126,17 +157,26 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
    */
   function Schemata(typeDefs) {
     var _this;
-    var resolvers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    var _resolvers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
     var buildResolvers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     var flattenResolvers = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    (0, _classCallCheck2["default"])(this, Schemata);
+    _classCallCheck(this, Schemata);
     _this = _super.call(this, normalizeSource(typeDefs));
-    resolvers = resolvers || typeDefs instanceof Schemata && typeDefs.resolvers || typeDefs instanceof _graphql.GraphQLSchema && stripResolversFromSchema(typeDefs) || null;
+    /**
+       * Returns a GraphQLSchema object. Note this will fail and throw an error
+       * if there is not at least one Query, Subscription or Mutation type defined.
+       * If there is no stored schema, and there are resolvers, an executable
+       * schema is returned instead.
+       *
+       * @return {GraphQLSchema} an instance of GraphQLSchema if valid SDL
+       */
+    _classPrivateMethodInitSpec(_assertThisInitialized(_this), _generateSchema);
+    _resolvers = _resolvers || typeDefs instanceof Schemata && typeDefs.resolvers || typeDefs instanceof _graphql.GraphQLSchema && stripResolversFromSchema(typeDefs) || null;
     _this[GRAPHIQL_FLAG] = true;
     _this[TYPEDEFS_KEY] = normalizeSource(typeDefs);
     _this[MAP] = new WeakMap();
     _this[MAP].set(wmkSchema, typeDefs instanceof _graphql.GraphQLSchema ? typeDefs : null);
-    _this[MAP].set(wmkResolvers, resolvers);
+    _this[MAP].set(wmkResolvers, _resolvers);
     _this[MAP].set(wmkPreboundResolvers, typeDefs instanceof Schemata ? typeDefs.prevResolverMaps : []);
 
     // Mark a schema passed to use in the constructor as an executable schema
@@ -168,7 +208,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
    *
    * @type {Function}
    */
-  (0, _createClass2["default"])(Schemata, [{
+  _createClass(Schemata, [{
     key: _Symbol$iterator,
     get:
     /**
@@ -178,8 +218,8 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
      * @type {Function}
      */
     function get() {
-      return /*#__PURE__*/_regenerator["default"].mark(function _callee() {
-        return _regenerator["default"].wrap(function _callee$(_context) {
+      return /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
@@ -256,73 +296,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
   }, {
     key: "schema",
     get: function get() {
-      var Class = this.constructor;
-      var resolvers = this.resolvers;
-      var schema;
-
-      // If we have a generated schema already and this instance has a
-      // resolvers object that is not falsey, check to see if the object
-      // has the executable schema flag set or not. If so, simply return
-      // the pre-existing object rather than create a new one.
-      if (this[MAP].get(wmkSchema)) {
-        schema = this[MAP].get(wmkSchema);
-        if (resolvers) {
-          // check for the executable schema flag
-          if (schema && schema[EXE]) {
-            return schema;
-          }
-        } else if (schema) {
-          return schema;
-        }
-      }
-
-      // Attempt to generate a schema using the SDL for this instance. Throw
-      // an error if the SDL is insufficient to generate a GraphQLSchema object
-      try {
-        debug_log('[get .schema] creating schema from SDL');
-        this[MAP].set(wmkSchema, schema = Class.buildSchema(this.sdl, true));
-
-        // Now try to handle and ObjectTypeExtensions
-        var ast = this.ast;
-        ast.definitions = [].concat(ast.definitions.filter(function (i) {
-          return i.kind == 'ObjectTypeExtension';
-        }));
-        try {
-          this[MAP].set(wmkSchema, schema = (0, _graphql.extendSchema)(schema, ast));
-        } catch (error) {
-          debug_log('[get .schema] failed to handle extended types');
-          debug_trace('[get .schema] ERROR!', error);
-        }
-      } catch (error) {
-        debug_log('[get .schema] failed to create schema');
-        debug_trace('[get .schema] ERROR!', error);
-        return null;
-      }
-
-      // Only iterate over the fields if there are resolvers set
-      if (resolvers) {
-        (0, _forEachOf2.forEachField)(schema, function (type, typeName, typeDirectives, field, fieldName, fieldArgs, fieldDirectives, schema, context) {
-          if (!resolvers) {
-            return;
-          }
-          if (isRootType(type) && resolvers[fieldName]) {
-            field.resolve = resolvers[fieldName];
-            field.astNode.resolve = resolvers[fieldName];
-          }
-          if (resolvers[typeName] && resolvers[typeName][fieldName]) {
-            field.resolve = resolvers[typeName][fieldName];
-            field.astNode.resolve = resolvers[typeName][fieldName];
-          }
-        });
-        this.resolverInfo.forEach(function (resolverInfo) {
-          resolverInfo.applyTo(schema);
-        });
-        schema[EXE] = true;
-      }
-
-      // Set the generated schema in the weak map using the weak map key
-      this[MAP].set(wmkSchema, schema);
-      return schema;
+      return _classPrivateMethodGet(this, _generateSchema, _generateSchema2).call(this);
     }
 
     /**
@@ -470,7 +444,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
      * Schemata instance. It does not modify the schemata object instance
      * in any way.
      *
-     * @return {String} the regenerated schema SDL from the actual
+     * @return {string} the regenerated schema SDL from the actual
      * schema object on this schemata instance.
      */
   }, {
@@ -539,7 +513,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
         });
         var fieldType = fieldAST.length && (0, _graphql.typeFromAST)(schema, fieldAST[0].type);
         var args = [];
-        if (fa && fa.length) {
+        if (fa !== null && fa !== void 0 && fa.length) {
           var _iterator = _createForOfIteratorHelper(fa),
             _step;
           try {
@@ -547,7 +521,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
               var _step$value = _step.value,
                 name = _step$value.name,
                 type = _step$value.type;
-              args.push((0, _defineProperty2["default"])({}, name, type.toString()));
+              args.push(_defineProperty({}, name, type.toString()));
             }
           } catch (err) {
             _iterator.e(err);
@@ -618,7 +592,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
       }
       var _type = this.schema.getType(type);
       var _field = _type.getFields() && _type.getFields()[field] || null;
-      var resolve = _field && _field.resolve || null;
+      var resolve = (_field === null || _field === void 0 ? void 0 : _field.resolve) || null;
       return resolve;
     }
 
@@ -678,9 +652,9 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
       var _type = this.ast.definitions.find(function (f) {
         return f.name.value === type;
       });
-      var _field = _type && _type.fields.find(function (f) {
+      var _field = (_type === null || _type === void 0 ? void 0 : _type.fields.find(function (f) {
         return f.name.value === field;
-      }) || null;
+      })) || null;
       return _field;
     }
 
@@ -718,7 +692,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
       }
       for (var _i = 0, _arr = [query, mutation, subscription]; _i < _arr.length; _i++) {
         var type = _arr[_i];
-        if (!type || !type.fields) {
+        if (!(type !== null && type !== void 0 && type.fields)) {
           continue;
         }
         var _iterator2 = _createForOfIteratorHelper(type.fields),
@@ -761,7 +735,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
       var conflictResolvers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DefaultConflictResolvers;
       var source = normalizeSource(schemaLanguage, true);
       if (!source) {
-        throw new Error((0, _neTagFns.inline)(_templateObject || (_templateObject = (0, _taggedTemplateLiteral2["default"])(["\n        The call to mergeSDL(schemaLanguage, conflictResolvers) received an\n        invalid value for schemaLanguage. Please check your code and try again.\n        Received ", ".\n      "])), schemaLanguage));
+        throw new Error((0, _neTagFns.inline)(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n        The call to mergeSDL(schemaLanguage, conflictResolvers) received an\n        invalid value for schemaLanguage. Please check your code and try again.\n        Received ", ".\n      "])), schemaLanguage));
       }
       var lAST = this.ast;
       var rAST = source.ast;
@@ -774,11 +748,12 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
         _step3;
       try {
         var _loop = function _loop() {
+          var _rType;
           var rType = _step3.value;
           var lType = lAST.definitions.find(function (a) {
             return a.name.value == rType.name.value;
           });
-          if (rType.kind && rType.kind.endsWith && rType.kind.endsWith('Extension')) {
+          if ((_rType = rType) !== null && _rType !== void 0 && (_rType = _rType.kind) !== null && _rType !== void 0 && _rType.endsWith('Extension')) {
             rType = (0, _deepmerge["default"])({}, rType);
             rType.kind = rType.kind.substring(0, rType.kind.length - 9) + 'Definition';
           }
@@ -787,16 +762,6 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
             return 1; // continue
           }
           switch (lType.kind) {
-            default:
-            case 'ObjectTypeDefinition':
-            case 'ObjectTypeDefinitionExtension':
-            case 'InterfaceTypeDefinition':
-            case 'InterfaceTypeDefinitionExtension':
-            case 'InputObjectTypeDefinition':
-            case 'InputObjectTypeDefinitionExtension':
-              combineTypeAndSubType('directives', lType, rType, conflictResolvers);
-              combineTypeAndSubType('fields', lType, rType, conflictResolvers);
-              break;
             case 'EnumTypeDefinition':
               combineTypeAndSubType('directives', lType, rType, conflictResolvers);
               combineTypeAndSubType('values', lType, rType, conflictResolvers);
@@ -806,21 +771,39 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
               combineTypeAndSubType('types', lType, rType, conflictResolvers);
               break;
             case 'ScalarTypeDefinitionNode':
-              var lScalar, lScalarConfig, rScalar, rScalarConfig, resolver;
+              {
+                var lScalar;
+                var lScalarConfig;
+                var rScalar;
+                var rScalarConfig;
+                var resolver;
+                combineTypeAndSubType('directives', lType, rType, conflictResolvers);
+                if (_this2.schema) {
+                  var _lScalar;
+                  lScalar = _this2.schema.getType(lType.name.value);
+                  lScalarConfig = ((_lScalar = lScalar) === null || _lScalar === void 0 ? void 0 : _lScalar._scalarConfig) || null;
+                }
+                if (source.schema) {
+                  var _rScalar;
+                  rScalar = source.schema.getType(rType.name.value);
+                  rScalarConfig = ((_rScalar = rScalar) === null || _rScalar === void 0 ? void 0 : _rScalar._scalarConfig) || null;
+                }
+                resolver = (conflictResolvers.scalarMergeResolver || DefaultConflictResolvers.scalarMergeResolver)(lType, lScalarConfig, rType, rScalarConfig);
+                if (resolver) {
+                  _scalarFns[lType.name.value] = _scalarFns[lType.name.value] || {};
+                  _scalarFns[lType.name.value] = resolver;
+                }
+                break;
+              }
+            case 'ObjectTypeDefinition':
+            case 'ObjectTypeDefinitionExtension':
+            case 'InterfaceTypeDefinition':
+            case 'InterfaceTypeDefinitionExtension':
+            case 'InputObjectTypeDefinition':
+            case 'InputObjectTypeDefinitionExtension':
+            default:
               combineTypeAndSubType('directives', lType, rType, conflictResolvers);
-              if (_this2.schema) {
-                lScalar = _this2.schema.getType(lType.name.value);
-                lScalarConfig = lScalar && lScalar._scalarConfig || null;
-              }
-              if (source.schema) {
-                rScalar = source.schema.getType(rType.name.value);
-                rScalarConfig = rScalar && rScalar._scalarConfig || null;
-              }
-              resolver = (conflictResolvers.scalarMergeResolver || DefaultConflictResolvers.scalarMergeResolver)(lType, lScalarConfig, rType, rScalarConfig);
-              if (resolver) {
-                _scalarFns[lType.name.value] = _scalarFns[lType.name.value] || {};
-                _scalarFns[lType.name.value] = resolver;
-              }
+              combineTypeAndSubType('fields', lType, rType, conflictResolvers);
               break;
           }
         };
@@ -862,7 +845,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
       var resolverMap = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var source = normalizeSource(schemaLanguage, true);
       if (!source) {
-        throw new Error((0, _neTagFns.inline)(_templateObject2 || (_templateObject2 = (0, _taggedTemplateLiteral2["default"])(["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        `schemaLanguage` could not be parsed.\n      "], ["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        \\`schemaLanguage\\` could not be parsed.\n      "]))));
+        throw new Error((0, _neTagFns.inline)(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral(["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        `schemaLanguage` could not be parsed.\n      "], ["\n        In the call to pareSDL(schemaLanguage), the supplied value for\n        \\`schemaLanguage\\` could not be parsed.\n      "]))));
       }
       if (schemaLanguage instanceof _graphql.GraphQLSchema && !resolverMap) {
         resolverMap = stripResolversFromSchema(schemaLanguage);
@@ -874,11 +857,12 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
         _step4;
       try {
         var _loop2 = function _loop2() {
+          var _rType2;
           var rType = _step4.value;
           var lType = lAST.definitions.find(function (a) {
             return a.name.value == rType.name.value;
           });
-          if (rType.kind && rType.kind.endsWith && rType.kind.endsWith('Extension')) {
+          if ((_rType2 = rType) !== null && _rType2 !== void 0 && (_rType2 = _rType2.kind) !== null && _rType2 !== void 0 && _rType2.endsWith('Extension')) {
             var len = 'Extension'.length;
             rType = (0, _deepmerge["default"])({}, rType);
             rType.kind = rType.kind.substring(0, rType.kind.length - len) + 'Definition';
@@ -888,29 +872,13 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
             return 1; // continue
           }
           switch (lType.kind) {
-            default:
-            case 'ObjectTypeDefinition':
-            case 'ObjectTypeDefinitionExtension':
-            case 'InterfaceTypeDefinition':
-            case 'InterfaceTypeDefinitionExtension':
-            case 'InputObjectTypeDefinition':
-            case 'InputObjectTypeDefinitionExtension':
-              pareTypeAndSubType('directives', lType, rType, resolvers);
-              pareTypeAndSubType('fields', lType, rType, resolvers);
-              if (!lType.fields.length) {
-                var _index = lAST.definitions.indexOf(lType);
-                if (_index !== -1) {
-                  lAST.definitions.splice(_index, 1);
-                }
-              }
-              break;
             case 'EnumTypeDefinition':
               pareTypeAndSubType('directives', lType, rType, resolvers);
               pareTypeAndSubType('values', lType, rType, resolvers);
               if (!lType.values.length) {
-                var _index2 = lAST.definitions.indexOf(lType);
-                if (_index2 !== -1) {
-                  lAST.definitions.splice(_index2, 1);
+                var index = lAST.definitions.indexOf(lType);
+                if (index !== -1) {
+                  lAST.definitions.splice(index, 1);
                 }
               }
               break;
@@ -918,16 +886,34 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
               pareTypeAndSubType('directives', lType, rType, resolvers);
               pareTypeAndSubType('types', lType, rType, resolvers);
               if (!lType.types.length) {
-                var _index3 = lAST.definitions.indexOf(lType);
-                if (_index3 !== -1) {
-                  lAST.definitions.splice(_index3, 1);
+                var _index = lAST.definitions.indexOf(lType);
+                if (_index !== -1) {
+                  lAST.definitions.splice(_index, 1);
                 }
               }
               break;
             case 'ScalarTypeDefinitionNode':
-              var index = lAST.definitions.indexOf(lType);
-              if (index !== -1) {
-                lAST.definitions.splice(index, 1);
+              {
+                var _index2 = lAST.definitions.indexOf(lType);
+                if (_index2 !== -1) {
+                  lAST.definitions.splice(_index2, 1);
+                }
+                break;
+              }
+            case 'ObjectTypeDefinition':
+            case 'ObjectTypeDefinitionExtension':
+            case 'InterfaceTypeDefinition':
+            case 'InterfaceTypeDefinitionExtension':
+            case 'InputObjectTypeDefinition':
+            case 'InputObjectTypeDefinitionExtension':
+            default:
+              pareTypeAndSubType('directives', lType, rType, resolvers);
+              pareTypeAndSubType('fields', lType, rType, resolvers);
+              if (!lType.fields.length) {
+                var _index3 = lAST.definitions.indexOf(lType);
+                if (_index3 !== -1) {
+                  lAST.definitions.splice(_index3, 1);
+                }
               }
               break;
           }
@@ -941,7 +927,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
         _iterator4.f();
       }
       var result = Schemata.from(this.constructor.gql.print(lAST), resolvers);
-      result.schema;
+      _classPrivateMethodGet(result, _generateSchema, _generateSchema2).call(result);
       return result;
     }
 
@@ -968,7 +954,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
     value: function merge(schema) {
       var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DefaultMergeOptions;
       if (!schema) {
-        throw new Error((0, _neTagFns.inline)(_templateObject3 || (_templateObject3 = (0, _taggedTemplateLiteral2["default"])(["\n        In the call to mergeSchema(schema), ", " was received as a value\n        and the code could not proceed because of it. Please check your code\n        and try again\n      "])), schema));
+        throw new Error((0, _neTagFns.inline)(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["\n        In the call to mergeSchema(schema), ", " was received as a value\n        and the code could not proceed because of it. Please check your code\n        and try again\n      "])), schema));
       }
 
       // Step0: Ensure we have all the defaults for config and schema
@@ -990,14 +976,12 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
       }
 
       // Step2: Backup resolvers from left, right, or both
-      var lResolvers = left.resolvers;
-      var rResolvers = right.resolvers;
       var prevMaps = (left.prevResolverMaps || []).concat(right.prevResolverMaps || [], _ExtendedResolverMap.ExtendedResolverMap.from(left), _ExtendedResolverMap.ExtendedResolverMap.from(right));
       merged.prevResolverMaps = prevMaps;
 
       // Step3: Merge resolvers
       var mergeResolvers = {};
-      if (prevMaps && prevMaps.length) {
+      if (prevMaps !== null && prevMaps !== void 0 && prevMaps.length) {
         mergeResolvers = prevMaps.reduce(function (p, c, i, a) {
           return (0, _deepmerge["default"])(p, c.resolvers || {});
         }, {});
@@ -1012,7 +996,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
         merged.resolvers = merged.buildResolverForEachField();
       }
       merged.clearSchema();
-      merged.schema;
+      _classPrivateMethodGet(merged, _generateSchema, _generateSchema2).call(merged);
 
       // Step5: Wrap resolvers
       if (config.injectMergedSchema) {
@@ -1028,7 +1012,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
 
         // Do this once more to ensure we are using the modified resolvers
         merged.clearSchema();
-        merged.schema;
+        _classPrivateMethodGet(merged, _generateSchema, _generateSchema2).call(merged);
       }
 
       // Step6: Return final merged product
@@ -1103,8 +1087,8 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
                   delete resolvers[_field2];
                 }
               } catch (error) {
-                debug_log((0, _neTagFns.inline)(_templateObject4 || (_templateObject4 = (0, _taggedTemplateLiteral2["default"])(["\n                [buildResolvers()] Falling back to `astFieldByName()`\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\`\n              "]))));
-                debug_trace((0, _neTagFns.inline)(_templateObject5 || (_templateObject5 = (0, _taggedTemplateLiteral2["default"])(["\n                [buildResolvers()] Falling back to `astFieldByName()` due to\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\` due to\n              "]))), error);
+                debug_log((0, _neTagFns.inline)(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["\n                [buildResolvers()] Falling back to `astFieldByName()`\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\`\n              "]))));
+                debug_trace((0, _neTagFns.inline)(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral(["\n                [buildResolvers()] Falling back to `astFieldByName()` due to\n              "], ["\n                [buildResolvers()] Falling back to \\`astFieldByName()\\` due to\n              "]))), error);
                 if (schemata.astFieldByName(rootType, _field2)) {
                   resolvers[rootType] = resolvers[rootType] || {};
                   resolvers[rootType][_field2] = resolvers[_field2];
@@ -1163,7 +1147,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
     key: "buildResolverForEachField",
     value: function buildResolverForEachField(flattenRootResolversOrFirstParam) {
       if (!this.schema) {
-        throw new Error((0, _neTagFns.inline)(_templateObject6 || (_templateObject6 = (0, _taggedTemplateLiteral2["default"])(["\n        buildResolverForEachField() cannot be called unless there is enough\n        valid SDL in the instance to construct a schema. Please check your\n        code!\n      "]))));
+        throw new Error((0, _neTagFns.inline)(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["\n        buildResolverForEachField() cannot be called unless there is enough\n        valid SDL in the instance to construct a schema. Please check your\n        code!\n      "]))));
       }
       var interim = Schemata.from(this.sdl, this.resolvers);
       var r = {};
@@ -1226,7 +1210,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
     key: "validSchema",
     get: function get() {
       try {
-        this.schema;
+        _classPrivateMethodGet(this, _generateSchema, _generateSchema2).call(this);
         debug_log('[get .validSchema] true');
         return true;
       } catch (e) {
@@ -1679,9 +1663,9 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
      */
   }, {
     key: "runAsync",
-    value: function () {
-      var _runAsync = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2(query, contextValue, variableValues, rootValue, operationName, fieldResolver, typeResolver) {
-        return _regenerator["default"].wrap(function _callee2$(_context2) {
+    value: (function () {
+      var _runAsync = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(query, contextValue, variableValues, rootValue, operationName, fieldResolver, typeResolver) {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               return _context2.abrupt("return", this.constructor.gql.graphql({
@@ -1719,6 +1703,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
      * @return {GraphQLSchema|null} null if an error occurs and errors are not
      * surfaced or a valid GraphQLSchema object otherwise
      */
+    )
   }], [{
     key: _Symbol$species,
     get: function get() {
@@ -1773,9 +1758,9 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
         var node = this.gql.parse(source);
         if (enhance) {
           debug_log('[static parse()] enhancing');
-          node[Symbol.iterator] = /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
+          node[Symbol.iterator] = /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
             var _iterator6, _step6, _node;
-            return _regenerator["default"].wrap(function _callee3$(_context3) {
+            return _regeneratorRuntime().wrap(function _callee3$(_context3) {
               while (1) switch (_context3.prev = _context3.next) {
                 case 0:
                   _iterator6 = _createForOfIteratorHelper(this.definitions);
@@ -1914,10 +1899,10 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
      */
   }, {
     key: "fromContentsOf",
-    value: function () {
-      var _fromContentsOf = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee4(path) {
+    value: (function () {
+      var _fromContentsOf = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(path) {
         var parsed, contents;
-        return _regenerator["default"].wrap(function _callee4$(_context4) {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) switch (_context4.prev = _context4.next) {
             case 0:
               _context4.next = 2;
@@ -1939,13 +1924,13 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
         return _fromContentsOf.apply(this, arguments);
       }
       return fromContentsOf;
-    }()
+    }())
   }, {
     key: "buildFromDir",
     value: function () {
-      var _buildFromDir = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee6(path, conflictResolver) {
-        var rePath, gqExts, files, schemata, resolvers, _iterator7, _step7, file, _yield$importGraphQL, newSchemata, _newResolvers, typeDefs, context;
-        return _regenerator["default"].wrap(function _callee6$(_context6) {
+      var _buildFromDir = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(path, conflictResolver) {
+        var rePath, gqExts, files, schemata, resolvers, _iterator7, _step7, file, _yield$importGraphQL, newSchemata, _newResolvers;
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) switch (_context6.prev = _context6.next) {
             case 0:
               rePath = (0, _path.resolve)(path);
@@ -1959,9 +1944,9 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
               _context6.t1 = _context6.sent;
               _context6.next = 8;
               return _context6.t0.from.call(_context6.t0, _context6.t1).reduce( /*#__PURE__*/function () {
-                var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee5(ap, c) {
+                var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(ap, c) {
                   var previous, parsed;
-                  return _regenerator["default"].wrap(function _callee5$(_context5) {
+                  return _regeneratorRuntime().wrap(function _callee5$(_context5) {
                     while (1) switch (_context5.prev = _context5.next) {
                       case 0:
                         _context5.next = 2;
@@ -1997,7 +1982,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
               _iterator7.s();
             case 14:
               if ((_step7 = _iterator7.n()).done) {
-                _context6.next = 33;
+                _context6.next = 31;
                 break;
               }
               file = _step7.value;
@@ -2008,12 +1993,6 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
               _yield$importGraphQL = _context6.sent;
               newSchemata = _yield$importGraphQL.schemata;
               _newResolvers = _yield$importGraphQL.resolvers;
-              typeDefs = _yield$importGraphQL.typeDefs;
-              context = {
-                file: file,
-                typeDefs: typeDefs,
-                resolvers: resolvers
-              };
               if (newSchemata) {
                 schemata = !schemata ? newSchemata : schemata.mergeSDL(newSchemata);
               }
@@ -2023,36 +2002,36 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
                   return n.value;
                 });
               }
-              _context6.next = 31;
+              _context6.next = 29;
               break;
-            case 28:
-              _context6.prev = 28;
+            case 26:
+              _context6.prev = 26;
               _context6.t2 = _context6["catch"](16);
               console.error(_context6.t2);
-            case 31:
+            case 29:
               _context6.next = 14;
               break;
-            case 33:
-              _context6.next = 38;
+            case 31:
+              _context6.next = 36;
               break;
-            case 35:
-              _context6.prev = 35;
+            case 33:
+              _context6.prev = 33;
               _context6.t3 = _context6["catch"](12);
               _iterator7.e(_context6.t3);
-            case 38:
-              _context6.prev = 38;
+            case 36:
+              _context6.prev = 36;
               _iterator7.f();
-              return _context6.finish(38);
-            case 41:
+              return _context6.finish(36);
+            case 39:
               if (schemata && resolvers) {
                 schemata.resolvers = resolvers;
               }
               return _context6.abrupt("return", schemata);
-            case 43:
+            case 41:
             case "end":
               return _context6.stop();
           }
-        }, _callee6, null, [[12, 35, 38, 41], [16, 28]]);
+        }, _callee6, null, [[12, 33, 36, 39], [16, 26]]);
       }));
       function buildFromDir(_x9, _x10) {
         return _buildFromDir.apply(this, arguments);
@@ -2171,7 +2150,7 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
     }
   }]);
   return Schemata;
-}( /*#__PURE__*/(0, _wrapNativeSuper2["default"])(String), Symbol.species, Symbol.iterator, Symbol.toStringTag, _util["default"].inspect.custom);
+}( /*#__PURE__*/_wrapNativeSuper(String));
 /**
  * Given an type, determine if the type is a root type; i.e. one of Query,
  * Mutation or Subscription as defined in the `graphql` library.
@@ -2179,12 +2158,79 @@ var Schemata = exports.Schemata = /*#__PURE__*/function (_String, _Symbol$specie
  * @param  {mixed} t a GraphQL AST or object type denoting a schema type
  * @return {Boolean} true if the type supplied is a root type; false otherwise
  */
+function _generateSchema2() {
+  var Class = this.constructor;
+  var resolvers = this.resolvers;
+  var schema;
+
+  // If we have a generated schema already and this instance has a
+  // resolvers object that is not falsey, check to see if the object
+  // has the executable schema flag set or not. If so, simply return
+  // the pre-existing object rather than create a new one.
+  if (this[MAP].get(wmkSchema)) {
+    schema = this[MAP].get(wmkSchema);
+    if (resolvers) {
+      var _schema2;
+      // check for the executable schema flag
+      if ((_schema2 = schema) !== null && _schema2 !== void 0 && _schema2[EXE]) {
+        return schema;
+      }
+    } else if (schema) {
+      return schema;
+    }
+  }
+
+  // Attempt to generate a schema using the SDL for this instance. Throw
+  // an error if the SDL is insufficient to generate a GraphQLSchema object
+  try {
+    debug_log('[get .schema] creating schema from SDL');
+    this[MAP].set(wmkSchema, schema = Class.buildSchema(this.sdl, true));
+
+    // Now try to handle and ObjectTypeExtensions
+    var ast = this.ast;
+    ast.definitions = [].concat(ast.definitions.filter(function (i) {
+      return i.kind == 'ObjectTypeExtension';
+    }));
+    try {
+      this[MAP].set(wmkSchema, schema = (0, _graphql.extendSchema)(schema, ast));
+    } catch (error) {
+      debug_log('[get .schema] failed to handle extended types');
+      debug_trace('[get .schema] ERROR!', error);
+    }
+  } catch (error) {
+    debug_log('[get .schema] failed to create schema');
+    debug_trace('[get .schema] ERROR!', error);
+    return null;
+  }
+
+  // Only iterate over the fields if there are resolvers set
+  if (resolvers) {
+    (0, _forEachOf2.forEachField)(schema, function (type, typeName, typeDirectives, field, fieldName, fieldArgs, fieldDirectives, schema, context) {
+      var _resolvers$typeName;
+      if (isRootType(type) && resolvers[fieldName]) {
+        field.resolve = resolvers[fieldName];
+        field.astNode.resolve = resolvers[fieldName];
+      }
+      if (resolvers !== null && resolvers !== void 0 && (_resolvers$typeName = resolvers[typeName]) !== null && _resolvers$typeName !== void 0 && _resolvers$typeName[fieldName]) {
+        field.resolve = resolvers[typeName][fieldName];
+        field.astNode.resolve = resolvers[typeName][fieldName];
+      }
+    });
+    this.resolverInfo.forEach(function (resolverInfo) {
+      resolverInfo.applyTo(schema);
+    });
+    schema[EXE] = true;
+  }
+
+  // Set the generated schema in the weak map using the weak map key
+  this[MAP].set(wmkSchema, schema);
+  return schema;
+}
 var isRootType = exports.isRootType = function isRootType(t) {
   if (t === undefined || t === null || !t) {
     return false;
   }
-  var name = typeof t.name === 'string' ? t.name : t.name.value;
-  return t instanceof _graphql.GraphQLObjectType && (t.name === 'Query' || t.name === 'Mutation' || t.name === 'Subscription');
+  return t instanceof _graphql.GraphQLObjectType && ['Query', 'Mutation', 'Subscription'].includes(t.name);
 };
 
 /**
@@ -2408,7 +2454,8 @@ function DefaultUnionMergeResolver(leftType, leftUnion, rightType, rightUnion) {
  * @see http://graphql.org/graphql-js/type/#graphqlscalartype
  */
 function DefaultScalarMergeResolver(leftScalar, leftConfig, rightScalar, rightConfig) {
-  return rightConfig ? rightConfig : leftConfig || null;
+  var _ref3;
+  return (_ref3 = rightConfig || leftConfig) !== null && _ref3 !== void 0 ? _ref3 : null;
 }
 
 /**
@@ -2513,6 +2560,7 @@ function pareTypeAndSubType(subTypeName, lType, rType) {
     _step10;
   try {
     var _loop4 = function _loop4() {
+      var _resolvers$lType$name;
       var rSubType = _step10.value;
       var lSubType = lType[subTypeName].find(function (f) {
         return f.name.value == rSubType.name.value;
@@ -2522,7 +2570,7 @@ function pareTypeAndSubType(subTypeName, lType, rType) {
       }
       var index = lType.fields.indexOf(lSubType);
       lType[subTypeName].splice(index, 1);
-      if (resolvers[lType.name.value] && resolvers[lType.name.value][lSubType.name.value]) {
+      if (resolvers !== null && resolvers !== void 0 && (_resolvers$lType$name = resolvers[lType.name.value]) !== null && _resolvers$lType$name !== void 0 && _resolvers$lType$name[lSubType.name.value]) {
         delete resolvers[lType.name.value][lSubType.name.value];
       } else if (resolvers[lSubType.name.value]) {
         delete resolvers[lSubType.name.value];
@@ -2551,12 +2599,12 @@ function pareTypeAndSubType(subTypeName, lType, rType) {
 function normalizeSource(typeDefs) {
   var wrap = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   if (!typeDefs) {
-    throw new Error((0, _neTagFns.inline)(_templateObject7 || (_templateObject7 = (0, _taggedTemplateLiteral2["default"])(["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function `normalizeSource`. Please check your code and try again.\n\n      (received: ", ")\n    "], ["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function \\`normalizeSource\\`. Please check your code and try again.\n\n      (received: ", ")\n    "])), typeDefs));
+    throw new Error((0, _neTagFns.inline)(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral(["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function `normalizeSource`. Please check your code and try again.\n\n      (received: ", ")\n    "], ["\n      normalizeSource(typeDefs): typeDefs was invalid when passed to the\n      function \\`normalizeSource\\`. Please check your code and try again.\n\n      (received: ", ")\n    "])), typeDefs));
   }
   if (typeDefs instanceof Schemata && typeDefs.valid && wrap) {
     return typeDefs;
   }
-  var source = (typeDefs.body || typeDefs.sdl || typeof typeDefs === 'string' && typeDefs || (0, _typeof2["default"])(typeDefs) === 'object' && Schemata.print(typeDefs) || (typeDefs instanceof _graphql.GraphQLSchema ? (0, _graphql.printSchema)(typeDefs) : typeDefs.toString())).toString().trim();
+  var source = (typeDefs.body || typeDefs.sdl || typeof typeDefs === 'string' && typeDefs || _typeof(typeDefs) === 'object' && Schemata.print(typeDefs) || (typeDefs instanceof _graphql.GraphQLSchema ? (0, _graphql.printSchema)(typeDefs) : typeDefs.toString())).toString().trim();
   return wrap ? Schemata.from(source) : source;
 }
 var _default = exports["default"] = Schemata;

@@ -5,7 +5,6 @@ require("core-js/modules/es.array.for-each.js");
 require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/web.dom-collections.for-each.js");
 require("core-js/modules/es.object.keys.js");
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -185,5 +184,6 @@ Object.keys(_errors).forEach(function (key) {
     }
   });
 });
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 var SDL = exports.SDL = _Schemata.Schemata;
 var _default = exports["default"] = _Schemata.Schemata;

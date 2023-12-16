@@ -1,12 +1,24 @@
 "use strict";
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+require("core-js/modules/es.array.is-array.js");
+require("core-js/modules/es.symbol.iterator.js");
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/es.array.slice.js");
+require("core-js/modules/es.error.to-string.js");
+require("core-js/modules/es.date.to-string.js");
+require("core-js/modules/es.regexp.to-string.js");
+require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.array.from.js");
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.regexp.test.js");
+require("core-js/modules/es.error.cause.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = exports.RESOLVE_TYPE = exports.IS_TYPE_OF = exports.FIELD_DESCRIPTIONS = exports.DESCRIPTION = void 0;
 exports.extractResolverInfo = extractResolverInfo;
-var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 require("core-js/modules/es.symbol.js");
 require("core-js/modules/es.symbol.description.js");
 require("core-js/modules/es.object.to-string.js");
@@ -18,6 +30,12 @@ require("core-js/modules/es.array.for-each.js");
 require("core-js/modules/web.dom-collections.for-each.js");
 require("core-js/modules/es.array.push.js");
 var _typework = require("./typework");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 /**
  * This constant type when applied to a ResolverMap object, will be picked up
  * by `extractResolverInfo` and be applied to the type on the executableSchema
@@ -68,7 +86,7 @@ function extractResolverInfo(resolvers) {
   var deleteFields = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var result = [];
   var _loop = function _loop() {
-    var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
+    var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
       type = _Object$entries$_i[0],
       resolver = _Object$entries$_i[1];
     var item = {
@@ -148,7 +166,7 @@ function extractResolverInfo(resolvers) {
           if (fieldDescriptions && Reflect.has(_type, '_fields')) {
             Object.entries(fieldDescriptions).forEach(function (_ref) {
               var _type$_fields$field;
-              var _ref2 = (0, _slicedToArray2["default"])(_ref, 2),
+              var _ref2 = _slicedToArray(_ref, 2),
                 field = _ref2[0],
                 description = _ref2[1];
               if (!((_type$_fields$field = _type._fields[field]) !== null && _type$_fields$field !== void 0 && _type$_fields$field.description) || overwrite) {

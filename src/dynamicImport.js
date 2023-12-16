@@ -1,6 +1,5 @@
 import { access, readFile, stat } from 'fs/promises'
 import { dirname, join, parse, resolve } from 'path'
-import { resolvedPath } from './GraphQLExtension.js'
 
 /**
  * Searches for the nearest package.json file by walking up the directory tree.
@@ -37,16 +36,16 @@ export async function dynamicImport(modulePath) {
 
   if (packageJsonPath) {
     const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf-8'));
-    const isESM = packageJson.type === 'module';
+    const isESM = packageJson.type === 'module' || parse(modulePath)?.ext === '.mjs';
 
     if (isESM) {
-      return import(modulePath);
+      return await import(modulePath);
     } else {
-      return Promise.resolve(require(modulePath));
+      return require(modulePath);
     }
   } else {
     // Default to require if package.json is not found
-    return Promise.resolve(require(modulePath));
+    return require(modulePath);
   }
 }
 

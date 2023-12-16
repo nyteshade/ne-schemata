@@ -1,21 +1,31 @@
 "use strict";
 
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+require("core-js/modules/es.object.set-prototype-of.js");
+require("core-js/modules/es.function.bind.js");
+require("core-js/modules/es.object.get-prototype-of.js");
+require("core-js/modules/es.object.proto.js");
 require("core-js/modules/es.reflect.to-string-tag.js");
 require("core-js/modules/es.reflect.construct.js");
+require("core-js/modules/es.error.cause.js");
+require("core-js/modules/es.object.create.js");
 require("core-js/modules/es.object.define-property.js");
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+require("core-js/modules/es.symbol.to-primitive.js");
+require("core-js/modules/es.date.to-primitive.js");
+require("core-js/modules/es.symbol.js");
+require("core-js/modules/es.symbol.description.js");
+require("core-js/modules/es.number.constructor.js");
+require("core-js/modules/es.array.slice.js");
+require("core-js/modules/es.object.freeze.js");
+require("core-js/modules/es.object.define-properties.js");
+require("core-js/modules/es.symbol.iterator.js");
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/web.dom-collections.iterator.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = exports.WrappedResolverExecutionError = void 0;
-var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 require("core-js/modules/es.regexp.exec.js");
 require("core-js/modules/es.regexp.test.js");
 require("core-js/modules/es.error.to-string.js");
@@ -28,8 +38,20 @@ var _BaseError2 = require("../BaseError");
 var _util = require("util");
 var _prettyError = _interopRequireDefault(require("pretty-error"));
 var _templateObject;
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 var isFn = function isFn(o) {
   return /Function\]/.test(Object.prototype.toString.call(o));
 };
@@ -43,8 +65,42 @@ var pe = new _prettyError["default"]();
  * @class WrappedResolverExecutionError
  */
 var WrappedResolverExecutionError = exports.WrappedResolverExecutionError = /*#__PURE__*/function (_BaseError) {
-  (0, _inherits2["default"])(WrappedResolverExecutionError, _BaseError);
+  _inherits(WrappedResolverExecutionError, _BaseError);
   var _super = _createSuper(WrappedResolverExecutionError);
+  /**
+   * The `ExtendedResolver` object that caused the issue
+   *
+   * @type {ExtendedResolver}
+   */
+
+  /**
+   * The index of the function that failed. This will help the programmer
+   * determine the function that caused the error.
+   *
+   * @type {number}
+   */
+
+  /**
+   * The arguments passed to the function in question that failed.
+   *
+   * @type {Array<mixed>}
+   */
+
+  /**
+   * The `this` value passed to the function as it was executed. Note that
+   * this value is irrelevant if the function passed was a big arrow function
+   *
+   * @type {mixed}
+   */
+
+  /**
+   * The `results` value before the internal resolver that failed was thrown.
+   * This does not include the results of the erroring function in question as
+   * no value was ever reached before the exception was thrown (in theory)
+   *
+   * @type {mixed}
+   */
+
   /**
    * Creates a new error instance of `WrappedResolverExecutionError`. The
    * arguments resolver, index, args and context all help the programmer
@@ -61,42 +117,8 @@ var WrappedResolverExecutionError = exports.WrappedResolverExecutionError = /*#_
    */
   function WrappedResolverExecutionError(error, resolver, index, args, context, results) {
     var _this;
-    (0, _classCallCheck2["default"])(this, WrappedResolverExecutionError);
+    _classCallCheck(this, WrappedResolverExecutionError);
     _this = _super.call(this, error);
-    /**
-     * The `ExtendedResolver` object that caused the issue
-     *
-     * @type {ExtendedResolver}
-     */
-    (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "resolver", void 0);
-    /**
-     * The index of the function that failed. This will help the programmer
-     * determine the function that caused the error.
-     *
-     * @type {number}
-     */
-    (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "index", void 0);
-    /**
-     * The arguments passed to the function in question that failed.
-     *
-     * @type {Array<mixed>}
-     */
-    (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "args", void 0);
-    /**
-     * The `this` value passed to the function as it was executed. Note that
-     * this value is irrelevant if the function passed was a big arrow function
-     *
-     * @type {mixed}
-     */
-    (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "context", void 0);
-    /**
-     * The `results` value before the internal resolver that failed was thrown.
-     * This does not include the results of the erroring function in question as
-     * no value was ever reached before the exception was thrown (in theory)
-     *
-     * @type {mixed}
-     */
-    (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "results", void 0);
     _this.resolver = resolver;
     _this.index = index;
     _this.args = args;
@@ -111,11 +133,11 @@ var WrappedResolverExecutionError = exports.WrappedResolverExecutionError = /*#_
    *
    * @return {string} a string denoting the purpose/cause of this error class
    */
-  (0, _createClass2["default"])(WrappedResolverExecutionError, [{
+  _createClass(WrappedResolverExecutionError, [{
     key: "toString",
     value: function toString() {
       var fn = this.resolver && this.resolver.order && this.resolver.order[this.index];
-      return (0, _neTagFns.dropLowest)(_templateObject || (_templateObject = (0, _taggedTemplateLiteral2["default"])(["\n      The ExtendedResolver execution failed. The resolver that failed was at\n      index ", ". The function had a name of '", "'.\n\n      Was the function likely a big arrow function? ", "\n\n      Arguments at the time were:\n      ", "\n\n      Context at the time was:\n      ", "\n\n      Results before the function was called\n      ", "\n\n      Original Stack Trace\n      ", "\n    "])), this.index, fn && fn.name, this.wasBigArrowFunction ? '\x1b[33mtrue\x1b[0m' : '\x1b[31mfalse\x1b[0m', (0, _util.inspect)(this.args, {
+      return (0, _neTagFns.dropLowest)(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n      The ExtendedResolver execution failed. The resolver that failed was at\n      index ", ". The function had a name of '", "'.\n\n      Was the function likely a big arrow function? ", "\n\n      Arguments at the time were:\n      ", "\n\n      Context at the time was:\n      ", "\n\n      Results before the function was called\n      ", "\n\n      Original Stack Trace\n      ", "\n    "])), this.index, fn && fn.name, this.wasBigArrowFunction ? '\x1b[33mtrue\x1b[0m' : '\x1b[31mfalse\x1b[0m', (0, _util.inspect)(this.args, {
         colors: true,
         depth: 8
       }), (0, _util.inspect)(this.context, {

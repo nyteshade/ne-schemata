@@ -1,14 +1,19 @@
 "use strict";
 
+require("core-js/modules/es.symbol.to-primitive.js");
+require("core-js/modules/es.date.to-primitive.js");
+require("core-js/modules/es.error.cause.js");
+require("core-js/modules/es.error.to-string.js");
+require("core-js/modules/es.number.constructor.js");
 require("core-js/modules/es.object.define-property.js");
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+require("core-js/modules/es.symbol.iterator.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = exports.UNIONS = exports.TypeMap = exports.TYPES = exports.SCALARS = exports.ROOT_TYPES = exports.INTERFACES = exports.INPUT_TYPES = exports.HIDDEN = exports.ENUMS = exports.ALL = void 0;
 exports.forEachField = forEachField;
 exports.forEachOf = forEachOf;
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 require("core-js/modules/es.array.iterator.js");
 require("core-js/modules/es.map.js");
 require("core-js/modules/es.object.to-string.js");
@@ -28,6 +33,9 @@ require("core-js/modules/es.function.name.js");
 require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.string.starts-with.js");
 var _graphql = require("graphql");
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 // Create constants for each of the types allowed, over which one might
 // iterate. These can be bitmasked to include multiple types; i.e. for both
 // type and enums, pass TYPES | ENUMS for the types parameter. It
@@ -94,7 +102,7 @@ function forEachOf(schema, fn, context) {
   [_graphql.GraphQLObjectType, _graphql.GraphQLInterfaceType, _graphql.GraphQLEnumType, _graphql.GraphQLUnionType, _graphql.GraphQLScalarType].forEach(function (t) {
     if (!t) return;
     if (!Object.getOwnPropertySymbols(t.prototype).includes(Symbol.toStringTag)) {
-      Object.defineProperties(t.prototype, (0, _defineProperty2["default"])({}, Symbol.toStringTag, {
+      Object.defineProperties(t.prototype, _defineProperty({}, Symbol.toStringTag, {
         get: function get() {
           return this.constructor.name;
         }

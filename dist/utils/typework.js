@@ -82,7 +82,7 @@ function protoChain(object) {
   }
   var results = chain.map(function (c) {
     var _c$constructor;
-    return (c === null || c === void 0 ? void 0 : (_c$constructor = c.constructor) === null || _c$constructor === void 0 ? void 0 : _c$constructor.name) || c;
+    return (c === null || c === void 0 || (_c$constructor = c.constructor) === null || _c$constructor === void 0 ? void 0 : _c$constructor.name) || c;
   }).filter(function (c) {
     return !!c;
   });

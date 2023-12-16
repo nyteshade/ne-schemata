@@ -1,9 +1,12 @@
 "use strict";
 
+require("core-js/modules/es.symbol.iterator.js");
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/web.dom-collections.iterator.js");
 require("core-js/modules/es.object.define-property.js");
 require("core-js/modules/es.array.at.js");
 require("core-js/modules/es.string.at-alternative.js");
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -11,7 +14,6 @@ exports.DoNotSet = void 0;
 exports.at = at;
 exports.atNicely = atNicely;
 exports["default"] = void 0;
-var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 require("core-js/modules/es.symbol.js");
 require("core-js/modules/es.symbol.description.js");
 require("core-js/modules/es.object.to-string.js");
@@ -24,6 +26,7 @@ require("core-js/modules/es.array.slice.js");
 require("core-js/modules/es.reflect.has.js");
 require("core-js/modules/es.reflect.to-string-tag.js");
 var _errors = require("./errors");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 var DoNotSet = exports.DoNotSet = Symbol["for"]('DoNotSet');
 
 /**
@@ -76,7 +79,7 @@ var DoNotSet = exports.DoNotSet = Symbol["for"]('DoNotSet');
 function at(object, path) {
   var setTo = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : DoNotSet;
   var playNice = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  if ((0, _typeof2["default"])(object) !== 'object' || object === null || object === undefined) {
+  if (_typeof(object) !== 'object' || object === null || object === undefined) {
     throw new TypeError("The first argument must be an object");
   }
   if (typeof path === 'string') {

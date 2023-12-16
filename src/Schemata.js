@@ -23,7 +23,6 @@ import type {
   ExecutionResult,
   FieldNode,
   GraphQLFieldResolver,
-  GraphQLResolveInfo,
   GraphQLScalarTypeConfig,
   NamedTypeNode,
   ObjMap,
@@ -250,98 +249,7 @@ export class Schemata extends String {
    * @return {GraphQLSchema} an instance of GraphQLSchema if valid SDL
    */
   get schema(): GraphQLSchema {
-    const Class = this.constructor
-    const resolvers = this.resolvers
-    let schema
-
-    // If we have a generated schema already and this instance has a
-    // resolvers object that is not falsey, check to see if the object
-    // has the executable schema flag set or not. If so, simply return
-    // the pre-existing object rather than create a new one.
-    if (this[MAP].get(wmkSchema)) {
-      schema = this[MAP].get(wmkSchema)
-
-      if (resolvers) {
-        // check for the executable schema flag
-        if (schema && schema[EXE]) {
-          return schema
-        }
-      }
-      else if (schema) {
-        return schema
-      }
-    }
-
-    // Attempt to generate a schema using the SDL for this instance. Throw
-    // an error if the SDL is insufficient to generate a GraphQLSchema object
-    try {
-      debug_log('[get .schema] creating schema from SDL')
-      this[MAP].set(wmkSchema, (schema = Class.buildSchema(this.sdl, true)))
-
-      // Now try to handle and ObjectTypeExtensions
-      let ast = this.ast
-
-      ast.definitions = [].concat(ast.definitions.filter(
-        i => i.kind == 'ObjectTypeExtension'
-      ))
-
-      try {
-        this[MAP].set(wmkSchema, (schema = extendSchema(schema, ast)))
-      }
-      catch (error) {
-        debug_log('[get .schema] failed to handle extended types')
-        debug_trace('[get .schema] ERROR!', error)
-      }
-
-    }
-    catch (error) {
-      debug_log('[get .schema] failed to create schema')
-      debug_trace('[get .schema] ERROR!', error)
-      return null
-    }
-
-    // Only iterate over the fields if there are resolvers set
-    if (resolvers) {
-      forEachField(
-        schema,
-        (
-          type,
-          typeName,
-          typeDirectives,
-          field,
-          fieldName,
-          fieldArgs,
-          fieldDirectives,
-          schema,
-          context
-        ) => {
-          if (!resolvers) {
-            return
-          }
-
-          if (isRootType(type) && resolvers[fieldName]) {
-            field.resolve = resolvers[fieldName]
-            field.astNode.resolve = resolvers[fieldName]
-          }
-
-          if (resolvers[typeName] && resolvers[typeName][fieldName]) {
-            field.resolve = resolvers[typeName][fieldName]
-            field.astNode.resolve = resolvers[typeName][fieldName]
-          }
-        }
-      )
-
-      this.resolverInfo.forEach(resolverInfo => {
-        resolverInfo.applyTo(schema)
-      })
-
-      schema[EXE] = true
-    }
-
-    // Set the generated schema in the weak map using the weak map key
-    this[MAP].set(wmkSchema, schema)
-
-    return schema
+    return this.#generateSchema()
   }
 
   /**
@@ -479,10 +387,10 @@ export class Schemata extends String {
    * Schemata instance. It does not modify the schemata object instance
    * in any way.
    *
-   * @return {String} the regenerated schema SDL from the actual
+   * @return {string} the regenerated schema SDL from the actual
    * schema object on this schemata instance.
    */
-  get flatSDL(): String {
+  get flatSDL(): string {
     let sdl = this[TYPEDEFS_KEY]
 
     if (this.schema) {
@@ -544,7 +452,7 @@ export class Schemata extends String {
       let fieldType = fieldAST.length && typeFromAST(schema, fieldAST[0].type)
       let args = []
 
-      if (fa && fa.length) {
+      if (fa?.length) {
         for (let {name, type} of fa) {
           args.push({ [name]: type.toString() })
         }
@@ -607,7 +515,7 @@ export class Schemata extends String {
 
     let _type = this.schema.getType(type)
     let _field = (_type.getFields() && _type.getFields()[field]) || null
-    let resolve = (_field && _field.resolve) || null
+    let resolve = (_field?.resolve) || null
 
     return resolve
   }
@@ -664,7 +572,7 @@ export class Schemata extends String {
 
     let _type = this.ast.definitions.find(f => f.name.value === type)
     let _field =
-      (_type && _type.fields.find(f => f.name.value === field)) || null
+      (_type?.fields.find(f => f.name.value === field)) || null
 
     return _field
   }
@@ -698,7 +606,7 @@ export class Schemata extends String {
     }
 
     for (let type of [query, mutation, subscription]) {
-      if (!type || !type.fields) {
+      if (!type?.fields) {
         continue
       }
 
@@ -752,11 +660,7 @@ export class Schemata extends String {
     for (let rType of rAST.definitions) {
       let lType = lAST.definitions.find(a => a.name.value == rType.name.value)
 
-      if (
-        rType.kind &&
-        rType.kind.endsWith &&
-        rType.kind.endsWith('Extension')
-      ) {
+      if (rType?.kind?.endsWith('Extension')) {
         rType = merge({}, rType)
         rType.kind =
           rType.kind.substring(0, rType.kind.length - 9) + 'Definition'
@@ -768,17 +672,6 @@ export class Schemata extends String {
       }
 
       switch (lType.kind) {
-      default:
-      case 'ObjectTypeDefinition':
-      case 'ObjectTypeDefinitionExtension':
-      case 'InterfaceTypeDefinition':
-      case 'InterfaceTypeDefinitionExtension':
-      case 'InputObjectTypeDefinition':
-      case 'InputObjectTypeDefinitionExtension':
-        combineTypeAndSubType('directives', lType, rType, conflictResolvers)
-        combineTypeAndSubType('fields', lType, rType, conflictResolvers)
-        break
-
       case 'EnumTypeDefinition':
         combineTypeAndSubType('directives', lType, rType, conflictResolvers)
         combineTypeAndSubType('values', lType, rType, conflictResolvers)
@@ -789,19 +682,23 @@ export class Schemata extends String {
         combineTypeAndSubType('types', lType, rType, conflictResolvers)
         break
 
-      case 'ScalarTypeDefinitionNode':
-        let lScalar, lScalarConfig, rScalar, rScalarConfig, resolver
+      case 'ScalarTypeDefinitionNode': {
+        let lScalar
+        let lScalarConfig
+        let rScalar
+        let rScalarConfig
+        let resolver
 
         combineTypeAndSubType('directives', lType, rType, conflictResolvers)
 
         if (this.schema) {
           lScalar = this.schema.getType(lType.name.value)
-          lScalarConfig = (lScalar && lScalar._scalarConfig) || null
+          lScalarConfig = (lScalar?._scalarConfig) || null
         }
 
         if (source.schema) {
           rScalar = source.schema.getType(rType.name.value)
-          rScalarConfig = (rScalar && rScalar._scalarConfig) || null
+          rScalarConfig = (rScalar?._scalarConfig) || null
         }
 
         resolver = (conflictResolvers.scalarMergeResolver ||
@@ -816,8 +713,19 @@ export class Schemata extends String {
           _scalarFns[lType.name.value] = _scalarFns[lType.name.value] || {}
           _scalarFns[lType.name.value] = resolver
         }
-
         break
+      }
+
+      case 'ObjectTypeDefinition':
+      case 'ObjectTypeDefinitionExtension':
+      case 'InterfaceTypeDefinition':
+      case 'InterfaceTypeDefinitionExtension':
+      case 'InputObjectTypeDefinition':
+      case 'InputObjectTypeDefinitionExtension':
+      default:
+        combineTypeAndSubType('directives', lType, rType, conflictResolvers)
+        combineTypeAndSubType('fields', lType, rType, conflictResolvers)
+        break    
       }
     }
 
@@ -869,11 +777,7 @@ export class Schemata extends String {
     for (let rType of rAST.definitions) {
       let lType = lAST.definitions.find(a => a.name.value == rType.name.value)
 
-      if (
-        rType.kind &&
-        rType.kind.endsWith &&
-        rType.kind.endsWith('Extension')
-      ) {
+      if (rType?.kind?.endsWith('Extension')) {
         let len = 'Extension'.length
 
         rType = merge({}, rType)
@@ -887,25 +791,6 @@ export class Schemata extends String {
       }
 
       switch (lType.kind) {
-      default:
-      case 'ObjectTypeDefinition':
-      case 'ObjectTypeDefinitionExtension':
-      case 'InterfaceTypeDefinition':
-      case 'InterfaceTypeDefinitionExtension':
-      case 'InputObjectTypeDefinition':
-      case 'InputObjectTypeDefinitionExtension':
-        pareTypeAndSubType('directives', lType, rType, resolvers)
-        pareTypeAndSubType('fields', lType, rType, resolvers)
-
-        if (!lType.fields.length) {
-          let index = lAST.definitions.indexOf(lType)
-
-          if (index !== -1) {
-            lAST.definitions.splice(index, 1)
-          }
-        }
-        break
-
       case 'EnumTypeDefinition':
         pareTypeAndSubType('directives', lType, rType, resolvers)
         pareTypeAndSubType('values', lType, rType, resolvers)
@@ -932,7 +817,7 @@ export class Schemata extends String {
         }
         break
 
-      case 'ScalarTypeDefinitionNode':
+      case 'ScalarTypeDefinitionNode': {
         let index = lAST.definitions.indexOf(lType)
 
         if (index !== -1) {
@@ -940,10 +825,30 @@ export class Schemata extends String {
         }
         break
       }
+
+      case 'ObjectTypeDefinition':
+      case 'ObjectTypeDefinitionExtension':
+      case 'InterfaceTypeDefinition':
+      case 'InterfaceTypeDefinitionExtension':
+      case 'InputObjectTypeDefinition':
+      case 'InputObjectTypeDefinitionExtension':
+      default:
+        pareTypeAndSubType('directives', lType, rType, resolvers)
+        pareTypeAndSubType('fields', lType, rType, resolvers)
+
+        if (!lType.fields.length) {
+          let index = lAST.definitions.indexOf(lType)
+
+          if (index !== -1) {
+            lAST.definitions.splice(index, 1)
+          }
+        }
+        break
+      }
     }
 
     let result = Schemata.from(this.constructor.gql.print(lAST), resolvers)
-    result.schema
+    result.#generateSchema()
 
     return result
   }
@@ -1001,8 +906,6 @@ export class Schemata extends String {
     }
 
     // Step2: Backup resolvers from left, right, or both
-    let lResolvers = left.resolvers
-    let rResolvers = right.resolvers
     let prevMaps = (left.prevResolverMaps || []).concat(
       right.prevResolverMaps || [],
       ExtendedResolverMap.from(left),
@@ -1013,7 +916,7 @@ export class Schemata extends String {
     // Step3: Merge resolvers
     let mergeResolvers = {}
 
-    if (prevMaps && prevMaps.length) {
+    if (prevMaps?.length) {
       mergeResolvers = prevMaps.reduce((p, c, i, a) => {
         return merge(p, c.resolvers || {})
       }, {})
@@ -1029,7 +932,7 @@ export class Schemata extends String {
       merged.resolvers = merged.buildResolverForEachField()
     }
     merged.clearSchema()
-    merged.schema
+    merged.#generateSchema()
 
     // Step5: Wrap resolvers
     if (config.injectMergedSchema) {
@@ -1062,7 +965,7 @@ export class Schemata extends String {
 
       // Do this once more to ensure we are using the modified resolvers
       merged.clearSchema()
-      merged.schema
+      merged.#generateSchema()
     }
 
     // Step6: Return final merged product
@@ -1280,7 +1183,7 @@ export class Schemata extends String {
    */
   get validSchema(): boolean {
     try {
-      this.schema
+      this.#generateSchema()
       debug_log('[get .validSchema] true')
       return true
     }
@@ -1988,12 +1891,7 @@ export class Schemata extends String {
 
     for (let file of files) {
       try {
-        let { schemata: newSchemata, resolvers: newResolvers, typeDefs } = await importGraphQL(file)
-        let context = {
-          file,
-          typeDefs,
-          resolvers
-        }
+        let { schemata: newSchemata, resolvers: newResolvers } = await importGraphQL(file)
 
         if (newSchemata) {
           schemata = !schemata ? newSchemata : schemata.mergeSDL(newSchemata)
@@ -2110,6 +2008,105 @@ export class Schemata extends String {
   static get HIDDEN(): number {
     return HIDDEN
   }
+
+  /**
+     * Returns a GraphQLSchema object. Note this will fail and throw an error
+     * if there is not at least one Query, Subscription or Mutation type defined.
+     * If there is no stored schema, and there are resolvers, an executable
+     * schema is returned instead.
+     *
+     * @return {GraphQLSchema} an instance of GraphQLSchema if valid SDL
+     */  
+  #generateSchema(): GraphQLSchema {
+    const Class = this.constructor
+    const resolvers = this.resolvers
+    let schema
+
+    // If we have a generated schema already and this instance has a
+    // resolvers object that is not falsey, check to see if the object
+    // has the executable schema flag set or not. If so, simply return
+    // the pre-existing object rather than create a new one.
+    if (this[MAP].get(wmkSchema)) {
+      schema = this[MAP].get(wmkSchema)
+
+      if (resolvers) {
+        // check for the executable schema flag
+        if (schema?.[EXE]) {
+          return schema
+        }
+      }
+      else if (schema) {
+        return schema
+      }
+    }
+
+    // Attempt to generate a schema using the SDL for this instance. Throw
+    // an error if the SDL is insufficient to generate a GraphQLSchema object
+    try {
+      debug_log('[get .schema] creating schema from SDL')
+      this[MAP].set(wmkSchema, (schema = Class.buildSchema(this.sdl, true)))
+
+      // Now try to handle and ObjectTypeExtensions
+      let ast = this.ast
+
+      ast.definitions = [].concat(ast.definitions.filter(
+        i => i.kind == 'ObjectTypeExtension'
+      ))
+
+      try {
+        this[MAP].set(wmkSchema, (schema = extendSchema(schema, ast)))
+      }
+      catch (error) {
+        debug_log('[get .schema] failed to handle extended types')
+        debug_trace('[get .schema] ERROR!', error)
+      }
+
+    }
+    catch (error) {
+      debug_log('[get .schema] failed to create schema')
+      debug_trace('[get .schema] ERROR!', error)
+      return null
+    }
+
+    // Only iterate over the fields if there are resolvers set
+    if (resolvers) {
+      forEachField(
+        schema,
+        (
+          type,
+          typeName,
+          typeDirectives,
+          field,
+          fieldName,
+          fieldArgs,
+          fieldDirectives,
+          schema,
+          context
+        ) => {
+          if (isRootType(type) && resolvers[fieldName]) {
+            field.resolve = resolvers[fieldName]
+            field.astNode.resolve = resolvers[fieldName]
+          }
+
+          if (resolvers?.[typeName]?.[fieldName]) {
+            field.resolve = resolvers[typeName][fieldName]
+            field.astNode.resolve = resolvers[typeName][fieldName]
+          }
+        }
+      )
+
+      this.resolverInfo.forEach(resolverInfo => {
+        resolverInfo.applyTo(schema)
+      })
+
+      schema[EXE] = true
+    }
+
+    // Set the generated schema in the weak map using the weak map key
+    this[MAP].set(wmkSchema, schema)
+
+    return schema
+  }
 }
 
 /**
@@ -2124,11 +2121,9 @@ export const isRootType = t => {
     return false
   }
 
-  let name = typeof t.name === 'string' ? t.name : t.name.value
-
   return (
-    t instanceof GraphQLObjectType &&
-    (t.name === 'Query' || t.name === 'Mutation' || t.name === 'Subscription')
+    t instanceof GraphQLObjectType && 
+    ['Query', 'Mutation', 'Subscription'].includes(t.name)
   )
 }
 
@@ -2392,7 +2387,7 @@ export function DefaultScalarMergeResolver(
   rightScalar: ScalarTypeDefinitionNode,
   rightConfig: GraphQLScalarTypeConfig
 ): GraphQLScalarTypeConfig {
-  return rightConfig ? rightConfig : leftConfig || null
+  return (rightConfig || leftConfig) ?? null
 }
 
 /**
@@ -2514,10 +2509,7 @@ function pareTypeAndSubType(
     let index = lType.fields.indexOf(lSubType)
     lType[subTypeName].splice(index, 1)
 
-    if (
-      resolvers[lType.name.value] &&
-      resolvers[lType.name.value][lSubType.name.value]
-    ) {
+    if (resolvers?.[lType.name.value]?.[lSubType.name.value]) {
       delete resolvers[lType.name.value][lSubType.name.value]
     }
     else if (resolvers[lSubType.name.value]) {

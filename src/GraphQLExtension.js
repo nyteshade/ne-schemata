@@ -15,8 +15,9 @@ import { promisify } from 'util'
  * Initially, it discerns whether `givenPath` already has a file extension. If it
  * does, and the file exists, it returns the resolved path. If not, it iterates
  * through a list of file extensions (provided in `tryExts` or defaults to
- * ['.js', '.ts']), appending each extension to `givenPath`, checking the existence
- * of the resultant file, and returning the path upon successful resolution.
+ * ['.js', '.ts', '.mjs', '.cjs']), appending each extension to `givenPath`, 
+ * checking the existence of the resultant file, and returning the path upon 
+ * successful resolution.
  *
  * Utilizes functions from the 'fs', 'fs/promises', and 'path' modules of Node.js,
  * as well as a custom `Schemata` import. It employs the `promisify` utility to
@@ -40,7 +41,7 @@ import { promisify } from 'util'
  * // Outputs: null (if 'example.ts' doesn't exist)
  * resolvedPath('./example.ts').then(resolved => console.log(resolved));
  */
-export async function resolvedPath(givenPath, tryExts = ['.js', '.ts']) {
+export async function resolvedPath(givenPath, tryExts = ['.js', '.ts', '.mjs', '.cjs']) {
   const hasext = filepath => !!parse(String(filepath)).ext
   const exists = promisify(fsExists)
   const nopath = fp => { let parsed = parse(fp); return !!(parsed.root || parsed.dir) }
