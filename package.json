@@ -1,5 +1,5 @@
 {
-  "name": "ne-schemata",
+  "name": "@nyteshade/ne-schemata",
   "version": "3.6.0",
   "description": "GraphQL IDL/Schemata String class to make working with GraphQL easier",
   "repository": "https://github.com/nyteshade/ne-schemata",
