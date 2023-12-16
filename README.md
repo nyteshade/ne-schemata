@@ -4,6 +4,10 @@
 
 GraphQL IDL/Schemata String class to make working with GraphQL easier
 
+# NOTE!!
+
+Henceforth, this library will be called @nyteshade/ne-schemata. Please this npm library will not be maintained on this name after this release.
+
 ## Overview
 
 Working with Schemata (Schema Definition Language), sometimes called IDL (Interface Definition Language) can occasionally be difficult. A schema definition is the most concise way to specify a schema in GraphQL.
