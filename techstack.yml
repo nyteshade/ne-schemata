@@ -1,7 +1,8 @@
 repo_name: nyteshade/ne-schemata
 report_id: bb6d3f76593f7be843c3f22f772f7005
+version: 0.1
 repo_type: Public
-timestamp: '2023-11-24T01:38:16+00:00'
+timestamp: '2024-01-05T08:34:52+00:00'
 requested_by: nyteshade
 provider: github
 branch: main
@@ -16,6 +17,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/nyteshade/ne-schemata
   detection_source: Repo Metadata
 - name: GraphQL
   description: A data query language and runtime
@@ -25,6 +27,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Query Languages
   image_url: https://img.stackshare.io/service/3820/12972006.png
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-11-05 07:43:42.000000000 Z
@@ -38,8 +41,8 @@ tools:
   category: Build, Test, Deploy
   sub_category: JavaScript Compilers
   image_url: https://img.stackshare.io/service/2739/-1wfGjNw.png
-  detection_source_url: package-lock.json
-  detection_source: package.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
+  detection_source: babel.config.js
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
 - name: ESLint
@@ -51,6 +54,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Code Review
   image_url: https://img.stackshare.io/service/3337/Q4L7Jncy.jpg
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2018-04-10 00:50:33.000000000 Z
@@ -62,6 +66,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/nyteshade/ne-schemata
   detection_source: Repo Metadata
 - name: Jest
   description: Painless JavaScript Unit Testing
@@ -73,7 +78,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Javascript Testing Framework
   image_url: https://img.stackshare.io/service/830/jest.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2018-04-10 00:50:33.000000000 Z
@@ -86,6 +91,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Continuous Integration
   image_url: https://img.stackshare.io/service/460/Lu6cGu0z_400x400.png
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/.travis.yml
   detection_source: ".travis.yml"
   last_updated_by: Brielle Harrison
   last_updated_on: 2018-04-10 00:50:33.000000000 Z
@@ -97,6 +103,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Front End Package Manager
   image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2018-04-10 00:50:33.000000000 Z
@@ -109,7 +116,7 @@ tools:
   category: Libraries
   sub_category: Javascript Utilities & Libraries
   image_url: https://img.stackshare.io/service/2438/lodash.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 02:13:34.000000000 Z
@@ -123,7 +130,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15848/default_b71c906aeda030a5e2f1fe40bf12a93be52404ab.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -137,7 +144,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15810/default_004658cda9b38934f2871435e9dc15608c86e8be.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -152,7 +159,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15903/default_3af1504b6f77c55205ba630fe08c472f43b95f6e.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -166,7 +173,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/16147/default_1f3a2fc7d882e29a43394ecdf491b8989ea3f0fa.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -180,7 +187,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/16306/default_f130429ee56156823c8c6e94da6fb7aa07f07ba5.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -194,7 +201,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/17442/default_8c4651c288471a00b2fd6f2055b6de29cb9a049d.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -208,7 +215,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15952/default_4040fefea2f98006727f63d042275b96a275ab2d.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -222,7 +229,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15819/default_98aa227f51aa9d787815ec3fd98d0ab2bfebbb91.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -236,7 +243,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/16270/default_8b65a873fd3277d73483d6846fa38192391abf23.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -250,7 +257,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15934/default_54b691c123fc8979741e800e4dcd3936c0f3b246.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -264,7 +271,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15803/default_db4a7791d2f1174547374b9b587bc10fec088a5a.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -278,7 +285,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15839/default_4479dbac220be99e50e724b2df6cf415241d71fd.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -292,7 +299,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15869/default_7c39a83d4acd952df89b1ebfdb94c8646324fbf1.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -306,7 +313,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15852/default_a2f722724df977d0f7752839e5d8845ab41f69d5.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 02:13:34.000000000 Z
@@ -320,7 +327,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/16179/default_77b54a203c743d16eddb6b6390cba17218454fa0.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 02:13:34.000000000 Z
@@ -334,7 +341,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15940/default_f49d4c116f8ea0155f4d92673b084378bba02760.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -348,7 +355,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15806/default_98aa227f51aa9d787815ec3fd98d0ab2bfebbb91.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 19:36:07.000000000 Z
@@ -362,7 +369,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/15957/default_f49d4c116f8ea0155f4d92673b084378bba02760.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 18:30:43.000000000 Z
@@ -376,7 +383,7 @@ tools:
   category: Libraries
   sub_category: npm Packages
   image_url: https://img.stackshare.io/package/17692/default_52c11a434d2ce37281914a7f804e07cf95ab96f7.png
-  detection_source_url: package-lock.json
+  detection_source_url: https://github.com/nyteshade/ne-schemata/blob/main/package-lock.json
   detection_source: package.json
   last_updated_by: Brielle Harrison
   last_updated_on: 2023-10-28 02:13:34.000000000 Z
