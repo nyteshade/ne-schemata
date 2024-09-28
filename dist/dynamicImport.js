@@ -1,113 +1,138 @@
 "use strict";
 
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-require("core-js/modules/es.array.join.js");
-require("core-js/modules/es.object.define-property.js");
-require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.symbol.description.js");
-require("core-js/modules/es.symbol.iterator.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
-require("core-js/modules/es.symbol.async-iterator.js");
-require("core-js/modules/es.symbol.to-string-tag.js");
-require("core-js/modules/es.json.to-string-tag.js");
-require("core-js/modules/es.math.to-string-tag.js");
-require("core-js/modules/es.object.create.js");
-require("core-js/modules/es.object.get-prototype-of.js");
-require("core-js/modules/es.array.for-each.js");
-require("core-js/modules/es.error.cause.js");
-require("core-js/modules/es.error.to-string.js");
-require("core-js/modules/es.array.push.js");
-require("core-js/modules/web.dom-collections.for-each.js");
-require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.object.set-prototype-of.js");
-require("core-js/modules/es.object.proto.js");
-require("core-js/modules/es.array.reverse.js");
-require("core-js/modules/es.array.slice.js");
-require("core-js/modules/es.weak-map.js");
-require("core-js/modules/es.object.get-own-property-descriptor.js");
-require("core-js/modules/es.symbol.to-primitive.js");
-require("core-js/modules/es.date.to-primitive.js");
-require("core-js/modules/es.number.constructor.js");
-require("core-js/modules/es.array.filter.js");
-require("core-js/modules/es.object.get-own-property-descriptors.js");
-require("core-js/modules/es.object.define-properties.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.dynamicImport = dynamicImport;
+exports.fileExists = fileExists;
 exports.findNearestPackageJson = findNearestPackageJson;
+exports.guessProjectRoot = guessProjectRoot;
 exports.pathParse = pathParse;
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.promise.js");
-require("core-js/modules/es.object.keys.js");
+exports.supportsNativeTypeScript = supportsNativeTypeScript;
 var _promises = require("fs/promises");
 var _path = require("path");
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
-function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw new Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw new Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+var _module = require("module");
+var _TypeScriptFlagMissingError = require("./errors/TypeScriptFlagMissingError");
+var _InvalidPathError = require("./errors/InvalidPathError");
+var _GraphQLExtension = require("./GraphQLExtension");
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+/**
+ * Combines any environmental NODE_OPTIONS and execArgv parameters and checks
+ * for the existence of the new TypeScript stripping flags or if the process
+ * is running through `tsx` or `ts-node` wrappers. If any of these things are
+ * true, then dynamically import()'ing a .ts/.tsx file is likely to succedd.
+ *
+ * @returns {boolean} true if sufficient runtime TypeScript loading support
+ * is present and available; false otherwise
+ */
+function supportsNativeTypeScript() {
+  const node_opts = [...(process.env?.NODE_OPTIONS ?? '').split(' '), ...process.execArgv];
+  return node_opts.includes('--experimental-transform-types') || node_opts.includes('--experimental-strip-types') || node_opts.includes('node_modules/tsx') || node_opts.includes('node_modules/ts-node');
+}
+
+/**
+ *
+ * @param {string} pathToFile string path to where, hopefully, a file might
+ * exist.
+ * @param {boolean} [mustNotBeDirectory=true] a flag to indicate that false
+ * should be returned if the file is a directory, even if it does exist on
+ * the file system. This behavior defaults to true.
+ * @returns {Promise<boolean>} true if a file exists (see mustNotBeDirectory),
+ * and false otherwise
+ */
+async function fileExists(pathToFile, mustNotBeDirectory = true) {
+  try {
+    const stats = await (0, _promises.stat)(pathToFile);
+
+    // We only make it here if the result of calling stat() did not throw an
+    // error. If isDirectory() is true and mustNotBeDirectory, then we return
+    // the opposite of true which is false.
+    return mustNotBeDirectory ? !stats.isDirectory() : true;
+  } catch (ignore) {
+    return false;
+  }
+}
+
 /**
  * Searches for the nearest package.json file by walking up the directory tree.
  *
- * @param {string} startDir - The directory to start the search from.
- * @returns {Promise<string|null>} - A promise that resolves to the path to the nearest package.json,
- * or null if not found.
+ * @param {string} startDir - The directory to start the search from. If this
+ * is a falsy value, `process.cwd()` is used instead.
+ * @returns {Promise<string|null>} - A promise that resolves to the path to the
+ * nearest package.json, or null if not found.
  */
-function findNearestPackageJson(_x) {
-  return _findNearestPackageJson.apply(this, arguments);
+async function findNearestPackageJson(startDir) {
+  if (!startDir) startDir = process.cwd();
+  let dir = startDir;
+  while (dir !== (0, _path.parse)(dir).root) {
+    const potentialPath = (0, _path.join)(dir, 'package.json');
+    try {
+      await (0, _promises.access)(potentialPath);
+      return (0, _path.resolve)(potentialPath);
+    } catch (error) {
+      dir = (0, _path.dirname)(dir);
+    }
+  }
+  return null;
 }
+
 /**
- * Dynamically imports a module using require or await import() based on the module system in use.
+ * Searches for the nearest package.json file by walking up the directory tree.
+ * If a package json file is found, the path to that file is assumed to be the
+ * root directory.
+ *
+ * @param {string} startDir - The directory to start the search from. If this
+ * is a falsy value, `process.cwd()` is used instead.
+ * @param {string?} useIfNotFound - An optional string, defaults to undefined,
+ * that will be substituted if not package.json file was found while walking
+ * up the directory tree.
+ * @returns {Promise<string>} - A promise that resolves to the path to the
+ * nearest package.json, or the value of `useIfNotFound` which defaults to
+ * undefined.
+ */
+async function guessProjectRoot(startDir, useIfNotFound) {
+  const nearestPackageJson = await findNearestPackageJson(startDir);
+  if (nearestPackageJson) {
+    // if undefined or an empty string, default to useIfNotFound or undefined
+    return (0, _path.parse)(nearestPackageJson)?.dir || useIfNotFound;
+  }
+  return useIfNotFound;
+}
+
+/**
+ * Attempts to use `await import()` to grab the JavaScript module content from
+ * the specified file dynamically. If this fails, an empty Module exports object
+ * is returned.
+ *
+ * @note files that end in known TypeScript file extensions will cause an error
+ * to be thrown if native typescript support is not available. See this function
+ * {@link supportsNativeTypeScript} for more information.
  *
  * @param {string} modulePath - The path to the module to be imported.
- * @returns {Promise<any>} - A promise that resolves to the imported module.
+ * @param {boolean?} [errorOnMissing=true] - if false, and the file at
+ * modulePath does not exist, return an empty Module's exports. Defaults to true
+ * @returns {Promise<object>} - A promise that resolves to the imported module.
+ *
+ * @throws {TypeScriptFlagMissingError} if the appropriate measures haven't been
+ * taken to allow for dynamic runtime TypeScript import support.
  */
-function _findNearestPackageJson() {
-  _findNearestPackageJson = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(startDir) {
-    var dir, potentialPath;
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
-      while (1) switch (_context.prev = _context.next) {
-        case 0:
-          dir = startDir;
-        case 1:
-          if (!(dir !== (0, _path.parse)(dir).root)) {
-            _context.next = 14;
-            break;
-          }
-          potentialPath = (0, _path.join)(dir, 'package.json');
-          _context.prev = 3;
-          _context.next = 6;
-          return (0, _promises.access)(potentialPath);
-        case 6:
-          return _context.abrupt("return", potentialPath);
-        case 9:
-          _context.prev = 9;
-          _context.t0 = _context["catch"](3);
-          dir = (0, _path.dirname)(dir);
-        case 12:
-          _context.next = 1;
-          break;
-        case 14:
-          return _context.abrupt("return", null);
-        case 15:
-        case "end":
-          return _context.stop();
-      }
-    }, _callee, null, [[3, 9]]);
-  }));
-  return _findNearestPackageJson.apply(this, arguments);
+async function dynamicImport(modulePath, errorOnMissing = true) {
+  const packageJsonPath = await findNearestPackageJson(__dirname);
+  const parsedPath = pathParse(modulePath);
+  if (!supportsNativeTypeScript() && _GraphQLExtension.StandardTSExtensions.includes(parsedPath.ext)) {
+    throw new _TypeScriptFlagMissingError.TypeScriptFlagMissingError(modulePath);
+  }
+  if (!fileExists(modulePath, false)) {
+    throw new _InvalidPathError.InvalidPathError(modulePath, `Cannot import ${modulePath}; missing`);
+  }
+  try {
+    return await (specifier => new Promise(r => r(`${specifier}`)).then(s => _interopRequireWildcard(require(s))))(modulePath);
+  } catch (ignore) {
+    return new _module.Module().exports;
+  }
 }
-function dynamicImport(_x2) {
-  return _dynamicImport.apply(this, arguments);
-}
+
 /**
  * Asynchronously parses a given file or directory path to provide detailed path information along with
  * the resolved full path and a directory indicator.
@@ -137,81 +162,18 @@ function dynamicImport(_x2) {
  *   .then(info => console.log(info))
  *   .catch(error => console.error('An error occurred:', error));
  */
-function _dynamicImport() {
-  _dynamicImport = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(modulePath) {
-    var packageJsonPath, _parse, packageJson, isESM;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
-        case 0:
-          _context2.next = 2;
-          return findNearestPackageJson(__dirname);
-        case 2:
-          packageJsonPath = _context2.sent;
-          if (!packageJsonPath) {
-            _context2.next = 19;
-            break;
-          }
-          _context2.t0 = JSON;
-          _context2.next = 7;
-          return (0, _promises.readFile)(packageJsonPath, 'utf-8');
-        case 7:
-          _context2.t1 = _context2.sent;
-          packageJson = _context2.t0.parse.call(_context2.t0, _context2.t1);
-          isESM = packageJson.type === 'module' || ((_parse = (0, _path.parse)(modulePath)) === null || _parse === void 0 ? void 0 : _parse.ext) === '.mjs';
-          if (!isESM) {
-            _context2.next = 16;
-            break;
-          }
-          _context2.next = 13;
-          return function (specifier) {
-            return new Promise(function (r) {
-              return r("".concat(specifier));
-            }).then(function (s) {
-              return _interopRequireWildcard(require(s));
-            });
-          }(modulePath);
-        case 13:
-          return _context2.abrupt("return", _context2.sent);
-        case 16:
-          return _context2.abrupt("return", require(modulePath));
-        case 17:
-          _context2.next = 20;
-          break;
-        case 19:
-          return _context2.abrupt("return", require(modulePath));
-        case 20:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2);
-  }));
-  return _dynamicImport.apply(this, arguments);
+async function pathParse(path) {
+  const fullPath = (0, _path.resolve)(path);
+  const baseParsed = (0, _path.parse)(fullPath);
+  const pathStat = await (0, _promises.stat)(fullPath);
+  return {
+    ...baseParsed,
+    ...{
+      base: '',
+      fullPath,
+      isDir: pathStat.isDirectory()
+    }
+  };
 }
-function pathParse(_x3) {
-  return _pathParse.apply(this, arguments);
-}
-function _pathParse() {
-  _pathParse = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(path) {
-    var fullPath, baseParsed, pathStat;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
-        case 0:
-          fullPath = (0, _path.resolve)(path);
-          baseParsed = (0, _path.parse)(fullPath);
-          _context3.next = 4;
-          return (0, _promises.stat)(fullPath);
-        case 4:
-          pathStat = _context3.sent;
-          return _context3.abrupt("return", _objectSpread(_objectSpread({}, baseParsed), {
-            base: '',
-            fullPath: fullPath,
-            isDir: pathStat.isDirectory()
-          }));
-        case 6:
-        case "end":
-          return _context3.stop();
-      }
-    }, _callee3);
-  }));
-  return _pathParse.apply(this, arguments);
-}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJfcHJvbWlzZXMiLCJyZXF1aXJlIiwiX3BhdGgiLCJfbW9kdWxlIiwiX1R5cGVTY3JpcHRGbGFnTWlzc2luZ0Vycm9yIiwiX0ludmFsaWRQYXRoRXJyb3IiLCJfR3JhcGhRTEV4dGVuc2lvbiIsIl9nZXRSZXF1aXJlV2lsZGNhcmRDYWNoZSIsImUiLCJXZWFrTWFwIiwiciIsInQiLCJfaW50ZXJvcFJlcXVpcmVXaWxkY2FyZCIsIl9fZXNNb2R1bGUiLCJkZWZhdWx0IiwiaGFzIiwiZ2V0IiwibiIsIl9fcHJvdG9fXyIsImEiLCJPYmplY3QiLCJkZWZpbmVQcm9wZXJ0eSIsImdldE93blByb3BlcnR5RGVzY3JpcHRvciIsInUiLCJoYXNPd25Qcm9wZXJ0eSIsImNhbGwiLCJpIiwic2V0Iiwic3VwcG9ydHNOYXRpdmVUeXBlU2NyaXB0Iiwibm9kZV9vcHRzIiwicHJvY2VzcyIsImVudiIsIk5PREVfT1BUSU9OUyIsInNwbGl0IiwiZXhlY0FyZ3YiLCJpbmNsdWRlcyIsImZpbGVFeGlzdHMiLCJwYXRoVG9GaWxlIiwibXVzdE5vdEJlRGlyZWN0b3J5Iiwic3RhdHMiLCJzdGF0IiwiaXNEaXJlY3RvcnkiLCJpZ25vcmUiLCJmaW5kTmVhcmVzdFBhY2thZ2VKc29uIiwic3RhcnREaXIiLCJjd2QiLCJkaXIiLCJwYXJzZSIsInJvb3QiLCJwb3RlbnRpYWxQYXRoIiwiam9pbiIsImFjY2VzcyIsInJlc29sdmUiLCJlcnJvciIsImRpcm5hbWUiLCJndWVzc1Byb2plY3RSb290IiwidXNlSWZOb3RGb3VuZCIsIm5lYXJlc3RQYWNrYWdlSnNvbiIsImR5bmFtaWNJbXBvcnQiLCJtb2R1bGVQYXRoIiwiZXJyb3JPbk1pc3NpbmciLCJwYWNrYWdlSnNvblBhdGgiLCJfX2Rpcm5hbWUiLCJwYXJzZWRQYXRoIiwicGF0aFBhcnNlIiwiU3RhbmRhcmRUU0V4dGVuc2lvbnMiLCJleHQiLCJUeXBlU2NyaXB0RmxhZ01pc3NpbmdFcnJvciIsIkludmFsaWRQYXRoRXJyb3IiLCJzcGVjaWZpZXIiLCJQcm9taXNlIiwidGhlbiIsInMiLCJNb2R1bGUiLCJleHBvcnRzIiwicGF0aCIsImZ1bGxQYXRoIiwiYmFzZVBhcnNlZCIsInBhdGhTdGF0IiwiYmFzZSIsImlzRGlyIl0sInNvdXJjZXMiOlsiLi4vc3JjL2R5bmFtaWNJbXBvcnQuanMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgYWNjZXNzLCByZWFkRmlsZSwgc3RhdCB9IGZyb20gJ2ZzL3Byb21pc2VzJ1xuaW1wb3J0IHsgZGlybmFtZSwgam9pbiwgcGFyc2UsIHJlc29sdmUgfSBmcm9tICdwYXRoJ1xuaW1wb3J0IHsgTW9kdWxlIH0gZnJvbSAnbW9kdWxlJ1xuXG5pbXBvcnQgeyBUeXBlU2NyaXB0RmxhZ01pc3NpbmdFcnJvciB9IGZyb20gJy4vZXJyb3JzL1R5cGVTY3JpcHRGbGFnTWlzc2luZ0Vycm9yJztcbmltcG9ydCB7IEludmFsaWRQYXRoRXJyb3IgfSBmcm9tICcuL2Vycm9ycy9JbnZhbGlkUGF0aEVycm9yJztcbmltcG9ydCB7IFN0YW5kYXJkVFNFeHRlbnNpb25zIH0gZnJvbSAnLi9HcmFwaFFMRXh0ZW5zaW9uJztcblxuLyoqXG4gKiBDb21iaW5lcyBhbnkgZW52aXJvbm1lbnRhbCBOT0RFX09QVElPTlMgYW5kIGV4ZWNBcmd2IHBhcmFtZXRlcnMgYW5kIGNoZWNrc1xuICogZm9yIHRoZSBleGlzdGVuY2Ugb2YgdGhlIG5ldyBUeXBlU2NyaXB0IHN0cmlwcGluZyBmbGFncyBvciBpZiB0aGUgcHJvY2Vzc1xuICogaXMgcnVubmluZyB0aHJvdWdoIGB0c3hgIG9yIGB0cy1ub2RlYCB3cmFwcGVycy4gSWYgYW55IG9mIHRoZXNlIHRoaW5ncyBhcmVcbiAqIHRydWUsIHRoZW4gZHluYW1pY2FsbHkgaW1wb3J0KCknaW5nIGEgLnRzLy50c3ggZmlsZSBpcyBsaWtlbHkgdG8gc3VjY2VkZC5cbiAqXG4gKiBAcmV0dXJucyB7Ym9vbGVhbn0gdHJ1ZSBpZiBzdWZmaWNpZW50IHJ1bnRpbWUgVHlwZVNjcmlwdCBsb2FkaW5nIHN1cHBvcnRcbiAqIGlzIHByZXNlbnQgYW5kIGF2YWlsYWJsZTsgZmFsc2Ugb3RoZXJ3aXNlXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBzdXBwb3J0c05hdGl2ZVR5cGVTY3JpcHQoKSB7XG4gIGNvbnN0IG5vZGVfb3B0cyA9IFtcbiAgICAuLi4oKHByb2Nlc3MuZW52Py5OT0RFX09QVElPTlMgPz8gJycpLnNwbGl0KCcgJykpLFxuICAgIC4uLnByb2Nlc3MuZXhlY0FyZ3YsXG4gIF1cblxuICByZXR1cm4gKFxuICAgIG5vZGVfb3B0cy5pbmNsdWRlcygnLS1leHBlcmltZW50YWwtdHJhbnNmb3JtLXR5cGVzJykgfHxcbiAgICBub2RlX29wdHMuaW5jbHVkZXMoJy0tZXhwZXJpbWVudGFsLXN0cmlwLXR5cGVzJykgfHxcbiAgICBub2RlX29wdHMuaW5jbHVkZXMoJ25vZGVfbW9kdWxlcy90c3gnKSB8fFxuICAgIG5vZGVfb3B0cy5pbmNsdWRlcygnbm9kZV9tb2R1bGVzL3RzLW5vZGUnKVxuICApXG59XG5cbi8qKlxuICpcbiAqIEBwYXJhbSB7c3RyaW5nfSBwYXRoVG9GaWxlIHN0cmluZyBwYXRoIHRvIHdoZXJlLCBob3BlZnVsbHksIGEgZmlsZSBtaWdodFxuICogZXhpc3QuXG4gKiBAcGFyYW0ge2Jvb2xlYW59IFttdXN0Tm90QmVEaXJlY3Rvcnk9dHJ1ZV0gYSBmbGFnIHRvIGluZGljYXRlIHRoYXQgZmFsc2VcbiAqIHNob3VsZCBiZSByZXR1cm5lZCBpZiB0aGUgZmlsZSBpcyBhIGRpcmVjdG9yeSwgZXZlbiBpZiBpdCBkb2VzIGV4aXN0IG9uXG4gKiB0aGUgZmlsZSBzeXN0ZW0uIFRoaXMgYmVoYXZpb3IgZGVmYXVsdHMgdG8gdHJ1ZS5cbiAqIEByZXR1cm5zIHtQcm9taXNlPGJvb2xlYW4+fSB0cnVlIGlmIGEgZmlsZSBleGlzdHMgKHNlZSBtdXN0Tm90QmVEaXJlY3RvcnkpLFxuICogYW5kIGZhbHNlIG90aGVyd2lzZVxuICovXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gZmlsZUV4aXN0cyhwYXRoVG9GaWxlLCBtdXN0Tm90QmVEaXJlY3RvcnkgPSB0cnVlKSB7XG4gIHRyeSB7XG4gICAgY29uc3Qgc3RhdHMgPSBhd2FpdCBzdGF0KHBhdGhUb0ZpbGUpXG5cbiAgICAvLyBXZSBvbmx5IG1ha2UgaXQgaGVyZSBpZiB0aGUgcmVzdWx0IG9mIGNhbGxpbmcgc3RhdCgpIGRpZCBub3QgdGhyb3cgYW5cbiAgICAvLyBlcnJvci4gSWYgaXNEaXJlY3RvcnkoKSBpcyB0cnVlIGFuZCBtdXN0Tm90QmVEaXJlY3RvcnksIHRoZW4gd2UgcmV0dXJuXG4gICAgLy8gdGhlIG9wcG9zaXRlIG9mIHRydWUgd2hpY2ggaXMgZmFsc2UuXG4gICAgcmV0dXJuIG11c3ROb3RCZURpcmVjdG9yeSA/ICFzdGF0cy5pc0RpcmVjdG9yeSgpIDogdHJ1ZTtcbiAgfVxuICBjYXRjaCAoaWdub3JlKSB7XG4gICAgcmV0dXJuIGZhbHNlXG4gIH1cbn1cblxuLyoqXG4gKiBTZWFyY2hlcyBmb3IgdGhlIG5lYXJlc3QgcGFja2FnZS5qc29uIGZpbGUgYnkgd2Fsa2luZyB1cCB0aGUgZGlyZWN0b3J5IHRyZWUuXG4gKlxuICogQHBhcmFtIHtzdHJpbmd9IHN0YXJ0RGlyIC0gVGhlIGRpcmVjdG9yeSB0byBzdGFydCB0aGUgc2VhcmNoIGZyb20uIElmIHRoaXNcbiAqIGlzIGEgZmFsc3kgdmFsdWUsIGBwcm9jZXNzLmN3ZCgpYCBpcyB1c2VkIGluc3RlYWQuXG4gKiBAcmV0dXJucyB7UHJvbWlzZTxzdHJpbmd8bnVsbD59IC0gQSBwcm9taXNlIHRoYXQgcmVzb2x2ZXMgdG8gdGhlIHBhdGggdG8gdGhlXG4gKiBuZWFyZXN0IHBhY2thZ2UuanNvbiwgb3IgbnVsbCBpZiBub3QgZm91bmQuXG4gKi9cbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBmaW5kTmVhcmVzdFBhY2thZ2VKc29uKHN0YXJ0RGlyKSB7XG4gIGlmICghc3RhcnREaXIpXG4gICAgc3RhcnREaXIgPSBwcm9jZXNzLmN3ZCgpXG5cbiAgbGV0IGRpciA9IHN0YXJ0RGlyO1xuXG4gIHdoaWxlIChkaXIgIT09IHBhcnNlKGRpcikucm9vdCkge1xuICAgIGNvbnN0IHBvdGVudGlhbFBhdGggPSBqb2luKGRpciwgJ3BhY2thZ2UuanNvbicpO1xuXG4gICAgdHJ5IHtcbiAgICAgIGF3YWl0IGFjY2Vzcyhwb3RlbnRpYWxQYXRoKTtcbiAgICAgIHJldHVybiByZXNvbHZlKHBvdGVudGlhbFBhdGgpO1xuICAgIH0gY2F0Y2ggKGVycm9yKSB7XG4gICAgICBkaXIgPSBkaXJuYW1lKGRpcik7XG4gICAgfVxuICB9XG5cbiAgcmV0dXJuIG51bGw7XG59XG5cbi8qKlxuICogU2VhcmNoZXMgZm9yIHRoZSBuZWFyZXN0IHBhY2thZ2UuanNvbiBmaWxlIGJ5IHdhbGtpbmcgdXAgdGhlIGRpcmVjdG9yeSB0cmVlLlxuICogSWYgYSBwYWNrYWdlIGpzb24gZmlsZSBpcyBmb3VuZCwgdGhlIHBhdGggdG8gdGhhdCBmaWxlIGlzIGFzc3VtZWQgdG8gYmUgdGhlXG4gKiByb290IGRpcmVjdG9yeS5cbiAqXG4gKiBAcGFyYW0ge3N0cmluZ30gc3RhcnREaXIgLSBUaGUgZGlyZWN0b3J5IHRvIHN0YXJ0IHRoZSBzZWFyY2ggZnJvbS4gSWYgdGhpc1xuICogaXMgYSBmYWxzeSB2YWx1ZSwgYHByb2Nlc3MuY3dkKClgIGlzIHVzZWQgaW5zdGVhZC5cbiAqIEBwYXJhbSB7c3RyaW5nP30gdXNlSWZOb3RGb3VuZCAtIEFuIG9wdGlvbmFsIHN0cmluZywgZGVmYXVsdHMgdG8gdW5kZWZpbmVkLFxuICogdGhhdCB3aWxsIGJlIHN1YnN0aXR1dGVkIGlmIG5vdCBwYWNrYWdlLmpzb24gZmlsZSB3YXMgZm91bmQgd2hpbGUgd2Fsa2luZ1xuICogdXAgdGhlIGRpcmVjdG9yeSB0cmVlLlxuICogQHJldHVybnMge1Byb21pc2U8c3RyaW5nPn0gLSBBIHByb21pc2UgdGhhdCByZXNvbHZlcyB0byB0aGUgcGF0aCB0byB0aGVcbiAqIG5lYXJlc3QgcGFja2FnZS5qc29uLCBvciB0aGUgdmFsdWUgb2YgYHVzZUlmTm90Rm91bmRgIHdoaWNoIGRlZmF1bHRzIHRvXG4gKiB1bmRlZmluZWQuXG4gKi9cbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBndWVzc1Byb2plY3RSb290KHN0YXJ0RGlyLCB1c2VJZk5vdEZvdW5kKSB7XG4gIGNvbnN0IG5lYXJlc3RQYWNrYWdlSnNvbiA9IGF3YWl0IGZpbmROZWFyZXN0UGFja2FnZUpzb24oc3RhcnREaXIpXG5cbiAgaWYgKG5lYXJlc3RQYWNrYWdlSnNvbikge1xuICAgIC8vIGlmIHVuZGVmaW5lZCBvciBhbiBlbXB0eSBzdHJpbmcsIGRlZmF1bHQgdG8gdXNlSWZOb3RGb3VuZCBvciB1bmRlZmluZWRcbiAgICByZXR1cm4gcGFyc2UobmVhcmVzdFBhY2thZ2VKc29uKT8uZGlyIHx8IHVzZUlmTm90Rm91bmRcbiAgfVxuXG4gIHJldHVybiB1c2VJZk5vdEZvdW5kXG59XG5cbi8qKlxuICogQXR0ZW1wdHMgdG8gdXNlIGBhd2FpdCBpbXBvcnQoKWAgdG8gZ3JhYiB0aGUgSmF2YVNjcmlwdCBtb2R1bGUgY29udGVudCBmcm9tXG4gKiB0aGUgc3BlY2lmaWVkIGZpbGUgZHluYW1pY2FsbHkuIElmIHRoaXMgZmFpbHMsIGFuIGVtcHR5IE1vZHVsZSBleHBvcnRzIG9iamVjdFxuICogaXMgcmV0dXJuZWQuXG4gKlxuICogQG5vdGUgZmlsZXMgdGhhdCBlbmQgaW4ga25vd24gVHlwZVNjcmlwdCBmaWxlIGV4dGVuc2lvbnMgd2lsbCBjYXVzZSBhbiBlcnJvclxuICogdG8gYmUgdGhyb3duIGlmIG5hdGl2ZSB0eXBlc2NyaXB0IHN1cHBvcnQgaXMgbm90IGF2YWlsYWJsZS4gU2VlIHRoaXMgZnVuY3Rpb25cbiAqIHtAbGluayBzdXBwb3J0c05hdGl2ZVR5cGVTY3JpcHR9IGZvciBtb3JlIGluZm9ybWF0aW9uLlxuICpcbiAqIEBwYXJhbSB7c3RyaW5nfSBtb2R1bGVQYXRoIC0gVGhlIHBhdGggdG8gdGhlIG1vZHVsZSB0byBiZSBpbXBvcnRlZC5cbiAqIEBwYXJhbSB7Ym9vbGVhbj99IFtlcnJvck9uTWlzc2luZz10cnVlXSAtIGlmIGZhbHNlLCBhbmQgdGhlIGZpbGUgYXRcbiAqIG1vZHVsZVBhdGggZG9lcyBub3QgZXhpc3QsIHJldHVybiBhbiBlbXB0eSBNb2R1bGUncyBleHBvcnRzLiBEZWZhdWx0cyB0byB0cnVlXG4gKiBAcmV0dXJucyB7UHJvbWlzZTxvYmplY3Q+fSAtIEEgcHJvbWlzZSB0aGF0IHJlc29sdmVzIHRvIHRoZSBpbXBvcnRlZCBtb2R1bGUuXG4gKlxuICogQHRocm93cyB7VHlwZVNjcmlwdEZsYWdNaXNzaW5nRXJyb3J9IGlmIHRoZSBhcHByb3ByaWF0ZSBtZWFzdXJlcyBoYXZlbid0IGJlZW5cbiAqIHRha2VuIHRvIGFsbG93IGZvciBkeW5hbWljIHJ1bnRpbWUgVHlwZVNjcmlwdCBpbXBvcnQgc3VwcG9ydC5cbiAqL1xuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGR5bmFtaWNJbXBvcnQobW9kdWxlUGF0aCwgZXJyb3JPbk1pc3NpbmcgPSB0cnVlKSB7XG4gIGNvbnN0IHBhY2thZ2VKc29uUGF0aCA9IGF3YWl0IGZpbmROZWFyZXN0UGFja2FnZUpzb24oX19kaXJuYW1lKTtcbiAgY29uc3QgcGFyc2VkUGF0aCA9IHBhdGhQYXJzZShtb2R1bGVQYXRoKVxuXG4gIGlmIChcbiAgICAhc3VwcG9ydHNOYXRpdmVUeXBlU2NyaXB0KCkgJiZcbiAgICBTdGFuZGFyZFRTRXh0ZW5zaW9ucy5pbmNsdWRlcyhwYXJzZWRQYXRoLmV4dClcbiAgKSB7XG4gICAgdGhyb3cgbmV3IFR5cGVTY3JpcHRGbGFnTWlzc2luZ0Vycm9yKG1vZHVsZVBhdGgpXG4gIH1cblxuICBpZiAoIWZpbGVFeGlzdHMobW9kdWxlUGF0aCwgZmFsc2UpKSB7XG4gICAgdGhyb3cgbmV3IEludmFsaWRQYXRoRXJyb3IobW9kdWxlUGF0aCwgYENhbm5vdCBpbXBvcnQgJHttb2R1bGVQYXRofTsgbWlzc2luZ2ApXG4gIH1cblxuICB0cnkge1xuICAgIHJldHVybiBhd2FpdCBpbXBvcnQobW9kdWxlUGF0aClcbiAgfVxuICBjYXRjaCAoaWdub3JlKSB7XG4gICAgcmV0dXJuIG5ldyBNb2R1bGUoKS5leHBvcnRzXG4gIH1cbn1cblxuLyoqXG4gKiBBc3luY2hyb25vdXNseSBwYXJzZXMgYSBnaXZlbiBmaWxlIG9yIGRpcmVjdG9yeSBwYXRoIHRvIHByb3ZpZGUgZGV0YWlsZWQgcGF0aCBpbmZvcm1hdGlvbiBhbG9uZyB3aXRoXG4gKiB0aGUgcmVzb2x2ZWQgZnVsbCBwYXRoIGFuZCBhIGRpcmVjdG9yeSBpbmRpY2F0b3IuXG4gKlxuICogVGhpcyBmdW5jdGlvbiByZWNlaXZlcyBhIHNpbmdsZSBzdHJpbmcgYXJndW1lbnQgcmVwcmVzZW50aW5nIGEgZmlsZSBvciBkaXJlY3RvcnkgcGF0aCwgd2hpY2ggaXRcbiAqIHN1YnNlcXVlbnRseSByZXNvbHZlcyB0byBhbiBhYnNvbHV0ZSBwYXRoIHVzaW5nIE5vZGUuanMncyBgcGF0aC5yZXNvbHZlYC4gSXQgdGhlbiBwYXJzZXMgdGhlXG4gKiByZXNvbHZlZCBwYXRoIHVzaW5nIGBwYXRoLnBhcnNlYCB0byBleHRyYWN0IHBhdGggY29tcG9uZW50cyBzdWNoIGFzIHRoZSByb290LCBkaXJlY3RvcnksIGJhc2UsXG4gKiBleHRlbnNpb24sIGFuZCBuYW1lLiBBZGRpdGlvbmFsbHksIGl0IHBlcmZvcm1zIGEgZmlsZXN5c3RlbSBzdGF0IG9wZXJhdGlvbiBvbiB0aGUgcmVzb2x2ZWQgcGF0aFxuICogdXNpbmcgYGZzLnByb21pc2VzLnN0YXRgIHRvIGRldGVybWluZSB3aGV0aGVyIHRoZSBwYXRoIHJlcHJlc2VudHMgYSBkaXJlY3RvcnkuIFRoZSBmdW5jdGlvblxuICogYW1hbGdhbWF0ZXMgdGhlc2UgcGllY2VzIG9mIGluZm9ybWF0aW9uIGludG8gYSBzaW5nbGUgb2JqZWN0LCB3aGljaCBpdCByZXR1cm5zLlxuICpcbiAqIFRoZSByZXR1cm5lZCBvYmplY3QgZXh0ZW5kcyB0aGUgb2JqZWN0IHJldHVybmVkIGJ5IGBwYXRoLnBhcnNlYCB3aXRoIHRocmVlIGFkZGl0aW9uYWwgcHJvcGVydGllczpcbiAqIC0gYGJhc2VgOiBPdmVycmlkZGVuIHRvIGFuIGVtcHR5IHN0cmluZy5cbiAqIC0gYGZ1bGxQYXRoYDogVGhlIGFic29sdXRlLCByZXNvbHZlZCBwYXRoLlxuICogLSBgaXNEaXJgOiBBIGJvb2xlYW4gaW5kaWNhdGluZyB3aGV0aGVyIHRoZSBwYXRoIHJlcHJlc2VudHMgYSBkaXJlY3RvcnkuXG4gKlxuICogVGhpcyBmdW5jdGlvbiBpcyBhc3luY2hyb25vdXMgYW5kIHJldHVybnMgYSBwcm9taXNlIHRoYXQgcmVzb2x2ZXMgdG8gdGhlIGFmb3JlbWVudGlvbmVkIG9iamVjdC5cbiAqXG4gKiBAcGFyYW0ge3N0cmluZ30gcGF0aCAtIFRoZSBmaWxlIG9yIGRpcmVjdG9yeSBwYXRoIHRvIGJlIHBhcnNlZC4gQWNjZXB0cyBib3RoIHJlbGF0aXZlIGFuZCBhYnNvbHV0ZSBwYXRocy5cbiAqIEByZXR1cm5zIHtQcm9taXNlPE9iamVjdD59IEEgcHJvbWlzZSB0aGF0IHJlc29sdmVzIHRvIGFuIG9iamVjdCBlbmNhcHN1bGF0aW5nIGRldGFpbGVkIHBhdGggaW5mb3JtYXRpb24sXG4gKiB0aGUgcmVzb2x2ZWQgZnVsbCBwYXRoLCBhbmQgYSBkaXJlY3RvcnkgaW5kaWNhdG9yLlxuICogQHRocm93cyBXaWxsIHRocm93IGFuIGVycm9yIGlmIHRoZSBmaWxlc3lzdGVtIHN0YXQgb3BlcmF0aW9uIGZhaWxzLCBmb3IgaW5zdGFuY2UgZHVlIHRvIGluc3VmZmljaWVudFxuICogcGVybWlzc2lvbnMgb3IgYSBub25leGlzdGVudCBwYXRoLlxuICpcbiAqIEBleGFtcGxlXG4gKiBwYXRoUGFyc2UoJy4vc29tZURpcicpXG4gKiAgIC50aGVuKGluZm8gPT4gY29uc29sZS5sb2coaW5mbykpXG4gKiAgIC5jYXRjaChlcnJvciA9PiBjb25zb2xlLmVycm9yKCdBbiBlcnJvciBvY2N1cnJlZDonLCBlcnJvcikpO1xuICovXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gcGF0aFBhcnNlKHBhdGgpIHtcbiAgY29uc3QgZnVsbFBhdGggPSByZXNvbHZlKHBhdGgpXG4gIGNvbnN0IGJhc2VQYXJzZWQgPSBwYXJzZShmdWxsUGF0aClcbiAgY29uc3QgcGF0aFN0YXQgPSBhd2FpdCBzdGF0KGZ1bGxQYXRoKVxuXG4gIHJldHVybiB7IC4uLmJhc2VQYXJzZWQsIC4uLntiYXNlOiAnJywgZnVsbFBhdGgsIGlzRGlyOiBwYXRoU3RhdC5pc0RpcmVjdG9yeSgpIH0gfVxufVxuIl0sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7OztBQUFBLElBQUFBLFNBQUEsR0FBQUMsT0FBQTtBQUNBLElBQUFDLEtBQUEsR0FBQUQsT0FBQTtBQUNBLElBQUFFLE9BQUEsR0FBQUYsT0FBQTtBQUVBLElBQUFHLDJCQUFBLEdBQUFILE9BQUE7QUFDQSxJQUFBSSxpQkFBQSxHQUFBSixPQUFBO0FBQ0EsSUFBQUssaUJBQUEsR0FBQUwsT0FBQTtBQUEwRCxTQUFBTSx5QkFBQUMsQ0FBQSw2QkFBQUMsT0FBQSxtQkFBQUMsQ0FBQSxPQUFBRCxPQUFBLElBQUFFLENBQUEsT0FBQUYsT0FBQSxZQUFBRix3QkFBQSxZQUFBQSxDQUFBQyxDQUFBLFdBQUFBLENBQUEsR0FBQUcsQ0FBQSxHQUFBRCxDQUFBLEtBQUFGLENBQUE7QUFBQSxTQUFBSSx3QkFBQUosQ0FBQSxFQUFBRSxDQUFBLFNBQUFBLENBQUEsSUFBQUYsQ0FBQSxJQUFBQSxDQUFBLENBQUFLLFVBQUEsU0FBQUwsQ0FBQSxlQUFBQSxDQUFBLHVCQUFBQSxDQUFBLHlCQUFBQSxDQUFBLFdBQUFNLE9BQUEsRUFBQU4sQ0FBQSxRQUFBRyxDQUFBLEdBQUFKLHdCQUFBLENBQUFHLENBQUEsT0FBQUMsQ0FBQSxJQUFBQSxDQUFBLENBQUFJLEdBQUEsQ0FBQVAsQ0FBQSxVQUFBRyxDQUFBLENBQUFLLEdBQUEsQ0FBQVIsQ0FBQSxPQUFBUyxDQUFBLEtBQUFDLFNBQUEsVUFBQUMsQ0FBQSxHQUFBQyxNQUFBLENBQUFDLGNBQUEsSUFBQUQsTUFBQSxDQUFBRSx3QkFBQSxXQUFBQyxDQUFBLElBQUFmLENBQUEsb0JBQUFlLENBQUEsT0FBQUMsY0FBQSxDQUFBQyxJQUFBLENBQUFqQixDQUFBLEVBQUFlLENBQUEsU0FBQUcsQ0FBQSxHQUFBUCxDQUFBLEdBQUFDLE1BQUEsQ0FBQUUsd0JBQUEsQ0FBQWQsQ0FBQSxFQUFBZSxDQUFBLFVBQUFHLENBQUEsS0FBQUEsQ0FBQSxDQUFBVixHQUFBLElBQUFVLENBQUEsQ0FBQUMsR0FBQSxJQUFBUCxNQUFBLENBQUFDLGNBQUEsQ0FBQUosQ0FBQSxFQUFBTSxDQUFBLEVBQUFHLENBQUEsSUFBQVQsQ0FBQSxDQUFBTSxDQUFBLElBQUFmLENBQUEsQ0FBQWUsQ0FBQSxZQUFBTixDQUFBLENBQUFILE9BQUEsR0FBQU4sQ0FBQSxFQUFBRyxDQUFBLElBQUFBLENBQUEsQ0FBQWdCLEdBQUEsQ0FBQW5CLENBQUEsRUFBQVMsQ0FBQSxHQUFBQSxDQUFBO0FBRTFEO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNPLFNBQVNXLHdCQUF3QkEsQ0FBQSxFQUFHO0VBQ3pDLE1BQU1DLFNBQVMsR0FBRyxDQUNoQixHQUFJLENBQUNDLE9BQU8sQ0FBQ0MsR0FBRyxFQUFFQyxZQUFZLElBQUksRUFBRSxFQUFFQyxLQUFLLENBQUMsR0FBRyxDQUFFLEVBQ2pELEdBQUdILE9BQU8sQ0FBQ0ksUUFBUSxDQUNwQjtFQUVELE9BQ0VMLFNBQVMsQ0FBQ00sUUFBUSxDQUFDLGdDQUFnQyxDQUFDLElBQ3BETixTQUFTLENBQUNNLFFBQVEsQ0FBQyw0QkFBNEIsQ0FBQyxJQUNoRE4sU0FBUyxDQUFDTSxRQUFRLENBQUMsa0JBQWtCLENBQUMsSUFDdENOLFNBQVMsQ0FBQ00sUUFBUSxDQUFDLHNCQUFzQixDQUFDO0FBRTlDOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ08sZUFBZUMsVUFBVUEsQ0FBQ0MsVUFBVSxFQUFFQyxrQkFBa0IsR0FBRyxJQUFJLEVBQUU7RUFDdEUsSUFBSTtJQUNGLE1BQU1DLEtBQUssR0FBRyxNQUFNLElBQUFDLGNBQUksRUFBQ0gsVUFBVSxDQUFDOztJQUVwQztJQUNBO0lBQ0E7SUFDQSxPQUFPQyxrQkFBa0IsR0FBRyxDQUFDQyxLQUFLLENBQUNFLFdBQVcsQ0FBQyxDQUFDLEdBQUcsSUFBSTtFQUN6RCxDQUFDLENBQ0QsT0FBT0MsTUFBTSxFQUFFO0lBQ2IsT0FBTyxLQUFLO0VBQ2Q7QUFDRjs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ08sZUFBZUMsc0JBQXNCQSxDQUFDQyxRQUFRLEVBQUU7RUFDckQsSUFBSSxDQUFDQSxRQUFRLEVBQ1hBLFFBQVEsR0FBR2QsT0FBTyxDQUFDZSxHQUFHLENBQUMsQ0FBQztFQUUxQixJQUFJQyxHQUFHLEdBQUdGLFFBQVE7RUFFbEIsT0FBT0UsR0FBRyxLQUFLLElBQUFDLFdBQUssRUFBQ0QsR0FBRyxDQUFDLENBQUNFLElBQUksRUFBRTtJQUM5QixNQUFNQyxhQUFhLEdBQUcsSUFBQUMsVUFBSSxFQUFDSixHQUFHLEVBQUUsY0FBYyxDQUFDO0lBRS9DLElBQUk7TUFDRixNQUFNLElBQUFLLGdCQUFNLEVBQUNGLGFBQWEsQ0FBQztNQUMzQixPQUFPLElBQUFHLGFBQU8sRUFBQ0gsYUFBYSxDQUFDO0lBQy9CLENBQUMsQ0FBQyxPQUFPSSxLQUFLLEVBQUU7TUFDZFAsR0FBRyxHQUFHLElBQUFRLGFBQU8sRUFBQ1IsR0FBRyxDQUFDO0lBQ3BCO0VBQ0Y7RUFFQSxPQUFPLElBQUk7QUFDYjs7QUFFQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ08sZUFBZVMsZ0JBQWdCQSxDQUFDWCxRQUFRLEVBQUVZLGFBQWEsRUFBRTtFQUM5RCxNQUFNQyxrQkFBa0IsR0FBRyxNQUFNZCxzQkFBc0IsQ0FBQ0MsUUFBUSxDQUFDO0VBRWpFLElBQUlhLGtCQUFrQixFQUFFO0lBQ3RCO0lBQ0EsT0FBTyxJQUFBVixXQUFLLEVBQUNVLGtCQUFrQixDQUFDLEVBQUVYLEdBQUcsSUFBSVUsYUFBYTtFQUN4RDtFQUVBLE9BQU9BLGFBQWE7QUFDdEI7O0FBRUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNPLGVBQWVFLGFBQWFBLENBQUNDLFVBQVUsRUFBRUMsY0FBYyxHQUFHLElBQUksRUFBRTtFQUNyRSxNQUFNQyxlQUFlLEdBQUcsTUFBTWxCLHNCQUFzQixDQUFDbUIsU0FBUyxDQUFDO0VBQy9ELE1BQU1DLFVBQVUsR0FBR0MsU0FBUyxDQUFDTCxVQUFVLENBQUM7RUFFeEMsSUFDRSxDQUFDL0Isd0JBQXdCLENBQUMsQ0FBQyxJQUMzQnFDLHNDQUFvQixDQUFDOUIsUUFBUSxDQUFDNEIsVUFBVSxDQUFDRyxHQUFHLENBQUMsRUFDN0M7SUFDQSxNQUFNLElBQUlDLHNEQUEwQixDQUFDUixVQUFVLENBQUM7RUFDbEQ7RUFFQSxJQUFJLENBQUN2QixVQUFVLENBQUN1QixVQUFVLEVBQUUsS0FBSyxDQUFDLEVBQUU7SUFDbEMsTUFBTSxJQUFJUyxrQ0FBZ0IsQ0FBQ1QsVUFBVSxFQUFFLGlCQUFpQkEsVUFBVSxXQUFXLENBQUM7RUFDaEY7RUFFQSxJQUFJO0lBQ0YsT0FBTyxPQUFBVSxTQUFBLFFBQUFDLE9BQUEsQ0FBQTVELENBQUEsSUFBQUEsQ0FBQSxJQUFBMkQsU0FBQSxLQUFBRSxJQUFBLENBQUFDLENBQUEsSUFBQTVELHVCQUFBLENBQUFYLE9BQUEsQ0FBQXVFLENBQUEsS0FBYWIsVUFBVSxDQUFDO0VBQ2pDLENBQUMsQ0FDRCxPQUFPakIsTUFBTSxFQUFFO0lBQ2IsT0FBTyxJQUFJK0IsY0FBTSxDQUFDLENBQUMsQ0FBQ0MsT0FBTztFQUM3QjtBQUNGOztBQUVBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDTyxlQUFlVixTQUFTQSxDQUFDVyxJQUFJLEVBQUU7RUFDcEMsTUFBTUMsUUFBUSxHQUFHLElBQUF4QixhQUFPLEVBQUN1QixJQUFJLENBQUM7RUFDOUIsTUFBTUUsVUFBVSxHQUFHLElBQUE5QixXQUFLLEVBQUM2QixRQUFRLENBQUM7RUFDbEMsTUFBTUUsUUFBUSxHQUFHLE1BQU0sSUFBQXRDLGNBQUksRUFBQ29DLFFBQVEsQ0FBQztFQUVyQyxPQUFPO0lBQUUsR0FBR0MsVUFBVTtJQUFFLEdBQUc7TUFBQ0UsSUFBSSxFQUFFLEVBQUU7TUFBRUgsUUFBUTtNQUFFSSxLQUFLLEVBQUVGLFFBQVEsQ0FBQ3JDLFdBQVcsQ0FBQztJQUFFO0VBQUUsQ0FBQztBQUNuRiIsImlnbm9yZUxpc3QiOltdfQ==
+//# sourceMappingURL=dynamicImport.js.map

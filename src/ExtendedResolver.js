@@ -1,3 +1,5 @@
+// @ts-check
+
 import { defaultFieldResolver } from 'graphql'
 import { stripResolversFromSchema } from './Schemata'
 import {
@@ -6,7 +8,7 @@ import {
 } from './errors'
 
 import type { ResolverResultsPatcher } from './types'
-import type {
+import {
   GraphQLFieldResolver,
   GraphQLResolveInfo,
   GraphQLSchema,
@@ -16,7 +18,8 @@ const original = Symbol('Original Resolver')
 const listing = Symbol('List of Resolvers')
 const patcher = Symbol('Resolver Result Patcher')
 
-const isFn = o => /Function\]/.test(Object.prototype.toString.call(o))
+// $FlowIgnore[method-unbinding]
+const isFn = (o: any) => /Function\]/.test(Object.prototype.toString.call(o))
 
 /**
  * Higher order, or wrapped, GraphQL field resolvers are a technique that

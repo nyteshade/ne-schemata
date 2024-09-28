@@ -648,7 +648,7 @@ Working from the built in `.schema` GraphQLSchema instance, SDL is regenerated a
 ```js
 forEachOf(
   fn: ForEachOfResolver,
-  context: mixed,
+  context: unknown,
   types: number = Schemata.TYPES,
   suppliedSchema: ?GraphQLSchema = null
 ): GraphQLSchema
@@ -663,7 +663,7 @@ _See above for the definition of the [`ForEachOfResolver`](#type-for-each-of-res
 ```js
 forEachType(
   fn: ForEachOfResolver,
-  context: mixed,
+  context: unknown,
   suppliedSchema: ?GraphQLSchema
 ): GraphQLSchema
 ```
@@ -677,7 +677,7 @@ _See above for the definition of the [`ForEachOfResolver`](#type-for-each-of-res
 ```js
 forEachInputObjectType(
   fn: ForEachOfResolver,
-  context: mixed,
+  context: unknown,
   suppliedSchema: ?GraphQLSchema
 ): GraphQLSchema
 ```
@@ -691,7 +691,7 @@ _See above for the definition of the [`ForEachOfResolver`](#type-for-each-of-res
 ```js
 forEachUnion(
   (fn: ForEachOfResolver),
-  (context: mixed),
+  (context: unknown),
   (suppliedSchema: ?GraphQLSchema)
 )
 ```
@@ -705,7 +705,7 @@ _See above for the definition of the [`ForEachOfResolver`](#type-for-each-of-res
 ```js
 forEachEnum(
   (fn: ForEachOfResolver),
-  (context: mixed),
+  (context: unknown),
   (suppliedSchema: ?GraphQLSchema)
 )
 ```
@@ -719,7 +719,7 @@ _See above for the definition of the [`ForEachOfResolver`](#type-for-each-of-res
 ```js
 forEachInterface(
   (fn: ForEachOfResolver),
-  (context: mixed),
+  (context: unknown),
   (suppliedSchema: ?GraphQLSchema)
 )
 ```
@@ -733,7 +733,7 @@ _See above for the definition of the [`ForEachOfResolver`](#type-for-each-of-res
 ```js
 forEachScalar(
   (fn: ForEachOfResolver),
-  (context: mixed),
+  (context: unknown),
   (suppliedSchema: ?GraphQLSchema)
 )
 ```
@@ -747,7 +747,7 @@ _See above for the definition of the [`ForEachOfResolver`](#type-for-each-of-res
 ```js
 forEachRootType(
   (fn: ForEachOfResolver),
-  (context: mixed),
+  (context: unknown),
   (suppliedSchema: ?GraphQLSchema)
 )
 ```
@@ -761,7 +761,7 @@ _See above for the definition of the [`ForEachOfResolver`](#type-for-each-of-res
 ```js
 forEachField(
   (fn: ForEachFieldResolver),
-  (context: mixed),
+  (context: unknown),
   (types: number = ALL),
   (suppliedSchema: ?GraphQLSchema = null)
 )
@@ -776,7 +776,7 @@ _See above for the definition of the [`ForEachFieldResolver`](#type-for-each-fie
 ```js
 forEachTypeField(
   (fn: ForEachFieldResolver),
-  (context: mixed),
+  (context: unknown),
   (suppliedSchema: ?GraphQLSchema = null)
 )
 ```
@@ -790,7 +790,7 @@ _See above for the definition of the [`ForEachFieldResolver`](#type-for-each-fie
 ```js
 forEachInterfaceField(
   (fn: ForEachFieldResolver),
-  (context: mixed),
+  (context: unknown),
   (suppliedSchema: ?GraphQLSchema = null)
 )
 ```
@@ -804,7 +804,7 @@ _See above for the definition of the [`ForEachFieldResolver`](#type-for-each-fie
 ```js
 forEachInputObjectField(
   (fn: ForEachFieldResolver),
-  (context: mixed),
+  (context: unknown),
   (suppliedSchema: ?GraphQLSchema = null)
 )
 ```
@@ -864,9 +864,9 @@ Shortcut for the `merge()` function; mergeSDL still exists as an entity of itsel
 ```js
 run (
   query: string | Source,
-  contextValue?: mixed,
+  contextValue?: unknown,
   variableValues?: ?ObjMap<mixed>,
-  rootValue?: mixed,
+  rootValue?: unknown,
   operationName?: ?string,
   fieldResolver?: ?GraphQLFieldResolver<any,any>
 )
@@ -879,9 +879,9 @@ A convenient pass-thru to `graphqlSync()` to query the schema in a synchronous m
 ```js
 async runAsync(
   query: string | Source,
-  contextValue?: mixed,
+  contextValue?: unknown,
   variableValues?: ?ObjMap<mixed>,
-  rootValue?: mixed,
+  rootValue?: unknown,
   operationName?: ?string,
   fieldResolver?: ?GraphQLFieldResolver<any,any>
 )
@@ -1158,15 +1158,15 @@ The `FieldMergeResolver` is a function that takes both left and right types as w
 
 ```js
 export type ForEachFieldResolver = (
-  type: mixed,
+  type: unknown,
   typeName: string,
   typeDirectives: Array<GraphQLDirective>,
-  field: mixed,
+  field: unknown,
   fieldName: string,
   fieldArgs: Array<GraphQLArgument>,
   fieldDirectives: Array<GraphQLDirective>,
   schema: GraphQLSchema,
-  context: mixed
+  context: unknown
 ) => void
 ```
 
@@ -1176,11 +1176,11 @@ The [`ForEachFieldResolver`](#type-for-each-field-resolver) function definition 
 
 ```js
 export type ForEachOfResolver = (
-  type: mixed,
+  type: unknown,
   typeName: string,
   typeDirectives: Array<GraphQLDirective>,
   schema: GraphQLSchema,
-  context: mixed
+  context: unknown
 ) => void
 ```
 
@@ -1190,9 +1190,9 @@ The [`ForEachOfResolver`](#type-for-each-of-resolver) function definition is abo
 
 ```js
 export type ResolverArgs = {
-  source: mixed,
-  args: mixed,
-  context: mixed,
+  source: unknown,
+  args: unknown,
+  context: unknown,
   info: GraphQLResolveInfo,
 }
 ```
@@ -1410,9 +1410,9 @@ The default union resolver blindly takes returns the right type. This resolver i
 function at(
   object: Object,
   path: string | Array<string>,
-  setTo?: mixed,
+  setTo?: unknown,
   playNice?: boolean = false
-): mixed
+): unknown
 ```
 
 This function takes an array of values that are used with `eval` to dynamically, and programmatically, access the value of an object in a nested fashion. It can take either a string with values separated by periods (including array indices as numbers) or an array equivalent were `.split('.')` to have been called on said string.
@@ -1443,8 +1443,8 @@ Examples:
 function atNicely(
   object: Object,
   path: string | Array<string>,
-  setTo?: mixed
-): mixed
+  setTo?: unknown
+): unknown
 ```
 
 `atNicely()` is a shorthand version of calling `at()` but specifying `true` for the argument `playNice`. This can make reads normally performed with calls to `at()` where you want to prevent errors from being thrown with invalid paths

@@ -1,7 +1,7 @@
+import { describe, it, expect } from 'vitest'
 import { gql, Schemata, TYPEDEFS_KEY } from '..'
-import { sdl, schema } from './gql/person.graphql'
+import { sdl } from './gql/person.graphql'
 import {
-  parse,
   buildSchema,
   printSchema,
   GraphQLScalarType

@@ -1,61 +1,16 @@
 "use strict";
 
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-require("core-js/modules/es.object.set-prototype-of.js");
-require("core-js/modules/es.function.bind.js");
-require("core-js/modules/es.object.get-prototype-of.js");
-require("core-js/modules/es.object.proto.js");
-require("core-js/modules/es.reflect.to-string-tag.js");
-require("core-js/modules/es.reflect.construct.js");
-require("core-js/modules/es.error.cause.js");
-require("core-js/modules/es.object.create.js");
-require("core-js/modules/es.object.define-property.js");
-require("core-js/modules/es.symbol.to-primitive.js");
-require("core-js/modules/es.date.to-primitive.js");
-require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.symbol.description.js");
-require("core-js/modules/es.number.constructor.js");
-require("core-js/modules/es.array.slice.js");
-require("core-js/modules/es.object.freeze.js");
-require("core-js/modules/es.object.define-properties.js");
-require("core-js/modules/es.symbol.iterator.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.WrappedResolverExecutionError = void 0;
-require("core-js/modules/es.regexp.exec.js");
-require("core-js/modules/es.regexp.test.js");
-require("core-js/modules/es.error.to-string.js");
-require("core-js/modules/es.date.to-string.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.regexp.to-string.js");
-require("core-js/modules/es.function.name.js");
+exports.default = exports.WrappedResolverExecutionError = void 0;
 var _neTagFns = require("ne-tag-fns");
-var _BaseError2 = require("../BaseError");
+var _BaseError = _interopRequireDefault(require("./BaseError.js"));
 var _util = require("util");
-var _prettyError = _interopRequireDefault(require("pretty-error"));
-var _templateObject;
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-var isFn = function isFn(o) {
-  return /Function\]/.test(Object.prototype.toString.call(o));
-};
-var pe = new _prettyError["default"]();
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+// @ts-check
+
+const isFn = o => /Function\]/.test(Object.prototype.toString.call(o));
 
 /**
  * ExtendedResolvers wrap several functions including the original GraphQL
@@ -64,9 +19,7 @@ var pe = new _prettyError["default"]();
  *
  * @class WrappedResolverExecutionError
  */
-var WrappedResolverExecutionError = exports.WrappedResolverExecutionError = /*#__PURE__*/function (_BaseError) {
-  _inherits(WrappedResolverExecutionError, _BaseError);
-  var _super = _createSuper(WrappedResolverExecutionError);
+class WrappedResolverExecutionError extends _BaseError.default {
   /**
    * The `ExtendedResolver` object that caused the issue
    *
@@ -83,14 +36,14 @@ var WrappedResolverExecutionError = exports.WrappedResolverExecutionError = /*#_
   /**
    * The arguments passed to the function in question that failed.
    *
-   * @type {Array<mixed>}
+   * @type {unknown[]}
    */
 
   /**
    * The `this` value passed to the function as it was executed. Note that
    * this value is irrelevant if the function passed was a big arrow function
    *
-   * @type {mixed}
+   * @type {unknown}
    */
 
   /**
@@ -98,7 +51,7 @@ var WrappedResolverExecutionError = exports.WrappedResolverExecutionError = /*#_
    * This does not include the results of the erroring function in question as
    * no value was ever reached before the exception was thrown (in theory)
    *
-   * @type {mixed}
+   * @type {unknown}
    */
 
   /**
@@ -111,20 +64,17 @@ var WrappedResolverExecutionError = exports.WrappedResolverExecutionError = /*#_
    * @param {Error|string} error the error thrown at the time of the problem
    * @param {ExtendedResolver} resolver the `ExtendedResolver` instance
    * @param {number} index the index of the wrapped resolver that threw up
-   * @param {Array<mixed>} args the arguments passed to the function at the time
-   * @param {mixed} context the `thisArg` set on the function call at the time
-   * @param {mixed} results the results up to the time of failure
+   * @param {unknown[]} args the arguments passed to the function at the time
+   * @param {unknown} context the `thisArg` set on the function call at the time
+   * @param {unknown} results the results up to the time of failure
    */
-  function WrappedResolverExecutionError(error, resolver, index, args, context, results) {
-    var _this;
-    _classCallCheck(this, WrappedResolverExecutionError);
-    _this = _super.call(this, error);
-    _this.resolver = resolver;
-    _this.index = index;
-    _this.args = args;
-    _this.context = context;
-    _this.results = results;
-    return _this;
+  constructor(error, resolver, index, args, context, results) {
+    super(error);
+    this.resolver = resolver;
+    this.index = index;
+    this.args = args;
+    this.context = context;
+    this.results = results;
   }
 
   /**
@@ -133,54 +83,62 @@ var WrappedResolverExecutionError = exports.WrappedResolverExecutionError = /*#_
    *
    * @return {string} a string denoting the purpose/cause of this error class
    */
-  _createClass(WrappedResolverExecutionError, [{
-    key: "toString",
-    value: function toString() {
-      var fn = this.resolver && this.resolver.order && this.resolver.order[this.index];
-      return (0, _neTagFns.dropLowest)(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n      The ExtendedResolver execution failed. The resolver that failed was at\n      index ", ". The function had a name of '", "'.\n\n      Was the function likely a big arrow function? ", "\n\n      Arguments at the time were:\n      ", "\n\n      Context at the time was:\n      ", "\n\n      Results before the function was called\n      ", "\n\n      Original Stack Trace\n      ", "\n    "])), this.index, fn && fn.name, this.wasBigArrowFunction ? '\x1b[33mtrue\x1b[0m' : '\x1b[31mfalse\x1b[0m', (0, _util.inspect)(this.args, {
-        colors: true,
-        depth: 8
-      }), (0, _util.inspect)(this.context, {
-        colors: true,
-        depth: 8
-      }), (0, _util.inspect)(this.results, {
-        colors: true,
-        depth: 8
-      }), pe.render(this.error));
-    }
+  toString() {
+    let fn = this.resolver && this.resolver.order && this.resolver.order[this.index];
+    return (0, _neTagFns.dropLowest)`
+      The ExtendedResolver execution failed. The resolver that failed was at
+      index ${this.index}. The function had a name of '${fn && fn.name}'.
 
-    /**
-     * Modify the `valueOf()` function to mirror the `toString()` functionality
-     * 
-     * @return {string} an identical string to `.toString()`
-     */
-  }, {
-    key: "valueOf",
-    value: function valueOf() {
-      return this.toString();
-    }
+      Was the function likely a big arrow function? ${this.wasBigArrowFunction ? '\x1b[33mtrue\x1b[0m' : '\x1b[31mfalse\x1b[0m'}
 
-    /**
-     * A programmatic attempt to determine if the function that failed was a
-     * big arrow function. This means the function was pre-bound and the
-     * `context` set at the time of execution would have been ignored.
-     *
-     * @function wasBigArrowFunction
-     *
-     * @return {boolean} true if the failed function resolver was a big arrow or
-     * pre-bound function; false if the `context` value should have been passed
-     * successfully to the execution context
-     */
-  }, {
-    key: "wasBigArrowFunction",
-    get: function get() {
-      var resolver = this.resolver && this.resolver.order && this.resolver.order[this.index];
-      if (resolver && isFn(resolver)) {
-        return typeof resolver.prototype === 'undefined';
-      }
-      return false;
+      Arguments at the time were:
+      ${(0, _util.inspect)(this.args, {
+      colors: true,
+      depth: 8
+    })}
+
+      Context at the time was:
+      ${(0, _util.inspect)(this.context, {
+      colors: true,
+      depth: 8
+    })}
+
+      Results before the function was called
+      ${(0, _util.inspect)(this.results, {
+      colors: true,
+      depth: 8
+    })}
+
+      Original Stack Trace
+      ${this.error.toString()}
+    `;
+  }
+
+  /**
+   * Modify the `valueOf()` function to mirror the `toString()` functionality
+   *
+   * @return {string} an identical string to `.toString()`
+   */
+  valueOf() {
+    return this.toString();
+  }
+
+  /**
+   * A programmatic attempt to determine if the function that failed was a
+   * big arrow function. This means the function was pre-bound and the
+   * `context` set at the time of execution would have been ignored.
+   *
+   * @type {boolean}
+   */
+  get wasBigArrowFunction() {
+    const resolver = this.resolver && this.resolver.order && this.resolver.order[this.index];
+    if (resolver && isFn(resolver)) {
+      return typeof resolver.prototype === 'undefined';
     }
-  }]);
-  return WrappedResolverExecutionError;
-}(_BaseError2.BaseError);
-var _default = exports["default"] = WrappedResolverExecutionError;
+    return false;
+  }
+}
+exports.WrappedResolverExecutionError = WrappedResolverExecutionError;
+var _default = exports.default = WrappedResolverExecutionError;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJfbmVUYWdGbnMiLCJyZXF1aXJlIiwiX0Jhc2VFcnJvciIsIl9pbnRlcm9wUmVxdWlyZURlZmF1bHQiLCJfdXRpbCIsImUiLCJfX2VzTW9kdWxlIiwiZGVmYXVsdCIsImlzRm4iLCJvIiwidGVzdCIsIk9iamVjdCIsInByb3RvdHlwZSIsInRvU3RyaW5nIiwiY2FsbCIsIldyYXBwZWRSZXNvbHZlckV4ZWN1dGlvbkVycm9yIiwiQmFzZUVycm9yIiwiY29uc3RydWN0b3IiLCJlcnJvciIsInJlc29sdmVyIiwiaW5kZXgiLCJhcmdzIiwiY29udGV4dCIsInJlc3VsdHMiLCJmbiIsIm9yZGVyIiwiZHJvcExvd2VzdCIsIm5hbWUiLCJ3YXNCaWdBcnJvd0Z1bmN0aW9uIiwiaW5zcGVjdCIsImNvbG9ycyIsImRlcHRoIiwidmFsdWVPZiIsImV4cG9ydHMiLCJfZGVmYXVsdCJdLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9lcnJvcnMvV3JhcHBlZFJlc29sdmVyRXhlY3V0aW9uRXJyb3IuanMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gQHRzLWNoZWNrXG5cbmltcG9ydCB7IGlubGluZSwgZHJvcExvd2VzdCB9IGZyb20gJ25lLXRhZy1mbnMnXG5pbXBvcnQgQmFzZUVycm9yIGZyb20gJy4vQmFzZUVycm9yLmpzJ1xuaW1wb3J0IHsgaW5zcGVjdCB9IGZyb20gJ3V0aWwnXG5cbmNvbnN0IGlzRm4gPSAobykgPT4gL0Z1bmN0aW9uXFxdLy50ZXN0KE9iamVjdC5wcm90b3R5cGUudG9TdHJpbmcuY2FsbChvKSlcblxuLyoqXG4gKiBFeHRlbmRlZFJlc29sdmVycyB3cmFwIHNldmVyYWwgZnVuY3Rpb25zIGluY2x1ZGluZyB0aGUgb3JpZ2luYWwgR3JhcGhRTFxuICogZmllbGQgcmVzb2x2ZXIgaXRzZWxmLiBJZiBhbiBleGNlcHRpb24gaXMgdGhyb3duIGJ5IGFueSBvZiB0aGUgaW50ZXJuYWxcbiAqIG1ldGhvZHMsIHRoaXMgZXJyb3IgY2FuIGhlbHAgcmVzb2x2ZSB0aG9zZSBwcm9ibGVtcy5cbiAqXG4gKiBAY2xhc3MgV3JhcHBlZFJlc29sdmVyRXhlY3V0aW9uRXJyb3JcbiAqL1xuZXhwb3J0IGNsYXNzIFdyYXBwZWRSZXNvbHZlckV4ZWN1dGlvbkVycm9yIGV4dGVuZHMgQmFzZUVycm9yIHtcbiAgLyoqXG4gICAqIFRoZSBgRXh0ZW5kZWRSZXNvbHZlcmAgb2JqZWN0IHRoYXQgY2F1c2VkIHRoZSBpc3N1ZVxuICAgKlxuICAgKiBAdHlwZSB7RXh0ZW5kZWRSZXNvbHZlcn1cbiAgICovXG4gIHJlc29sdmVyOiBFeHRlbmRlZFJlc29sdmVyXG5cbiAgLyoqXG4gICAqIFRoZSBpbmRleCBvZiB0aGUgZnVuY3Rpb24gdGhhdCBmYWlsZWQuIFRoaXMgd2lsbCBoZWxwIHRoZSBwcm9ncmFtbWVyXG4gICAqIGRldGVybWluZSB0aGUgZnVuY3Rpb24gdGhhdCBjYXVzZWQgdGhlIGVycm9yLlxuICAgKlxuICAgKiBAdHlwZSB7bnVtYmVyfVxuICAgKi9cbiAgaW5kZXg7XG5cbiAgLyoqXG4gICAqIFRoZSBhcmd1bWVudHMgcGFzc2VkIHRvIHRoZSBmdW5jdGlvbiBpbiBxdWVzdGlvbiB0aGF0IGZhaWxlZC5cbiAgICpcbiAgICogQHR5cGUge3Vua25vd25bXX1cbiAgICovXG4gIGFyZ3M7XG5cbiAgLyoqXG4gICAqIFRoZSBgdGhpc2AgdmFsdWUgcGFzc2VkIHRvIHRoZSBmdW5jdGlvbiBhcyBpdCB3YXMgZXhlY3V0ZWQuIE5vdGUgdGhhdFxuICAgKiB0aGlzIHZhbHVlIGlzIGlycmVsZXZhbnQgaWYgdGhlIGZ1bmN0aW9uIHBhc3NlZCB3YXMgYSBiaWcgYXJyb3cgZnVuY3Rpb25cbiAgICpcbiAgICogQHR5cGUge3Vua25vd259XG4gICAqL1xuICBjb250ZXh0O1xuXG4gIC8qKlxuICAgKiBUaGUgYHJlc3VsdHNgIHZhbHVlIGJlZm9yZSB0aGUgaW50ZXJuYWwgcmVzb2x2ZXIgdGhhdCBmYWlsZWQgd2FzIHRocm93bi5cbiAgICogVGhpcyBkb2VzIG5vdCBpbmNsdWRlIHRoZSByZXN1bHRzIG9mIHRoZSBlcnJvcmluZyBmdW5jdGlvbiBpbiBxdWVzdGlvbiBhc1xuICAgKiBubyB2YWx1ZSB3YXMgZXZlciByZWFjaGVkIGJlZm9yZSB0aGUgZXhjZXB0aW9uIHdhcyB0aHJvd24gKGluIHRoZW9yeSlcbiAgICpcbiAgICogQHR5cGUge3Vua25vd259XG4gICAqL1xuICByZXN1bHRzXG5cbiAgLyoqXG4gICAqIENyZWF0ZXMgYSBuZXcgZXJyb3IgaW5zdGFuY2Ugb2YgYFdyYXBwZWRSZXNvbHZlckV4ZWN1dGlvbkVycm9yYC4gVGhlXG4gICAqIGFyZ3VtZW50cyByZXNvbHZlciwgaW5kZXgsIGFyZ3MgYW5kIGNvbnRleHQgYWxsIGhlbHAgdGhlIHByb2dyYW1tZXJcbiAgICogZGVidWcgdGhlIGlzc3VlIGluIHF1ZXN0aW9uIHNob3VsZCB0aGUgZXJyb3IgYmUgdGhyb3duLlxuICAgKlxuICAgKiBAbWV0aG9kIGNvbnN0cnVjdG9yXG4gICAqXG4gICAqIEBwYXJhbSB7RXJyb3J8c3RyaW5nfSBlcnJvciB0aGUgZXJyb3IgdGhyb3duIGF0IHRoZSB0aW1lIG9mIHRoZSBwcm9ibGVtXG4gICAqIEBwYXJhbSB7RXh0ZW5kZWRSZXNvbHZlcn0gcmVzb2x2ZXIgdGhlIGBFeHRlbmRlZFJlc29sdmVyYCBpbnN0YW5jZVxuICAgKiBAcGFyYW0ge251bWJlcn0gaW5kZXggdGhlIGluZGV4IG9mIHRoZSB3cmFwcGVkIHJlc29sdmVyIHRoYXQgdGhyZXcgdXBcbiAgICogQHBhcmFtIHt1bmtub3duW119IGFyZ3MgdGhlIGFyZ3VtZW50cyBwYXNzZWQgdG8gdGhlIGZ1bmN0aW9uIGF0IHRoZSB0aW1lXG4gICAqIEBwYXJhbSB7dW5rbm93bn0gY29udGV4dCB0aGUgYHRoaXNBcmdgIHNldCBvbiB0aGUgZnVuY3Rpb24gY2FsbCBhdCB0aGUgdGltZVxuICAgKiBAcGFyYW0ge3Vua25vd259IHJlc3VsdHMgdGhlIHJlc3VsdHMgdXAgdG8gdGhlIHRpbWUgb2YgZmFpbHVyZVxuICAgKi9cbiAgY29uc3RydWN0b3IoZXJyb3IsIHJlc29sdmVyLCBpbmRleCwgYXJncywgY29udGV4dCwgcmVzdWx0cykge1xuICAgIHN1cGVyKGVycm9yKVxuXG4gICAgdGhpcy5yZXNvbHZlciA9IHJlc29sdmVyXG4gICAgdGhpcy5pbmRleCA9IGluZGV4XG4gICAgdGhpcy5hcmdzID0gYXJnc1xuICAgIHRoaXMuY29udGV4dCA9IGNvbnRleHRcbiAgICB0aGlzLnJlc3VsdHMgPSByZXN1bHRzXG4gIH1cblxuICAvKipcbiAgICogRGVzY3JpcHRpb24gb2YgdGhlIFdyYXBwZWRSZXNvbHZlckV4ZWN1dGlvbkVycm9yIGVycm9yIGFuZCBsaWtlbHkgY2F1c2VcbiAgICogYW5kIGZpeC5cbiAgICpcbiAgICogQHJldHVybiB7c3RyaW5nfSBhIHN0cmluZyBkZW5vdGluZyB0aGUgcHVycG9zZS9jYXVzZSBvZiB0aGlzIGVycm9yIGNsYXNzXG4gICAqL1xuICB0b1N0cmluZygpIHtcbiAgICBsZXQgZm46IEZ1bmN0aW9uID0gKFxuICAgICAgdGhpcy5yZXNvbHZlciAmJlxuICAgICAgdGhpcy5yZXNvbHZlci5vcmRlciAmJlxuICAgICAgdGhpcy5yZXNvbHZlci5vcmRlclt0aGlzLmluZGV4XVxuICAgIClcblxuICAgIHJldHVybiBkcm9wTG93ZXN0YFxuICAgICAgVGhlIEV4dGVuZGVkUmVzb2x2ZXIgZXhlY3V0aW9uIGZhaWxlZC4gVGhlIHJlc29sdmVyIHRoYXQgZmFpbGVkIHdhcyBhdFxuICAgICAgaW5kZXggJHt0aGlzLmluZGV4fS4gVGhlIGZ1bmN0aW9uIGhhZCBhIG5hbWUgb2YgJyR7Zm4gJiYgZm4ubmFtZX0nLlxuXG4gICAgICBXYXMgdGhlIGZ1bmN0aW9uIGxpa2VseSBhIGJpZyBhcnJvdyBmdW5jdGlvbj8gJHtcbiAgICAgICAgKHRoaXMud2FzQmlnQXJyb3dGdW5jdGlvblxuICAgICAgICAgID8gJ1xceDFiWzMzbXRydWVcXHgxYlswbSdcbiAgICAgICAgICA6ICdcXHgxYlszMW1mYWxzZVxceDFiWzBtJ1xuICAgICAgICApXG4gICAgICB9XG5cbiAgICAgIEFyZ3VtZW50cyBhdCB0aGUgdGltZSB3ZXJlOlxuICAgICAgJHtpbnNwZWN0KHRoaXMuYXJncywge2NvbG9yczogdHJ1ZSwgZGVwdGg6IDh9KX1cblxuICAgICAgQ29udGV4dCBhdCB0aGUgdGltZSB3YXM6XG4gICAgICAke2luc3BlY3QodGhpcy5jb250ZXh0LCB7Y29sb3JzOiB0cnVlLCBkZXB0aDogOH0pfVxuXG4gICAgICBSZXN1bHRzIGJlZm9yZSB0aGUgZnVuY3Rpb24gd2FzIGNhbGxlZFxuICAgICAgJHtpbnNwZWN0KHRoaXMucmVzdWx0cywge2NvbG9yczogdHJ1ZSwgZGVwdGg6IDh9KX1cblxuICAgICAgT3JpZ2luYWwgU3RhY2sgVHJhY2VcbiAgICAgICR7dGhpcy5lcnJvci50b1N0cmluZygpfVxuICAgIGBcbiAgfVxuXG4gIC8qKlxuICAgKiBNb2RpZnkgdGhlIGB2YWx1ZU9mKClgIGZ1bmN0aW9uIHRvIG1pcnJvciB0aGUgYHRvU3RyaW5nKClgIGZ1bmN0aW9uYWxpdHlcbiAgICpcbiAgICogQHJldHVybiB7c3RyaW5nfSBhbiBpZGVudGljYWwgc3RyaW5nIHRvIGAudG9TdHJpbmcoKWBcbiAgICovXG4gIHZhbHVlT2YoKSB7XG4gICAgcmV0dXJuIHRoaXMudG9TdHJpbmcoKVxuICB9XG5cbiAgLyoqXG4gICAqIEEgcHJvZ3JhbW1hdGljIGF0dGVtcHQgdG8gZGV0ZXJtaW5lIGlmIHRoZSBmdW5jdGlvbiB0aGF0IGZhaWxlZCB3YXMgYVxuICAgKiBiaWcgYXJyb3cgZnVuY3Rpb24uIFRoaXMgbWVhbnMgdGhlIGZ1bmN0aW9uIHdhcyBwcmUtYm91bmQgYW5kIHRoZVxuICAgKiBgY29udGV4dGAgc2V0IGF0IHRoZSB0aW1lIG9mIGV4ZWN1dGlvbiB3b3VsZCBoYXZlIGJlZW4gaWdub3JlZC5cbiAgICpcbiAgICogQHR5cGUge2Jvb2xlYW59XG4gICAqL1xuICBnZXQgd2FzQmlnQXJyb3dGdW5jdGlvbigpIHtcbiAgICBjb25zdCByZXNvbHZlciA9IChcbiAgICAgIHRoaXMucmVzb2x2ZXIgJiZcbiAgICAgIHRoaXMucmVzb2x2ZXIub3JkZXIgJiZcbiAgICAgIHRoaXMucmVzb2x2ZXIub3JkZXJbdGhpcy5pbmRleF1cbiAgICApXG5cbiAgICBpZiAocmVzb2x2ZXIgJiYgaXNGbihyZXNvbHZlcikpIHtcbiAgICAgIHJldHVybiB0eXBlb2YgcmVzb2x2ZXIucHJvdG90eXBlID09PSAndW5kZWZpbmVkJ1xuICAgIH1cblxuICAgIHJldHVybiBmYWxzZVxuICB9XG59XG5cbmV4cG9ydCBkZWZhdWx0IFdyYXBwZWRSZXNvbHZlckV4ZWN1dGlvbkVycm9yXG4iXSwibWFwcGluZ3MiOiI7Ozs7OztBQUVBLElBQUFBLFNBQUEsR0FBQUMsT0FBQTtBQUNBLElBQUFDLFVBQUEsR0FBQUMsc0JBQUEsQ0FBQUYsT0FBQTtBQUNBLElBQUFHLEtBQUEsR0FBQUgsT0FBQTtBQUE4QixTQUFBRSx1QkFBQUUsQ0FBQSxXQUFBQSxDQUFBLElBQUFBLENBQUEsQ0FBQUMsVUFBQSxHQUFBRCxDQUFBLEtBQUFFLE9BQUEsRUFBQUYsQ0FBQTtBQUo5Qjs7QUFNQSxNQUFNRyxJQUFJLEdBQUlDLENBQUMsSUFBSyxZQUFZLENBQUNDLElBQUksQ0FBQ0MsTUFBTSxDQUFDQyxTQUFTLENBQUNDLFFBQVEsQ0FBQ0MsSUFBSSxDQUFDTCxDQUFDLENBQUMsQ0FBQzs7QUFFeEU7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDTyxNQUFNTSw2QkFBNkIsU0FBU0Msa0JBQVMsQ0FBQztFQUMzRDtBQUNGO0FBQ0E7QUFDQTtBQUNBOztFQUdFO0FBQ0Y7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7RUFHRTtBQUNGO0FBQ0E7QUFDQTtBQUNBOztFQUdFO0FBQ0Y7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7RUFHRTtBQUNGO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7RUFHRTtBQUNGO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtB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
+//# sourceMappingURL=WrappedResolverExecutionError.js.map

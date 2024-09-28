@@ -1,71 +1,41 @@
 "use strict";
 
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.reflect.to-string-tag.js");
-require("core-js/modules/es.reflect.construct.js");
-require("core-js/modules/es.error.cause.js");
-require("core-js/modules/es.error.to-string.js");
-require("core-js/modules/es.object.create.js");
-require("core-js/modules/es.object.define-property.js");
-require("core-js/modules/es.symbol.to-primitive.js");
-require("core-js/modules/es.date.to-primitive.js");
-require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.symbol.description.js");
-require("core-js/modules/es.number.constructor.js");
-require("core-js/modules/es.symbol.iterator.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.InvalidPathError = void 0;
-require("core-js/modules/es.array.is-array.js");
-require("core-js/modules/es.array.join.js");
-require("core-js/modules/es.array.concat.js");
-require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.object.set-prototype-of.js");
-require("core-js/modules/es.function.bind.js");
-require("core-js/modules/es.object.get-prototype-of.js");
-require("core-js/modules/es.object.proto.js");
-var _BaseError2 = _interopRequireDefault(require("../BaseError"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+exports.default = exports.InvalidPathError = void 0;
+var _BaseError = _interopRequireDefault(require("./BaseError.js"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+// @ts-check
+
 /**
  * The InvalidPathError class represents an error that occurs when an invalid
  * path is provided to the `at` or `atNicely` functions. This error provides
  * details about the path that caused the error.
  */
-var InvalidPathError = exports.InvalidPathError = /*#__PURE__*/function (_BaseError) {
-  _inherits(InvalidPathError, _BaseError);
-  var _super = _createSuper(InvalidPathError);
-  function InvalidPathError(path, message) {
-    var _this;
-    _classCallCheck(this, InvalidPathError);
-    _this = _super.call(this, message || "Invalid path: ".concat(Array.isArray(path) ? path.join('.') : path));
-    _this.path = path;
-    return _this;
+class InvalidPathError extends _BaseError.default {
+  /** @type {string|string[]} */
+
+  /**
+   * Creates a new instance of `InvalidPathError` for when an invalid path or
+   * paths were supplied
+   *
+   * @param {string|string[]} path the invalid paths supplied
+   * @param {string?} message an optional error message to replace the default
+   */
+  constructor(path, message) {
+    super(message ?? `Invalid path: ${Array.isArray(path) ? path.join('.') : path}`);
+    this.path = path;
   }
-  _createClass(InvalidPathError, [{
-    key: "toString",
-    value: function toString() {
-      return "".concat(this.constructor.name, ": ").concat(this.message, " (path: ") + "".concat(Array.isArray(this.path) ? this.path.join('.') : this.path, ")");
-    }
-  }]);
-  return InvalidPathError;
-}(_BaseError2["default"]);
-var _default = exports["default"] = {
-  InvalidPathError: InvalidPathError
-};
+
+  /**
+   * @returns {string} a nicely formatted string variant of this error instance
+   */
+  toString() {
+    return `${this.constructor.name}: ${this.message} (path: ` + `${Array.isArray(this.path) ? this.path.join('.') : this.path})`;
+  }
+}
+exports.InvalidPathError = InvalidPathError;
+var _default = exports.default = InvalidPathError;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJfQmFzZUVycm9yIiwiX2ludGVyb3BSZXF1aXJlRGVmYXVsdCIsInJlcXVpcmUiLCJlIiwiX19lc01vZHVsZSIsImRlZmF1bHQiLCJJbnZhbGlkUGF0aEVycm9yIiwiQmFzZUVycm9yIiwiY29uc3RydWN0b3IiLCJwYXRoIiwibWVzc2FnZSIsIkFycmF5IiwiaXNBcnJheSIsImpvaW4iLCJ0b1N0cmluZyIsIm5hbWUiLCJleHBvcnRzIiwiX2RlZmF1bHQiXSwic291cmNlcyI6WyIuLi8uLi9zcmMvZXJyb3JzL0ludmFsaWRQYXRoRXJyb3IuanMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gQHRzLWNoZWNrXG5cbmltcG9ydCBCYXNlRXJyb3IgZnJvbSAnLi9CYXNlRXJyb3IuanMnO1xuXG4vKipcbiAqIFRoZSBJbnZhbGlkUGF0aEVycm9yIGNsYXNzIHJlcHJlc2VudHMgYW4gZXJyb3IgdGhhdCBvY2N1cnMgd2hlbiBhbiBpbnZhbGlkXG4gKiBwYXRoIGlzIHByb3ZpZGVkIHRvIHRoZSBgYXRgIG9yIGBhdE5pY2VseWAgZnVuY3Rpb25zLiBUaGlzIGVycm9yIHByb3ZpZGVzXG4gKiBkZXRhaWxzIGFib3V0IHRoZSBwYXRoIHRoYXQgY2F1c2VkIHRoZSBlcnJvci5cbiAqL1xuZXhwb3J0IGNsYXNzIEludmFsaWRQYXRoRXJyb3IgZXh0ZW5kcyBCYXNlRXJyb3Ige1xuICAvKiogQHR5cGUge3N0cmluZ3xzdHJpbmdbXX0gKi9cbiAgcGF0aDtcblxuICAvKipcbiAgICogQ3JlYXRlcyBhIG5ldyBpbnN0YW5jZSBvZiBgSW52YWxpZFBhdGhFcnJvcmAgZm9yIHdoZW4gYW4gaW52YWxpZCBwYXRoIG9yXG4gICAqIHBhdGhzIHdlcmUgc3VwcGxpZWRcbiAgICpcbiAgICogQHBhcmFtIHtzdHJpbmd8c3RyaW5nW119IHBhdGggdGhlIGludmFsaWQgcGF0aHMgc3VwcGxpZWRcbiAgICogQHBhcmFtIHtzdHJpbmc/fSBtZXNzYWdlIGFuIG9wdGlvbmFsIGVycm9yIG1lc3NhZ2UgdG8gcmVwbGFjZSB0aGUgZGVmYXVsdFxuICAgKi9cbiAgY29uc3RydWN0b3IocGF0aCwgbWVzc2FnZSkge1xuICAgIHN1cGVyKFxuICAgICAgbWVzc2FnZSA/P1xuICAgICAgYEludmFsaWQgcGF0aDogJHtBcnJheS5pc0FycmF5KHBhdGgpID8gcGF0aC5qb2luKCcuJykgOiBwYXRofWBcbiAgICApXG4gICAgdGhpcy5wYXRoID0gcGF0aFxuICB9XG5cbiAgLyoqXG4gICAqIEByZXR1cm5zIHtzdHJpbmd9IGEgbmljZWx5IGZvcm1hdHRlZCBzdHJpbmcgdmFyaWFudCBvZiB0aGlzIGVycm9yIGluc3RhbmNlXG4gICAqL1xuICB0b1N0cmluZygpIHtcbiAgICByZXR1cm4gKFxuICAgICAgYCR7dGhpcy5jb25zdHJ1Y3Rvci5uYW1lfTogJHt0aGlzLm1lc3NhZ2V9IChwYXRoOiBgICtcbiAgICAgIGAke0FycmF5LmlzQXJyYXkodGhpcy5wYXRoKSA/IHRoaXMucGF0aC5qb2luKCcuJykgOiB0aGlzLnBhdGh9KWBcbiAgICApXG4gIH1cbn1cblxuZXhwb3J0IGRlZmF1bHQgSW52YWxpZFBhdGhFcnJvclxuIl0sIm1hcHBpbmdzIjoiOzs7Ozs7QUFFQSxJQUFBQSxVQUFBLEdBQUFDLHNCQUFBLENBQUFDLE9BQUE7QUFBdUMsU0FBQUQsdUJBQUFFLENBQUEsV0FBQUEsQ0FBQSxJQUFBQSxDQUFBLENBQUFDLFVBQUEsR0FBQUQsQ0FBQSxLQUFBRSxPQUFBLEVBQUFGLENBQUE7QUFGdkM7O0FBSUE7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNPLE1BQU1HLGdCQUFnQixTQUFTQyxrQkFBUyxDQUFDO0VBQzlDOztFQUdBO0FBQ0Y7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0VBQ0VDLFdBQVdBLENBQUNDLElBQUksRUFBRUMsT0FBTyxFQUFFO0lBQ3pCLEtBQUssQ0FDSEEsT0FBTyxJQUNQLGlCQUFpQkMsS0FBSyxDQUFDQyxPQUFPLENBQUNILElBQUksQ0FBQyxHQUFHQSxJQUFJLENBQUNJLElBQUksQ0FBQyxHQUFHLENBQUMsR0FBR0osSUFBSSxFQUM5RCxDQUFDO0lBQ0QsSUFBSSxDQUFDQSxJQUFJLEdBQUdBLElBQUk7RUFDbEI7O0VBRUE7QUFDRjtBQUNBO0VBQ0VLLFFBQVFBLENBQUEsRUFBRztJQUNULE9BQ0UsR0FBRyxJQUFJLENBQUNOLFdBQVcsQ0FBQ08sSUFBSSxLQUFLLElBQUksQ0FBQ0wsT0FBTyxVQUFVLEdBQ25ELEdBQUdDLEtBQUssQ0FBQ0MsT0FBTyxDQUFDLElBQUksQ0FBQ0gsSUFBSSxDQUFDLEdBQUcsSUFBSSxDQUFDQSxJQUFJLENBQUNJLElBQUksQ0FBQyxHQUFHLENBQUMsR0FBRyxJQUFJLENBQUNKLElBQUksR0FBRztFQUVwRTtBQUNGO0FBQUNPLE9BQUEsQ0FBQVYsZ0JBQUEsR0FBQUEsZ0JBQUE7QUFBQSxJQUFBVyxRQUFBLEdBQUFELE9BQUEsQ0FBQVgsT0FBQSxHQUVjQyxnQkFBZ0IiLCJpZ25vcmVMaXN0IjpbXX0=
+//# sourceMappingURL=InvalidPathError.js.map

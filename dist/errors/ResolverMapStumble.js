@@ -1,49 +1,14 @@
 "use strict";
 
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.reflect.to-string-tag.js");
-require("core-js/modules/es.reflect.construct.js");
-require("core-js/modules/es.error.cause.js");
-require("core-js/modules/es.error.to-string.js");
-require("core-js/modules/es.object.create.js");
-require("core-js/modules/es.object.define-property.js");
-require("core-js/modules/es.symbol.to-primitive.js");
-require("core-js/modules/es.date.to-primitive.js");
-require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.symbol.description.js");
-require("core-js/modules/es.number.constructor.js");
-require("core-js/modules/es.array.slice.js");
-require("core-js/modules/es.object.freeze.js");
-require("core-js/modules/es.object.define-properties.js");
-require("core-js/modules/es.symbol.iterator.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.ResolverMapStumble = void 0;
-require("core-js/modules/es.object.set-prototype-of.js");
-require("core-js/modules/es.function.bind.js");
-require("core-js/modules/es.object.get-prototype-of.js");
-require("core-js/modules/es.object.proto.js");
+exports.default = exports.ResolverMapStumble = void 0;
 var _neTagFns = require("ne-tag-fns");
-var _BaseError2 = require("../BaseError");
-var _templateObject;
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+var _BaseError = _interopRequireDefault(require("./BaseError.js"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+// @ts-check
+
 /**
  * An error that can occur while walking a resolver map. ResolverMap types
  * are defined as `ResolverMap = { [name: string]: Function | ResolverMap }`.
@@ -53,27 +18,26 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  *
  * @class ResolverMapStumble
  */
-var ResolverMapStumble = exports.ResolverMapStumble = /*#__PURE__*/function (_BaseError) {
-  _inherits(ResolverMapStumble, _BaseError);
-  var _super = _createSuper(ResolverMapStumble);
-  /** A context object can be anything that adds more info about the problem */
+class ResolverMapStumble extends _BaseError.default {
+  /**
+   * A context object can be anything that adds more info about the problem
+   *
+   * @type {any}
+   */
 
   /**
    * Creates a new instance of ResolverMapStumble
    *
    * @param {Error|string} error - the error or message to wrap this instance
    * around
-   * @param {any} context - any additional information that helps describe or
+   * @param {any?} context - any additional information that helps describe or
    * provide enlightenment around the problem at hand.
    */
-  function ResolverMapStumble(error, context) {
-    var _this;
-    _classCallCheck(this, ResolverMapStumble);
-    _this = _super.call(this, error);
+  constructor(error, context) {
+    super(error);
     if (context) {
-      _this.context = context;
+      this.context = context;
     }
-    return _this;
   }
 
   /**
@@ -81,12 +45,15 @@ var ResolverMapStumble = exports.ResolverMapStumble = /*#__PURE__*/function (_Ba
    *
    * @return {string} a string denoting the purpose/cause of this error class
    */
-  _createClass(ResolverMapStumble, [{
-    key: "toString",
-    value: function toString() {
-      return (0, _neTagFns.inline)(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n      This Error represents a scenario wherein while walking a resolver map\n      object, a key was found not to point to either a nested resolver map or\n      a resolver function. This is not allowed.\n    "])));
-    }
-  }]);
-  return ResolverMapStumble;
-}(_BaseError2.BaseError);
-var _default = exports["default"] = ResolverMapStumble;
+  toString() {
+    return (0, _neTagFns.inline)`
+      This Error represents a scenario wherein while walking a resolver map
+      object, a key was found not to point to either a nested resolver map or
+      a resolver function. This is not allowed.
+    `;
+  }
+}
+exports.ResolverMapStumble = ResolverMapStumble;
+var _default = exports.default = ResolverMapStumble;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJfbmVUYWdGbnMiLCJyZXF1aXJlIiwiX0Jhc2VFcnJvciIsIl9pbnRlcm9wUmVxdWlyZURlZmF1bHQiLCJlIiwiX19lc01vZHVsZSIsImRlZmF1bHQiLCJSZXNvbHZlck1hcFN0dW1ibGUiLCJCYXNlRXJyb3IiLCJjb25zdHJ1Y3RvciIsImVycm9yIiwiY29udGV4dCIsInRvU3RyaW5nIiwiaW5saW5lIiwiZXhwb3J0cyIsIl9kZWZhdWx0Il0sInNvdXJjZXMiOlsiLi4vLi4vc3JjL2Vycm9ycy9SZXNvbHZlck1hcFN0dW1ibGUuanMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gQHRzLWNoZWNrXG5cbmltcG9ydCB7IGlubGluZSB9IGZyb20gJ25lLXRhZy1mbnMnXG5pbXBvcnQgQmFzZUVycm9yIGZyb20gJy4vQmFzZUVycm9yLmpzJztcblxuLyoqXG4gKiBBbiBlcnJvciB0aGF0IGNhbiBvY2N1ciB3aGlsZSB3YWxraW5nIGEgcmVzb2x2ZXIgbWFwLiBSZXNvbHZlck1hcCB0eXBlc1xuICogYXJlIGRlZmluZWQgYXMgYFJlc29sdmVyTWFwID0geyBbbmFtZTogc3RyaW5nXTogRnVuY3Rpb24gfCBSZXNvbHZlck1hcCB9YC5cbiAqXG4gKiBXaGVuIGEgbm9uLWZ1bmN0aW9uIGFuZCBub24tc3RyaW5nIGJhc2VkIGtleSBhcmUgZm91bmQsIGFuIGVycm9yIG9mIHRoaXNcbiAqIHR5cGUgbWF5IGJlIHRocm93biBiYXNlZCBvbiB3YWxraW5nIHBhcmFtZXRlcnMuXG4gKlxuICogQGNsYXNzIFJlc29sdmVyTWFwU3R1bWJsZVxuICovXG5leHBvcnQgY2xhc3MgUmVzb2x2ZXJNYXBTdHVtYmxlIGV4dGVuZHMgQmFzZUVycm9yIHtcbiAgLyoqXG4gICAqIEEgY29udGV4dCBvYmplY3QgY2FuIGJlIGFueXRoaW5nIHRoYXQgYWRkcyBtb3JlIGluZm8gYWJvdXQgdGhlIHByb2JsZW1cbiAgICpcbiAgICogQHR5cGUge2FueX1cbiAgICovXG4gIGNvbnRleHQ7XG5cbiAgLyoqXG4gICAqIENyZWF0ZXMgYSBuZXcgaW5zdGFuY2Ugb2YgUmVzb2x2ZXJNYXBTdHVtYmxlXG4gICAqXG4gICAqIEBwYXJhbSB7RXJyb3J8c3RyaW5nfSBlcnJvciAtIHRoZSBlcnJvciBvciBtZXNzYWdlIHRvIHdyYXAgdGhpcyBpbnN0YW5jZVxuICAgKiBhcm91bmRcbiAgICogQHBhcmFtIHthbnk/fSBjb250ZXh0IC0gYW55IGFkZGl0aW9uYWwgaW5mb3JtYXRpb24gdGhhdCBoZWxwcyBkZXNjcmliZSBvclxuICAgKiBwcm92aWRlIGVubGlnaHRlbm1lbnQgYXJvdW5kIHRoZSBwcm9ibGVtIGF0IGhhbmQuXG4gICAqL1xuICBjb25zdHJ1Y3RvcihlcnJvciwgY29udGV4dCkge1xuICAgIHN1cGVyKGVycm9yKVxuICAgIGlmIChjb250ZXh0KSB7XG4gICAgICB0aGlzLmNvbnRleHQgPSBjb250ZXh0XG4gICAgfVxuICB9XG5cbiAgLyoqXG4gICAqIERlc2NyaXB0aW9uIG9mIHRoZSBSZXNvbHZlck1hcFN0dW1ibGUgZXJyb3IgYW5kIGxpa2VseSBjYXVzZSBhbmQgZml4LlxuICAgKlxuICAgKiBAcmV0dXJuIHtzdHJpbmd9IGEgc3RyaW5nIGRlbm90aW5nIHRoZSBwdXJwb3NlL2NhdXNlIG9mIHRoaXMgZXJyb3IgY2xhc3NcbiAgICovXG4gIHRvU3RyaW5nKCkge1xuICAgIHJldHVybiBpbmxpbmVgXG4gICAgICBUaGlzIEVycm9yIHJlcHJlc2VudHMgYSBzY2VuYXJpbyB3aGVyZWluIHdoaWxlIHdhbGtpbmcgYSByZXNvbHZlciBtYXBcbiAgICAgIG9iamVjdCwgYSBrZXkgd2FzIGZvdW5kIG5vdCB0byBwb2ludCB0byBlaXRoZXIgYSBuZXN0ZWQgcmVzb2x2ZXIgbWFwIG9yXG4gICAgICBhIHJlc29sdmVyIGZ1bmN0aW9uLiBUaGlzIGlzIG5vdCBhbGxvd2VkLlxuICAgIGBcbiAgfVxufVxuXG5leHBvcnQgZGVmYXVsdCBSZXNvbHZlck1hcFN0dW1ibGVcbiJdLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBRUEsSUFBQUEsU0FBQSxHQUFBQyxPQUFBO0FBQ0EsSUFBQUMsVUFBQSxHQUFBQyxzQkFBQSxDQUFBRixPQUFBO0FBQXVDLFNBQUFFLHVCQUFBQyxDQUFBLFdBQUFBLENBQUEsSUFBQUEsQ0FBQSxDQUFBQyxVQUFBLEdBQUFELENBQUEsS0FBQUUsT0FBQSxFQUFBRixDQUFBO0FBSHZDOztBQUtBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNPLE1BQU1HLGtCQUFrQixTQUFTQyxrQkFBUyxDQUFDO0VBQ2hEO0FBQ0Y7QUFDQTtBQUNBO0FBQ0E7O0VBR0U7QUFDRjtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtFQUNFQyxXQUFXQSxDQUFDQyxLQUFLLEVBQUVDLE9BQU8sRUFBRTtJQUMxQixLQUFLLENBQUNELEtBQUssQ0FBQztJQUNaLElBQUlDLE9BQU8sRUFBRTtNQUNYLElBQUksQ0FBQ0EsT0FBTyxHQUFHQSxPQUFPO0lBQ3hCO0VBQ0Y7O0VBRUE7QUFDRjtBQUNBO0FBQ0E7QUFDQTtFQUNFQyxRQUFRQSxDQUFBLEVBQUc7SUFDVCxPQUFPLElBQUFDLGdCQUFNO0FBQ2pCO0FBQ0E7QUFDQTtBQUNBLEtBQUs7RUFDSDtBQUNGO0FBQUNDLE9BQUEsQ0FBQVAsa0JBQUEsR0FBQUEsa0JBQUE7QUFBQSxJQUFBUSxRQUFBLEdBQUFELE9BQUEsQ0FBQVIsT0FBQSxHQUVjQyxrQkFBa0IiLCJpZ25vcmVMaXN0IjpbXX0=
+//# sourceMappingURL=ResolverMapStumble.js.map

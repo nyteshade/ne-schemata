@@ -1,71 +1,19 @@
 "use strict";
 
-require("core-js/modules/es.object.define-property.js");
-require("core-js/modules/es.promise.js");
-require("core-js/modules/es.symbol.iterator.js");
-require("core-js/modules/es.symbol.async-iterator.js");
-require("core-js/modules/es.symbol.to-string-tag.js");
-require("core-js/modules/es.json.to-string-tag.js");
-require("core-js/modules/es.math.to-string-tag.js");
-require("core-js/modules/es.object.create.js");
-require("core-js/modules/es.object.get-prototype-of.js");
-require("core-js/modules/es.array.for-each.js");
-require("core-js/modules/web.dom-collections.for-each.js");
-require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.object.set-prototype-of.js");
-require("core-js/modules/es.object.proto.js");
-require("core-js/modules/es.array.reverse.js");
-require("core-js/modules/es.array.slice.js");
-require("core-js/modules/es.date.to-string.js");
-require("core-js/modules/es.regexp.to-string.js");
-require("core-js/modules/es.array.from.js");
-require("core-js/modules/es.regexp.exec.js");
-require("core-js/modules/es.regexp.test.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DefaultEntryInspector = exports.DefaultAsyncEntryInspector = void 0;
 exports.asyncWalkResolverMap = asyncWalkResolverMap;
-exports["default"] = void 0;
+exports.default = void 0;
 exports.mergeResolvers = mergeResolvers;
 exports.walkResolverMap = walkResolverMap;
-require("core-js/modules/es.array.reduce.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.array.concat.js");
-require("core-js/modules/es.array.push.js");
-require("core-js/modules/es.object.entries.js");
-require("core-js/modules/es.error.cause.js");
-require("core-js/modules/es.error.to-string.js");
-require("core-js/modules/es.array.join.js");
-require("core-js/modules/es.object.keys.js");
-require("core-js/modules/es.reflect.has.js");
-require("core-js/modules/es.reflect.to-string-tag.js");
-require("core-js/modules/es.array.is-array.js");
-require("core-js/modules/es.symbol.to-primitive.js");
-require("core-js/modules/es.date.to-primitive.js");
-require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.symbol.description.js");
-require("core-js/modules/es.number.constructor.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
 var _errors = require("./errors");
 var _typework = require("./utils/typework");
 var _propAt = _interopRequireDefault(require("./propAt"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw new Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw new Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+// @ts-check
+
 /**
  * A default implementation of the EntryInspector type for use as a default
  * to `walkResolverMap`. While not immediately useful, a default implementation
@@ -76,8 +24,10 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
  * @method DefaultEntryInspector
  * @type {Function}
  */
-var DefaultEntryInspector = exports.DefaultEntryInspector = function DefaultEntryInspector(key, value, path, map) {
-  return _defineProperty({}, key, value);
+const DefaultEntryInspector = (key, value, path, map) => {
+  return {
+    [key]: value
+  };
 };
 
 /**
@@ -90,22 +40,12 @@ var DefaultEntryInspector = exports.DefaultEntryInspector = function DefaultEntr
  * @method DefaultEntryInspector
  * @type {Function}
  */
-var DefaultAsyncEntryInspector = exports.DefaultAsyncEntryInspector = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(key, value, path, map) {
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
-      while (1) switch (_context.prev = _context.next) {
-        case 0:
-          return _context.abrupt("return", _defineProperty({}, key, value));
-        case 1:
-        case "end":
-          return _context.stop();
-      }
-    }, _callee);
-  }));
-  return function DefaultAsyncEntryInspector(_x, _x2, _x3, _x4) {
-    return _ref2.apply(this, arguments);
+exports.DefaultEntryInspector = DefaultEntryInspector;
+const DefaultAsyncEntryInspector = async (key, value, path, map) => {
+  return {
+    [key]: value
   };
-}();
+};
 
 /**
  * Given a `ResolverMap` object, walk its properties and allow execution
@@ -125,27 +65,22 @@ var DefaultAsyncEntryInspector = exports.DefaultAsyncEntryInspector = /*#__PURE_
  * @return {ResolverMap} upon successful completion, a `ResolverMap` object,
  * modified as specified, will be returned instead.
  */
-function walkResolverMap(object) {
-  var inspector = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : DefaultEntryInspector;
-  var wrap = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-  var path = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-  var product = {};
-  path.reduce(function (prev, cur) {
-    if (!(0, _propAt["default"])(product, prev.concat(cur))) {
-      (0, _propAt["default"])(product, prev.concat(cur), {});
+exports.DefaultAsyncEntryInspector = DefaultAsyncEntryInspector;
+function walkResolverMap(object, inspector = DefaultEntryInspector, wrap = true, path = []) {
+  let product = {};
+  path.reduce((prev, cur) => {
+    if (!(0, _propAt.default)(product, prev.concat(cur))) {
+      (0, _propAt.default)(product, prev.concat(cur), {});
     }
     prev.push(cur);
     return prev;
   }, []);
-  var _loop = function _loop() {
-    var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
-      key = _Object$entries$_i[0],
-      _value = _Object$entries$_i[1];
-    var isObject = _value instanceof Object;
-    var isFunction = isObject && (0, _typework.isFn)(_value);
+  for (let [key, value] of Object.entries(object)) {
+    const isObject = value instanceof Object;
+    const isFunction = isObject && (0, _typework.isFn)(value);
     if (isObject && !isFunction) {
-      var newPath = path.concat(key);
-      (0, _propAt["default"])(product, newPath, walkResolverMap(_value, inspector, wrap, newPath));
+      const newPath = path.concat(key);
+      (0, _propAt.default)(product, newPath, walkResolverMap(value, inspector, wrap, newPath));
     } else {
       if (!isObject && !isFunction) {
         // In the case that we have a string mapping to a non-function and a
@@ -153,21 +88,16 @@ function walkResolverMap(object) {
         // or by default we simply wrap the value in a function that returns
         // that value
         if (!wrap) {
-          throw new _errors.ResolverMapStumble(new Error("Invalid ResolverMap entry at ".concat(path.join('.'), ".").concat(key, ": value is ") + "neither an object nor a function"));
+          throw new _errors.ResolverMapStumble(new Error(`Invalid ResolverMap entry at ${path.join('.')}.${key}: value is ` + `neither an object nor a function`));
         } else {
-          _value = function value() {
-            return _value;
-          };
+          value = () => value;
         }
       }
-      var entry = inspector(key, _value, path, object);
+      let entry = inspector(key, value, path, object);
       if (entry !== undefined) {
-        (0, _propAt["default"])(product, path.concat(key), entry[key]);
+        (0, _propAt.default)(product, path.concat(key), entry[key]);
       }
     }
-  };
-  for (var _i = 0, _Object$entries = Object.entries(object); _i < _Object$entries.length; _i++) {
-    _loop();
   }
   return product;
 }
@@ -192,9 +122,52 @@ function walkResolverMap(object) {
  * @return {ResolverMap} upon successful completion, a `ResolverMap` object,
  * modified as specified, will be returned instead.
  */
-function asyncWalkResolverMap(_x5) {
-  return _asyncWalkResolverMap.apply(this, arguments);
+async function asyncWalkResolverMap(object, inspector = DefaultAsyncEntryInspector, wrap = true, path = [], skips) {
+  let product = {};
+  path.reduce((prev, cur) => {
+    if (!(0, _propAt.default)(product, prev.concat(cur))) {
+      (0, _propAt.default)(product, prev.concat(cur), {});
+    }
+    prev.push(cur);
+    return prev;
+  }, []);
+  for (let [key, value] of Object.entries(object)) {
+    const isObject = value instanceof Object;
+    const isFunction = isObject && (0, _typework.isFn)(value);
+    if (isObject && !isFunction) {
+      try {
+        (0, _propAt.default)(product, path.concat(key), await asyncWalkResolverMap(value, inspector, wrap, path, skips));
+      } catch (stumble) {
+        if (skips && Array.isArray(skips)) {
+          skips.push(new _errors.ResolverMapStumble(stumble, {
+            key,
+            value,
+            source: object,
+            destination: product
+          }));
+        }
+      }
+    } else {
+      if (!isObject && !isFunction) {
+        // In the case that we have a string mapping to a non-function and a
+        // non-object, we can do one of two things. Either we can throw an error
+        // or by default we simply wrap the value in a function that returns
+        // that value
+        if (!wrap) {
+          throw new _errors.ResolverMapStumble(new Error('Invalid ResolverMap'));
+        } else {
+          value = () => value;
+        }
+      }
+      let entry = await inspector(key, value, path, object);
+      if (entry !== undefined) {
+        (0, _propAt.default)(product, path.concat(key), entry[key]);
+      }
+    }
+  }
+  return product;
 }
+
 /**
  * Type definition for a property within a ResolverMap. It encapsulates the
  * property's name, value, the path to reach it within the object, and the
@@ -203,118 +176,7 @@ function asyncWalkResolverMap(_x5) {
  * 
  * @type {ResolverProperty}
  */
-function _asyncWalkResolverMap() {
-  _asyncWalkResolverMap = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(object) {
-    var inspector,
-      wrap,
-      path,
-      skips,
-      product,
-      _loop2,
-      _i3,
-      _Object$entries2,
-      _args3 = arguments;
-    return _regeneratorRuntime().wrap(function _callee2$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
-        case 0:
-          inspector = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : DefaultAsyncEntryInspector;
-          wrap = _args3.length > 2 && _args3[2] !== undefined ? _args3[2] : true;
-          path = _args3.length > 3 && _args3[3] !== undefined ? _args3[3] : [];
-          skips = _args3.length > 4 ? _args3[4] : undefined;
-          product = {};
-          path.reduce(function (prev, cur) {
-            if (!(0, _propAt["default"])(product, prev.concat(cur))) {
-              (0, _propAt["default"])(product, prev.concat(cur), {});
-            }
-            prev.push(cur);
-            return prev;
-          }, []);
-          _loop2 = /*#__PURE__*/_regeneratorRuntime().mark(function _loop2() {
-            var _Object$entries2$_i, key, _value2, isObject, isFunction, entry;
-            return _regeneratorRuntime().wrap(function _loop2$(_context2) {
-              while (1) switch (_context2.prev = _context2.next) {
-                case 0:
-                  _Object$entries2$_i = _slicedToArray(_Object$entries2[_i3], 2), key = _Object$entries2$_i[0], _value2 = _Object$entries2$_i[1];
-                  isObject = _value2 instanceof Object;
-                  isFunction = isObject && (0, _typework.isFn)(_value2);
-                  if (!(isObject && !isFunction)) {
-                    _context2.next = 19;
-                    break;
-                  }
-                  _context2.prev = 4;
-                  _context2.t0 = _propAt["default"];
-                  _context2.t1 = product;
-                  _context2.t2 = path.concat(key);
-                  _context2.next = 10;
-                  return asyncWalkResolverMap(_value2, inspector, wrap, path, skips);
-                case 10:
-                  _context2.t3 = _context2.sent;
-                  (0, _context2.t0)(_context2.t1, _context2.t2, _context2.t3);
-                  _context2.next = 17;
-                  break;
-                case 14:
-                  _context2.prev = 14;
-                  _context2.t4 = _context2["catch"](4);
-                  if (skips && Array.isArray(skips)) {
-                    skips.push(new _errors.ResolverMapStumble(_context2.t4, {
-                      key: key,
-                      value: _value2,
-                      source: object,
-                      destination: product
-                    }));
-                  }
-                case 17:
-                  _context2.next = 29;
-                  break;
-                case 19:
-                  if (!(!isObject && !isFunction)) {
-                    _context2.next = 25;
-                    break;
-                  }
-                  if (wrap) {
-                    _context2.next = 24;
-                    break;
-                  }
-                  throw new _errors.ResolverMapStumble(new Error('Invalid ResolverMap'));
-                case 24:
-                  _value2 = function value() {
-                    return _value2;
-                  };
-                case 25:
-                  _context2.next = 27;
-                  return inspector(key, _value2, path, object);
-                case 27:
-                  entry = _context2.sent;
-                  if (entry !== undefined) {
-                    (0, _propAt["default"])(product, path.concat(key), entry[key]);
-                  }
-                case 29:
-                case "end":
-                  return _context2.stop();
-              }
-            }, _loop2, null, [[4, 14]]);
-          });
-          _i3 = 0, _Object$entries2 = Object.entries(object);
-        case 8:
-          if (!(_i3 < _Object$entries2.length)) {
-            _context3.next = 13;
-            break;
-          }
-          return _context3.delegateYield(_loop2(), "t0", 10);
-        case 10:
-          _i3++;
-          _context3.next = 8;
-          break;
-        case 13:
-          return _context3.abrupt("return", product);
-        case 14:
-        case "end":
-          return _context3.stop();
-      }
-    }, _callee2);
-  }));
-  return _asyncWalkResolverMap.apply(this, arguments);
-}
+
 /**
  * Merges two resolver objects recursively. In case of conflicting keys, the
  * provided `conflictResolver` function is called to determine the
@@ -328,36 +190,31 @@ function _asyncWalkResolverMap() {
  * between existing and new resolver properties.
  * @returns {Object} The merged set of resolvers.
  */
-function mergeResolvers(existingResolvers, newResolvers) {
-  var conflictResolver = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function (e, c) {
-    return c.value;
-  };
+function mergeResolvers(existingResolvers, newResolvers, conflictResolver = (e, c) => c.value) {
   // Recursive function to walk and merge the resolver maps
-  var walkAndMerge = function walkAndMerge(current, incoming) {
-    var path = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-    for (var _i2 = 0, _Object$keys = Object.keys(incoming); _i2 < _Object$keys.length; _i2++) {
-      var key = _Object$keys[_i2];
-      var newPath = path.concat(key);
+  const walkAndMerge = (current, incoming, path = []) => {
+    for (const key of Object.keys(incoming)) {
+      const newPath = path.concat(key);
 
       // Check if the key exists in the current object
       if (Reflect.has(current, key)) {
-        var existingValue = current[key];
-        var incomingValue = incoming[key];
-        if (existingValue && _typeof(existingValue) === 'object' && !Array.isArray(existingValue) && !(0, _typework.isFn)(existingValue)) {
+        const existingValue = current[key];
+        const incomingValue = incoming[key];
+        if (existingValue && typeof existingValue === 'object' && !Array.isArray(existingValue) && !(0, _typework.isFn)(existingValue)) {
           // If both are objects, we need to go deeper
           walkAndMerge(existingValue, incomingValue, newPath);
         } else {
           // Conflict detected, call the user-supplied conflict resolution function
-          var existingProp = {
+          const existingProp = {
             name: key,
             value: existingValue,
-            path: path,
+            path,
             object: existingResolvers
           };
-          var incomingProp = {
+          const incomingProp = {
             name: key,
             value: incomingValue,
-            path: path,
+            path,
             object: newResolvers
           };
           current[key] = conflictResolver(existingProp, incomingProp);
@@ -371,4 +228,6 @@ function mergeResolvers(existingResolvers, newResolvers) {
   };
   return walkAndMerge(existingResolvers, newResolvers, []);
 }
-var _default = exports["default"] = walkResolverMap;
+var _default = exports.default = walkResolverMap;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJfZXJyb3JzIiwicmVxdWlyZSIsIl90eXBld29yayIsIl9wcm9wQXQiLCJfaW50ZXJvcFJlcXVpcmVEZWZhdWx0IiwiZSIsIl9fZXNNb2R1bGUiLCJkZWZhdWx0IiwiRGVmYXVsdEVudHJ5SW5zcGVjdG9yIiwia2V5IiwidmFsdWUiLCJwYXRoIiwibWFwIiwiZXhwb3J0cyIsIkRlZmF1bHRBc3luY0VudHJ5SW5zcGVjdG9yIiwid2Fsa1Jlc29sdmVyTWFwIiwib2JqZWN0IiwiaW5zcGVjdG9yIiwid3JhcCIsInByb2R1Y3QiLCJyZWR1Y2UiLCJwcmV2IiwiY3VyIiwiYXQiLCJjb25jYXQiLCJwdXNoIiwiT2JqZWN0IiwiZW50cmllcyIsImlzT2JqZWN0IiwiaXNGdW5jdGlvbiIsImlzRm4iLCJuZXdQYXRoIiwiUmVzb2x2ZXJNYXBTdHVtYmxlIiwiRXJyb3IiLCJqb2luIiwiZW50cnkiLCJ1bmRlZmluZWQiLCJhc3luY1dhbGtSZXNvbHZlck1hcCIsInNraXBzIiwic3R1bWJsZSIsIkFycmF5IiwiaXNBcnJheSIsInNvdXJjZSIsImRlc3RpbmF0aW9uIiwibWVyZ2VSZXNvbHZlcnMiLCJleGlzdGluZ1Jlc29sdmVycyIsIm5ld1Jlc29sdmVycyIsImNvbmZsaWN0UmVzb2x2ZXIiLCJjIiwid2Fsa0FuZE1lcmdlIiwiY3VycmVudCIsImluY29taW5nIiwia2V5cyIsIlJlZmxlY3QiLCJoYXMiLCJleGlzdGluZ1ZhbHVlIiwiaW5jb21pbmdWYWx1ZSIsImV4aXN0aW5nUHJvcCIsIm5hbWUiLCJpbmNvbWluZ1Byb3AiLCJfZGVmYXVsdCJdLCJzb3VyY2VzIjpbIi4uL3NyYy93YWxrUmVzb2x2ZXJNYXAuanMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gQHRzLWNoZWNrXG5cbmltcG9ydCB0eXBlIHsgUmVzb2x2ZXJNYXAsIEVudHJ5SW5zcGVjdG9yLCBBc3luY0VudHJ5SW5zcGVjdG9yIH0gZnJvbSAnLi90eXBlcydcbmltcG9ydCB7IFJlc29sdmVyTWFwU3R1bWJsZSB9IGZyb20gJy4vZXJyb3JzJ1xuaW1wb3J0IHsgaXNGbiwgZ2V0VHlwZSB9IGZyb20gJy4vdXRpbHMvdHlwZXdvcmsnXG5pbXBvcnQgYXQgZnJvbSAnLi9wcm9wQXQnXG5cbi8qKlxuICogQSBkZWZhdWx0IGltcGxlbWVudGF0aW9uIG9mIHRoZSBFbnRyeUluc3BlY3RvciB0eXBlIGZvciB1c2UgYXMgYSBkZWZhdWx0XG4gKiB0byBgd2Fsa1Jlc29sdmVyTWFwYC4gV2hpbGUgbm90IGltbWVkaWF0ZWx5IHVzZWZ1bCwgYSBkZWZhdWx0IGltcGxlbWVudGF0aW9uXG4gKiBjYXVzZXMgYHdhbGtSZXNvbHZlck1hcGAgdG8gd3JhcCBhbnkgbm9uLWZ1bmN0aW9uIGFuZCBub24tb2JqZWN0IHZhbHVlc1xuICogd2l0aCBhIGZ1bmN0aW9uIHRoYXQgcmV0dXJucyB0aGUgbm9uLWNvbXBsaWFudCB2YWx1ZSBhbmQgdGhlcmVmb3JlIGhhcyBzb21lXG4gKiBpbnRyaW5zaWMgdmFsdWUuXG4gKlxuICogQG1ldGhvZCBEZWZhdWx0RW50cnlJbnNwZWN0b3JcbiAqIEB0eXBlIHtGdW5jdGlvbn1cbiAqL1xuZXhwb3J0IGNvbnN0IERlZmF1bHRFbnRyeUluc3BlY3RvcjogRW50cnlJbnNwZWN0b3IgPSAoXG4gIGtleSxcbiAgdmFsdWUsXG4gIHBhdGgsXG4gIG1hcFxuKSA9PiB7XG4gIHJldHVybiB7IFtrZXldOiB2YWx1ZSB9XG59XG5cbi8qKlxuICogQSBkZWZhdWx0IGltcGxlbWVudGF0aW9uIG9mIHRoZSBFbnRyeUluc3BlY3RvciB0eXBlIGZvciB1c2UgYXMgYSBkZWZhdWx0XG4gKiB0byBgYXN5bmNXYWxrUmVzb2x2ZXJNYXBgLiBXaGlsZSBub3QgaW1tZWRpYXRlbHkgdXNlZnVsLCBhIGRlZmF1bHRcbiAqIGltcGxlbWVudGF0aW9uIGNhdXNlcyBgYXN5bmNXYWxrUmVzb2x2ZXJNYXBgIHRvIHdyYXAgYW55IG5vbi1mdW5jdGlvbiBhbmRcbiAqIG5vbi1vYmplY3QgdmFsdWVzIHdpdGggYSBmdW5jdGlvbiB0aGF0IHJldHVybnMgdGhlIG5vbi1jb21wbGlhbnQgdmFsdWUgYW5kXG4gKiB0aGVyZWZvcmUgaGFzIHNvbWUgaW50cmluc2ljIHZhbHVlLlxuICpcbiAqIEBtZXRob2QgRGVmYXVsdEVudHJ5SW5zcGVjdG9yXG4gKiBAdHlwZSB7RnVuY3Rpb259XG4gKi9cbmV4cG9ydCBjb25zdCBEZWZhdWx0QXN5bmNFbnRyeUluc3BlY3RvcjogQXN5bmNFbnRyeUluc3BlY3RvciA9IGFzeW5jIChcbiAga2V5LFxuICB2YWx1ZSxcbiAgcGF0aCxcbiAgbWFwXG4pID0+IHtcbiAgcmV0dXJuIHsgW2tleV06IHZhbHVlIH1cbn1cblxuLyoqXG4gKiBHaXZlbiBhIGBSZXNvbHZlck1hcGAgb2JqZWN0LCB3YWxrIGl0cyBwcm9wZXJ0aWVzIGFuZCBhbGxvdyBleGVjdXRpb25cbiAqIHdpdGggZWFjaCBrZXksIHZhbHVlIHBhaXIuIElmIHRoZSBzdXBwbGllZCBmdW5jdGlvbiBmb3IgaGFuZGxpbmcgYSBnaXZlblxuICogZW50cnkgcmV0dXJucyBudWxsIGluc3RlYWQgb2YgYW4gb2JqZWN0IHdpdGggdGhlIGZvcm1hdCBge2tleTogdmFsdWV9YFxuICogdGhlbiB0aGF0IGVudHJ5IHdpbGwgbm90IGJlIGluY2x1ZGVkIGluIHRoZSBmaW5hbCBvdXRwdXQuXG4gKlxuICogQG1ldGhvZCB3YWxrUmVzb2x2ZXJNYXBcbiAqXG4gKiBAcGFyYW0ge1Jlc29sdmVyTWFwfSBvYmplY3QgYW4gb2JqZWN0IGNvbmZvcm1pbmcgdG8gdHlwZSBgUmVzb2x2ZXJNYXBgXG4gKiBAcGFyYW0ge2Jvb2xlYW59IHdyYXAgZGVmYXVsdHMgdG8gdHJ1ZS4gQW4gZW50cnkgd2hvc2UgdmFsdWUgaXMgbmVpdGhlciBhXG4gKiBmdW5jdGlvbiBub3IgYW4gb2JqZWN0IHdpbGwgYmUgd3JhcHBlZCBpbiBhIGZ1bmN0aW9uIHJldHVybmluZyB0aGUgdmFsdWUuIElmXG4gKiBmYWxzZSBpcyBzdXBwbGllZCBoZXJlLCBhIGBSZXNvbHZlck1hcFN0dW1ibGVgIGVycm9yIHdpbGwgYmUgdGhyb3duIGluc3RlYWRcbiAqIEBwYXJhbSB7QXJyYXk8c3RyaW5nPn0gcGF0aCBhcyBgd2Fsa1Jlc29sdmVyTWFwYCBjYWxscyBpdHNlbGYgcmVjdXJzaXZlbHksXG4gKiBwYXRoIGlzIGFwcGVuZGVkIHRvIGFuZCBhZGRlZCBhcyBhIHBhcmFtZXRlciB0byBkZXRlcm1pbmUgd2hlcmUgaW4gdGhlIHRyZWVcbiAqIHRoZSBjdXJyZW50IGV4ZWN1dGlvbiBpcyB3b3JraW5nXG4gKiBAcmV0dXJuIHtSZXNvbHZlck1hcH0gdXBvbiBzdWNjZXNzZnVsIGNvbXBsZXRpb24sIGEgYFJlc29sdmVyTWFwYCBvYmplY3QsXG4gKiBtb2RpZmllZCBhcyBzcGVjaWZpZWQsIHdpbGwgYmUgcmV0dXJuZWQgaW5zdGVhZC5cbiAqL1xuZXhwb3J0IGZ1bmN0aW9uIHdhbGtSZXNvbHZlck1hcChcbiAgb2JqZWN0OiBSZXNvbHZlck1hcCxcbiAgaW5zcGVjdG9yOiBFbnRyeUluc3BlY3RvciA9IERlZmF1bHRFbnRyeUluc3BlY3RvcixcbiAgd3JhcDogYm9vbGVhbiA9IHRydWUsXG4gIHBhdGg6IEFycmF5PHN0cmluZz4gPSBbXVxuKTogUmVzb2x2ZXJNYXAge1xuICBsZXQgcHJvZHVjdCA9IHt9XG5cbiAgcGF0aC5yZWR1Y2UoKHByZXYsIGN1cikgPT4ge1xuICAgIGlmICghYXQocHJvZHVjdCwgcHJldi5jb25jYXQoY3VyKSkpIHtcbiAgICAgIGF0KHByb2R1Y3QsIHByZXYuY29uY2F0KGN1ciksIHt9KVxuICAgIH1cbiAgICBwcmV2LnB1c2goY3VyKVxuXG4gICAgcmV0dXJuIHByZXZcbiAgfSwgW10pXG5cbiAgZm9yIChsZXQgW2tleSwgdmFsdWVdIG9mIE9iamVjdC5lbnRyaWVzKG9iamVjdCkpIHtcbiAgICBjb25zdCBpc09iamVjdDogYm9vbGVhbiA9IHZhbHVlIGluc3RhbmNlb2YgT2JqZWN0XG4gICAgY29uc3QgaXNGdW5jdGlvbjogYm9vbGVhbiA9IGlzT2JqZWN0ICYmIGlzRm4odmFsdWUpXG5cbiAgICBpZiAoaXNPYmplY3QgJiYgIWlzRnVuY3Rpb24pIHtcbiAgICAgIGNvbnN0IG5ld1BhdGggPSBwYXRoLmNvbmNhdChrZXkpXG4gICAgICBhdChcbiAgICAgICAgcHJvZHVjdCxcbiAgICAgICAgbmV3UGF0aCxcbiAgICAgICAgd2Fsa1Jlc29sdmVyTWFwKHZhbHVlLCBpbnNwZWN0b3IsIHdyYXAsIG5ld1BhdGgpXG4gICAgICApXG4gICAgfVxuICAgIGVsc2Uge1xuICAgICAgaWYgKCFpc09iamVjdCAmJiAhaXNGdW5jdGlvbikge1xuICAgICAgICAvLyBJbiB0aGUgY2FzZSB0aGF0IHdlIGhhdmUgYSBzdHJpbmcgbWFwcGluZyB0byBhIG5vbi1mdW5jdGlvbiBhbmQgYVxuICAgICAgICAvLyBub24tb2JqZWN0LCB3ZSBjYW4gZG8gb25lIG9mIHR3byB0aGluZ3MuIEVpdGhlciB3ZSBjYW4gdGhyb3cgYW4gZXJyb3JcbiAgICAgICAgLy8gb3IgYnkgZGVmYXVsdCB3ZSBzaW1wbHkgd3JhcCB0aGUgdmFsdWUgaW4gYSBmdW5jdGlvbiB0aGF0IHJldHVybnNcbiAgICAgICAgLy8gdGhhdCB2YWx1ZVxuICAgICAgICBpZiAoIXdyYXApIHtcbiAgICAgICAgICB0aHJvdyBuZXcgUmVzb2x2ZXJNYXBTdHVtYmxlKG5ldyBFcnJvcihcbiAgICAgICAgICAgIGBJbnZhbGlkIFJlc29sdmVyTWFwIGVudHJ5IGF0ICR7cGF0aC5qb2luKCcuJyl9LiR7a2V5fTogdmFsdWUgaXMgYCArXG4gICAgICAgICAgICBgbmVpdGhlciBhbiBvYmplY3Qgbm9yIGEgZnVuY3Rpb25gXG4gICAgICAgICAgKSlcbiAgICAgICAgfVxuICAgICAgICBlbHNlIHtcbiAgICAgICAgICB2YWx1ZSA9ICgpID0+IHZhbHVlXG4gICAgICAgIH1cbiAgICAgIH1cblxuICAgICAgbGV0IGVudHJ5ID0gaW5zcGVjdG9yKGtleSwgdmFsdWUsIHBhdGgsIG9iamVjdClcblxuICAgICAgaWYgKGVudHJ5ICE9PSB1bmRlZmluZWQpIHtcbiAgICAgICAgYXQocHJvZHVjdCwgcGF0aC5jb25jYXQoa2V5KSwgZW50cnlba2V5XSlcbiAgICAgIH1cbiAgICB9XG4gIH1cblxuICByZXR1cm4gcHJvZHVjdFxufVxuXG4vKipcbiAqIEdpdmVuIGEgYFJlc29sdmVyTWFwYCBvYmplY3QsIHdhbGsgaXRzIHByb3BlcnRpZXMgYW5kIGFsbG93IGV4ZWN1dGlvblxuICogd2l0aCBlYWNoIGtleSwgdmFsdWUgcGFpci4gSWYgdGhlIHN1cHBsaWVkIGZ1bmN0aW9uIGZvciBoYW5kbGluZyBhIGdpdmVuXG4gKiBlbnRyeSByZXR1cm5zIG51bGwgaW5zdGVhZCBvZiBhbiBvYmplY3Qgd2l0aCB0aGUgZm9ybWF0IGB7a2V5OiB2YWx1ZX1gXG4gKiB0aGVuIHRoYXQgZW50cnkgd2lsbCBub3QgYmUgaW5jbHVkZWQgaW4gdGhlIGZpbmFsIG91dHB1dC5cbiAqXG4gKiBAbWV0aG9kIGFzeW5jV2Fsa1Jlc29sdmVyTWFwXG4gKlxuICogQHBhcmFtIHtSZXNvbHZlck1hcH0gb2JqZWN0IGFuIG9iamVjdCBjb25mb3JtaW5nIHRvIHR5cGUgYFJlc29sdmVyTWFwYFxuICogQHBhcmFtIHtib29sZWFufSB3cmFwIGRlZmF1bHRzIHRvIHRydWUuIEFuIGVudHJ5IHdob3NlIHZhbHVlIGlzIG5laXRoZXIgYVxuICogZnVuY3Rpb24gbm9yIGFuIG9iamVjdCB3aWxsIGJlIHdyYXBwZWQgaW4gYSBmdW5jdGlvbiByZXR1cm5pbmcgdGhlIHZhbHVlLiBJZlxuICogZmFsc2UgaXMgc3VwcGxpZWQgaGVyZSwgYSBgUmVzb2x2ZXJNYXBTdHVtYmxlYCBlcnJvciB3aWxsIGJlIHRocm93biBpbnN0ZWFkXG4gKiBAcGFyYW0ge0FycmF5PHN0cmluZz59IHBhdGggYXMgYHdhbGtSZXNvbHZlck1hcGAgY2FsbHMgaXRzZWxmIHJlY3Vyc2l2ZWx5LFxuICAqIHBhdGggaXMgYXBwZW5kZWQgdG8gYW5kIGFkZGVkIGFzIGEgcGFyYW1ldGVyIHRvIGRldGVybWluZSB3aGVyZSBpbiB0aGUgdHJlZVxuICAqIHRoZSBjdXJyZW50IGV4ZWN1dGlvbiBpcyB3b3JraW5nXG4gKiBAcGFyYW0ge0FycmF5PGVycm9yPn0gc2tpcHMgaWYgc3VwcGxpZWQsIHRoaXMgYXJyYXkgd2lsbCBoYXZlIGFuIGFwcGVuZGVkXG4gKiBlcnJvciBmb3IgZWFjaCBzdWIgYXN5bmMgd2FsayBlcnJvciBjYXVnaHQuXG4gKiBAcmV0dXJuIHtSZXNvbHZlck1hcH0gdXBvbiBzdWNjZXNzZnVsIGNvbXBsZXRpb24sIGEgYFJlc29sdmVyTWFwYCBvYmplY3QsXG4gKiBtb2RpZmllZCBhcyBzcGVjaWZpZWQsIHdpbGwgYmUgcmV0dXJuZWQgaW5zdGVhZC5cbiAqL1xuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGFzeW5jV2Fsa1Jlc29sdmVyTWFwKFxuICBvYmplY3Q6IFJlc29sdmVyTWFwLFxuICBpbnNwZWN0b3I6IEFzeW5jRW50cnlJbnNwZWN0b3IgPSBEZWZhdWx0QXN5bmNFbnRyeUluc3BlY3RvcixcbiAgd3JhcDogYm9vbGVhbiA9IHRydWUsXG4gIHBhdGg6IEFycmF5PHN0cmluZz4gPSBbXSxcbiAgc2tpcHM6IEFycmF5PGVycm9yPlxuKTogUmVzb2x2ZXJNYXAge1xuICBsZXQgcHJvZHVjdCA9IHt9XG5cbiAgcGF0aC5yZWR1Y2UoKHByZXYsIGN1cikgPT4ge1xuICAgIGlmICghYXQocHJvZHVjdCwgcHJldi5jb25jYXQoY3VyKSkpIHtcbiAgICAgIGF0KHByb2R1Y3QsIHByZXYuY29uY2F0KGN1ciksIHt9KVxuICAgIH1cbiAgICBwcmV2LnB1c2goY3VyKVxuXG4gICAgcmV0dXJuIHByZXZcbiAgfSwgW10pXG5cbiAgZm9yIChsZXQgW2tleSwgdmFsdWVdIG9mIE9iamVjdC5lbnRyaWVzKG9iamVjdCkpIHtcbiAgICBjb25zdCBpc09iamVjdDogYm9vbGVhbiA9IHZhbHVlIGluc3RhbmNlb2YgT2JqZWN0XG4gICAgY29uc3QgaXNGdW5jdGlvbjogYm9vbGVhbiA9IGlzT2JqZWN0ICYmIGlzRm4odmFsdWUpXG5cbiAgICBpZiAoaXNPYmplY3QgJiYgIWlzRnVuY3Rpb24pIHtcbiAgICAgIHRyeSB7XG4gICAgICAgIGF0KFxuICAgICAgICAgIHByb2R1Y3QsXG4gICAgICAgICAgcGF0aC5jb25jYXQoa2V5KSxcbiAgICAgICAgICBhd2FpdCBhc3luY1dhbGtSZXNvbHZlck1hcCh2YWx1ZSwgaW5zcGVjdG9yLCB3cmFwLCBwYXRoLCBza2lwcylcbiAgICAgICAgKVxuICAgICAgfVxuICAgICAgY2F0Y2ggKHN0dW1ibGUpIHtcbiAgICAgICAgaWYgKHNraXBzICYmIEFycmF5LmlzQXJyYXkoc2tpcHMpKSB7XG4gICAgICAgICAgc2tpcHMucHVzaChuZXcgUmVzb2x2ZXJNYXBTdHVtYmxlKHN0dW1ibGUsIHtcbiAgICAgICAgICAgIGtleSxcbiAgICAgICAgICAgIHZhbHVlLFxuICAgICAgICAgICAgc291cmNlOiBvYmplY3QsXG4gICAgICAgICAgICBkZXN0aW5hdGlvbjogcHJvZHVjdFxuICAgICAgICAgIH0pKVxuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICAgIGVsc2Uge1xuICAgICAgaWYgKCFpc09iamVjdCAmJiAhaXNGdW5jdGlvbikge1xuICAgICAgICAvLyBJbiB0aGUgY2FzZSB0aGF0IHdlIGhhdmUgYSBzdHJpbmcgbWFwcGluZyB0byBhIG5vbi1mdW5jdGlvbiBhbmQgYVxuICAgICAgICAvLyBub24tb2JqZWN0LCB3ZSBjYW4gZG8gb25lIG9mIHR3byB0aGluZ3MuIEVpdGhlciB3ZSBjYW4gdGhyb3cgYW4gZXJyb3JcbiAgICAgICAgLy8gb3IgYnkgZGVmYXVsdCB3ZSBzaW1wbHkgd3JhcCB0aGUgdmFsdWUgaW4gYSBmdW5jdGlvbiB0aGF0IHJldHVybnNcbiAgICAgICAgLy8gdGhhdCB2YWx1ZVxuICAgICAgICBpZiAoIXdyYXApIHtcbiAgICAgICAgICB0aHJvdyBuZXcgUmVzb2x2ZXJNYXBTdHVtYmxlKG5ldyBFcnJvcignSW52YWxpZCBSZXNvbHZlck1hcCcpKVxuICAgICAgICB9XG4gICAgICAgIGVsc2Uge1xuICAgICAgICAgIHZhbHVlID0gKCkgPT4gdmFsdWVcbiAgICAgICAgfVxuICAgICAgfVxuXG4gICAgICBsZXQgZW50cnkgPSBhd2FpdCBpbnNwZWN0b3Ioa2V5LCB2YWx1ZSwgcGF0aCwgb2JqZWN0KVxuXG4gICAgICBpZiAoZW50cnkgIT09IHVuZGVmaW5lZCkge1xuICAgICAgICBhdChwcm9kdWN0LCBwYXRoLmNvbmNhdChrZXkpLCBlbnRyeVtrZXldKVxuICAgICAgfVxuICAgIH1cbiAgfVxuXG4gIHJldHVybiBwcm9kdWN0XG59XG5cbi8qKlxuICogVHlwZSBkZWZpbml0aW9uIGZvciBhIHByb3BlcnR5IHdpdGhpbiBhIFJlc29sdmVyTWFwLiBJdCBlbmNhcHN1bGF0ZXMgdGhlXG4gKiBwcm9wZXJ0eSdzIG5hbWUsIHZhbHVlLCB0aGUgcGF0aCB0byByZWFjaCBpdCB3aXRoaW4gdGhlIG9iamVjdCwgYW5kIHRoZVxuICogb2JqZWN0IGl0c2VsZi5cbiAqXG4gKiBAZmxvd1xuICogQHR5cGUge1Jlc29sdmVyUHJvcGVydHl9XG4gKi9cbmV4cG9ydCB0eXBlIFJlc29sdmVyUHJvcGVydHkgPSB7XG4gIG5hbWU6IHN0cmluZyxcbiAgdmFsdWU6IHVua25vd24sXG4gIHBhdGg6IEFycmF5PHN0cmluZz4sXG4gIG9iamVjdDogT2JqZWN0XG59XG5cbi8qKlxuICogTWVyZ2VzIHR3byByZXNvbHZlciBvYmplY3RzIHJlY3Vyc2l2ZWx5LiBJbiBjYXNlIG9mIGNvbmZsaWN0aW5nIGtleXMsIHRoZVxuICogcHJvdmlkZWQgYGNvbmZsaWN0UmVzb2x2ZXJgIGZ1bmN0aW9uIGlzIGNhbGxlZCB0byBkZXRlcm1pbmUgdGhlXG4gKiByZXN1bHRpbmcgdmFsdWUuXG4gKlxuICogQGZsb3dcbiAqIEBwYXJhbSB7T2JqZWN0fSBleGlzdGluZ1Jlc29sdmVycyAtIFRoZSBvcmlnaW5hbCBzZXQgb2YgcmVzb2x2ZXJzLlxuICogQHBhcmFtIHtPYmplY3R9IG5ld1Jlc29sdmVycyAtIFRoZSBzZXQgb2YgbmV3IHJlc29sdmVycyB0byBiZSBtZXJnZWQgaW50b1xuICogdGhlIGV4aXN0aW5nIG9uZXMuXG4gKiBAcGFyYW0ge2Z1bmN0aW9ufSBjb25mbGljdFJlc29sdmVyIC0gQSBmdW5jdGlvbiB0aGF0IHJlc29sdmVzIGNvbmZsaWN0c1xuICogYmV0d2VlbiBleGlzdGluZyBhbmQgbmV3IHJlc29sdmVyIHByb3BlcnRpZXMuXG4gKiBAcmV0dXJucyB7T2JqZWN0fSBUaGUgbWVyZ2VkIHNldCBvZiByZXNvbHZlcnMuXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBtZXJnZVJlc29sdmVycyhcbiAgZXhpc3RpbmdSZXNvbHZlcnM6IE9iamVjdCxcbiAgbmV3UmVzb2x2ZXJzOiBPYmplY3QsXG4gIGNvbmZsaWN0UmVzb2x2ZXI6IChcbiAgICBleGlzdGluZzogUmVzb2x2ZXJQcm9wZXJ0eSxcbiAgICBjb25mbGljdDogUmVzb2x2ZXJQcm9wZXJ0eVxuICApID0+IG1peGVkID0gKGUsYykgPT4gYy52YWx1ZVxuKSB7XG4gIC8vIFJlY3Vyc2l2ZSBmdW5jdGlvbiB0byB3YWxrIGFuZCBtZXJnZSB0aGUgcmVzb2x2ZXIgbWFwc1xuICBjb25zdCB3YWxrQW5kTWVyZ2UgPSAoY3VycmVudCwgaW5jb21pbmcsIHBhdGggPSBbXSkgPT4ge1xuICAgIGZvciAoY29uc3Qga2V5IG9mIE9iamVjdC5rZXlzKGluY29taW5nKSkge1xuICAgICAgY29uc3QgbmV3UGF0aCA9IHBhdGguY29uY2F0KGtleSk7XG5cbiAgICAgIC8vIENoZWNrIGlmIHRoZSBrZXkgZXhpc3RzIGluIHRoZSBjdXJyZW50IG9iamVjdFxuICAgICAgaWYgKFJlZmxlY3QuaGFzKGN1cnJlbnQsIGtleSkpIHtcbiAgICAgICAgY29uc3QgZXhpc3RpbmdWYWx1ZSA9IGN1cnJlbnRba2V5XTtcbiAgICAgICAgY29uc3QgaW5jb21pbmdWYWx1ZSA9IGluY29taW5nW2tleV07XG5cbiAgICAgICAgaWYgKGV4aXN0aW5nVmFsdWUgJiYgdHlwZW9mIGV4aXN0aW5nVmFsdWUgPT09ICdvYmplY3QnICYmICFBcnJheS5pc0FycmF5KGV4aXN0aW5nVmFsdWUpICYmICFpc0ZuKGV4aXN0aW5nVmFsdWUpKSB7XG4gICAgICAgICAgLy8gSWYgYm90aCBhcmUgb2JqZWN0cywgd2UgbmVlZCB0byBnbyBkZWVwZXJcbiAgICAgICAgICB3YWxrQW5kTWVyZ2UoZXhpc3RpbmdWYWx1ZSwgaW5jb21pbmdWYWx1ZSwgbmV3UGF0aCk7XG4gICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgLy8gQ29uZmxpY3QgZGV0ZWN0ZWQsIGNhbGwgdGhlIHVzZXItc3VwcGxpZWQgY29uZmxpY3QgcmVzb2x1dGlvbiBmdW5jdGlvblxuICAgICAgICAgIGNvbnN0IGV4aXN0aW5nUHJvcDogUmVzb2x2ZXJQcm9wZXJ0eSA9IHtcbiAgICAgICAgICAgIG5hbWU6IGtleSwgdmFsdWU6IGV4aXN0aW5nVmFsdWUsIHBhdGgsIG9iamVjdDogZXhpc3RpbmdSZXNvbHZlcnNcbiAgICAgICAgICB9XG4gICAgICAgICAgY29uc3QgaW5jb21pbmdQcm9wOiBSZXNvbHZlclByb3BlcnR5ID0ge1xuICAgICAgICAgICAgbmFtZToga2V5LCB2YWx1ZTogaW5jb21pbmdWYWx1ZSwgcGF0aCwgb2JqZWN0OiBuZXdSZXNvbHZlcnNcbiAgICAgICAgICB9XG4gICAgICAgICAgY3VycmVudFtrZXldID0gY29uZmxpY3RSZXNvbHZlcihleGlzdGluZ1Byb3AsIGluY29taW5nUHJvcCk7XG4gICAgICAgIH1cbiAgICAgIH0gZWxzZSB7XG4gICAgICAgIC8vIE5vIGNvbmZsaWN0LCBqdXN0IHNldCB0aGUgdmFsdWUgZnJvbSB0aGUgaW5jb21pbmcgb2JqZWN0XG4gICAgICAgIGN1cnJlbnRba2V5XSA9IGluY29taW5nW2tleV07XG4gICAgICB9XG4gICAgfVxuXG4gICAgcmV0dXJuIGN1cnJlbnRcbiAgfVxuXG4gIHJldHVybiB3YWxrQW5kTWVyZ2UoZXhpc3RpbmdSZXNvbHZlcnMsIG5ld1Jlc29sdmVycywg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
+//# sourceMappingURL=walkResolverMap.js.map

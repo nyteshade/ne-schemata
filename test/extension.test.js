@@ -1,11 +1,4 @@
-/**
- ** NOTE!!
- ** jest mocks up the require() hook entirely. Changes made to GraphQLExtension
- ** need to be reflected in the jestTransformer class or you will see strange
- ** errors crop up during testing.
- **
- ** Future self, you have been warned
- **/
+import { describe, it, expect } from 'vitest'
 
 import {
   astNode,

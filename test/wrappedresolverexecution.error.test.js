@@ -1,5 +1,5 @@
+import { describe, it, expect } from 'vitest'
 import { WrappedResolverExecutionError, ExtendedResolver } from '..'
-import { dropLowest } from 'ne-tag-fns'
 
 describe('Ensure wrapped resolver execution error works as expected', () => {
   const baseError = new Error('I am a contrived error')
@@ -18,14 +18,14 @@ describe('Ensure wrapped resolver execution error works as expected', () => {
       resolver,
       index,
       args,
-      context, 
+      context,
       results
     )
   }
 
   it('should not throw an error when invoking toString()', () => {
     expect(() => {
-      wreError = createError() 
+      wreError = createError()
 
       console.log('Sample Error')
       console.log(wreError.toString())
@@ -33,7 +33,7 @@ describe('Ensure wrapped resolver execution error works as expected', () => {
   })
 
   it('should have matching toString() and valueOf()', () => {
-    wreError = createError()      
+    wreError = createError()
 
     expect(wreError.toString()).toEqual('' + wreError)
   })

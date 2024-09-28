@@ -11,7 +11,6 @@ const {
   walkResolverMap,
 } = require('.')
 const { parse, print, printSchema } = require('graphql')
-const { merge } = require('lodash')
 
 let repl = require('repl')
 
@@ -52,7 +51,7 @@ let sdlB = Schemata.from(
 let merged = sdlA.merge(sdlB, { createMissingResolvers: true })
 let schema = merged.schema
 
-let context = merge(global, {
+let context = Object.assign(global, {
   Schemata,
   gql,
   parse,
@@ -71,7 +70,7 @@ let context = merge(global, {
   schema,
 })
 
-const help = 
+const help =
 `
 Welcome to the Schemata string repl bootstrapping process, the
 following objects are in scope for you to use

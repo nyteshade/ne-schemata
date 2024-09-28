@@ -1,69 +1,43 @@
 "use strict";
 
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.reflect.to-string-tag.js");
-require("core-js/modules/es.reflect.construct.js");
-require("core-js/modules/es.error.cause.js");
-require("core-js/modules/es.error.to-string.js");
-require("core-js/modules/es.object.create.js");
-require("core-js/modules/es.object.define-property.js");
-require("core-js/modules/es.symbol.to-primitive.js");
-require("core-js/modules/es.date.to-primitive.js");
-require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.symbol.description.js");
-require("core-js/modules/es.number.constructor.js");
-require("core-js/modules/es.symbol.iterator.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.InvalidObjectError = void 0;
-require("core-js/modules/es.array.concat.js");
-require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.object.set-prototype-of.js");
-require("core-js/modules/es.function.bind.js");
-require("core-js/modules/es.object.get-prototype-of.js");
-require("core-js/modules/es.object.proto.js");
-var _BaseError2 = _interopRequireDefault(require("../BaseError"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+exports.default = exports.InvalidObjectError = void 0;
+var _BaseError = _interopRequireDefault(require("./BaseError.js"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+// @ts-check
+
 /**
  * The InvalidObjectError class represents an error that occurs when a non-object
  * value is provided as the target object to the `at` or `atNicely` functions.
  * This error provides details about the type of the value that caused the error.
  */
-var InvalidObjectError = exports.InvalidObjectError = /*#__PURE__*/function (_BaseError) {
-  _inherits(InvalidObjectError, _BaseError);
-  var _super = _createSuper(InvalidObjectError);
-  function InvalidObjectError(valueType, message) {
-    var _this;
-    _classCallCheck(this, InvalidObjectError);
-    _this = _super.call(this, message || "Invalid object: Received type ".concat(valueType));
-    _this.valueType = valueType;
-    return _this;
+class InvalidObjectError extends _BaseError.default {
+  /** @type {string} */
+
+  /**
+   * Creates a new `InvalidObjectError` instance.
+   *
+   * @param {string} valueType the type of object incorrectly received
+   * @param {string?} message an optional message instead of the default which
+   * indicates the type of value incorrectly received.
+   */
+  constructor(valueType, message) {
+    super(message || `Invalid object: Received type ${valueType}`);
+    this.valueType = valueType;
   }
-  _createClass(InvalidObjectError, [{
-    key: "toString",
-    value: function toString() {
-      return "".concat(this.constructor.name, ": ").concat(this.message, " (type: ").concat(this.valueType, ")");
-    }
-  }]);
-  return InvalidObjectError;
-}(_BaseError2["default"]);
-var _default = exports["default"] = {
-  InvalidObjectError: InvalidObjectError
-};
+
+  /**
+   * A nicely formatted variant of this error instance.
+   *
+   * @returns {string}
+   */
+  toString() {
+    return `${this.constructor.name}: ${this.message} (type: ${this.valueType})`;
+  }
+}
+exports.InvalidObjectError = InvalidObjectError;
+var _default = exports.default = InvalidObjectError;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJfQmFzZUVycm9yIiwiX2ludGVyb3BSZXF1aXJlRGVmYXVsdCIsInJlcXVpcmUiLCJlIiwiX19lc01vZHVsZSIsImRlZmF1bHQiLCJJbnZhbGlkT2JqZWN0RXJyb3IiLCJCYXNlRXJyb3IiLCJjb25zdHJ1Y3RvciIsInZhbHVlVHlwZSIsIm1lc3NhZ2UiLCJ0b1N0cmluZyIsIm5hbWUiLCJleHBvcnRzIiwiX2RlZmF1bHQiXSwic291cmNlcyI6WyIuLi8uLi9zcmMvZXJyb3JzL0ludmFsaWRPYmplY3RFcnJvci5qcyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBAdHMtY2hlY2tcblxuaW1wb3J0IEJhc2VFcnJvciBmcm9tICcuL0Jhc2VFcnJvci5qcyc7XG5cbi8qKlxuICogVGhlIEludmFsaWRPYmplY3RFcnJvciBjbGFzcyByZXByZXNlbnRzIGFuIGVycm9yIHRoYXQgb2NjdXJzIHdoZW4gYSBub24tb2JqZWN0XG4gKiB2YWx1ZSBpcyBwcm92aWRlZCBhcyB0aGUgdGFyZ2V0IG9iamVjdCB0byB0aGUgYGF0YCBvciBgYXROaWNlbHlgIGZ1bmN0aW9ucy5cbiAqIFRoaXMgZXJyb3IgcHJvdmlkZXMgZGV0YWlscyBhYm91dCB0aGUgdHlwZSBvZiB0aGUgdmFsdWUgdGhhdCBjYXVzZWQgdGhlIGVycm9yLlxuICovXG5leHBvcnQgY2xhc3MgSW52YWxpZE9iamVjdEVycm9yIGV4dGVuZHMgQmFzZUVycm9yIHtcbiAgLyoqIEB0eXBlIHtzdHJpbmd9ICovXG4gIHZhbHVlVHlwZTtcblxuICAvKipcbiAgICogQ3JlYXRlcyBhIG5ldyBgSW52YWxpZE9iamVjdEVycm9yYCBpbnN0YW5jZS5cbiAgICpcbiAgICogQHBhcmFtIHtzdHJpbmd9IHZhbHVlVHlwZSB0aGUgdHlwZSBvZiBvYmplY3QgaW5jb3JyZWN0bHkgcmVjZWl2ZWRcbiAgICogQHBhcmFtIHtzdHJpbmc/fSBtZXNzYWdlIGFuIG9wdGlvbmFsIG1lc3NhZ2UgaW5zdGVhZCBvZiB0aGUgZGVmYXVsdCB3aGljaFxuICAgKiBpbmRpY2F0ZXMgdGhlIHR5cGUgb2YgdmFsdWUgaW5jb3JyZWN0bHkgcmVjZWl2ZWQuXG4gICAqL1xuICBjb25zdHJ1Y3Rvcih2YWx1ZVR5cGUsIG1lc3NhZ2UpIHtcbiAgICBzdXBlcihtZXNzYWdlIHx8IGBJbnZhbGlkIG9iamVjdDogUmVjZWl2ZWQgdHlwZSAke3ZhbHVlVHlwZX1gKTtcbiAgICB0aGlzLnZhbHVlVHlwZSA9IHZhbHVlVHlwZTtcbiAgfVxuXG4gIC8qKlxuICAgKiBBIG5pY2VseSBmb3JtYXR0ZWQgdmFyaWFudCBvZiB0aGlzIGVycm9yIGluc3RhbmNlLlxuICAgKlxuICAgKiBAcmV0dXJucyB7c3RyaW5nfVxuICAgKi9cbiAgdG9TdHJpbmcoKSB7XG4gICAgcmV0dXJuIGAke3RoaXMuY29uc3RydWN0b3IubmFtZX06ICR7dGhpcy5tZXNzYWdlfSAodHlwZTogJHt0aGlzLnZhbHVlVHlwZX0pYDtcbiAgfVxufVxuXG5leHBvcnQgZGVmYXVsdCBJbnZhbGlkT2JqZWN0RXJyb3JcbiJdLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBRUEsSUFBQUEsVUFBQSxHQUFBQyxzQkFBQSxDQUFBQyxPQUFBO0FBQXVDLFNBQUFELHVCQUFBRSxDQUFBLFdBQUFBLENBQUEsSUFBQUEsQ0FBQSxDQUFBQyxVQUFBLEdBQUFELENBQUEsS0FBQUUsT0FBQSxFQUFBRixDQUFBO0FBRnZDOztBQUlBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDTyxNQUFNRyxrQkFBa0IsU0FBU0Msa0JBQVMsQ0FBQztFQUNoRDs7RUFHQTtBQUNGO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtFQUNFQyxXQUFXQSxDQUFDQyxTQUFTLEVBQUVDLE9BQU8sRUFBRTtJQUM5QixLQUFLLENBQUNBLE9BQU8sSUFBSSxpQ0FBaUNELFNBQVMsRUFBRSxDQUFDO0lBQzlELElBQUksQ0FBQ0EsU0FBUyxHQUFHQSxTQUFTO0VBQzVCOztFQUVBO0FBQ0Y7QUFDQTtBQUNBO0FBQ0E7RUFDRUUsUUFBUUEsQ0FBQSxFQUFHO0lBQ1QsT0FBTyxHQUFHLElBQUksQ0FBQ0gsV0FBVyxDQUFDSSxJQUFJLEtBQUssSUFBSSxDQUFDRixPQUFPLFdBQVcsSUFBSSxDQUFDRCxTQUFTLEdBQUc7RUFDOUU7QUFDRjtBQUFDSSxPQUFBLENBQUFQLGtCQUFBLEdBQUFBLGtCQUFBO0FBQUEsSUFBQVEsUUFBQSxHQUFBRCxPQUFBLENBQUFSLE9BQUEsR0FFY0Msa0JBQWtCIiwiaWdub3JlTGlzdCI6W119
+//# sourceMappingURL=InvalidObjectError.js.map

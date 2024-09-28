@@ -1,19 +1,34 @@
-// @flow
+// @ts-check
 
-import BaseError from '../BaseError';
+import BaseError from './BaseError.js';
+
 /**
  * The InvalidPathError class represents an error that occurs when an invalid
  * path is provided to the `at` or `atNicely` functions. This error provides
  * details about the path that caused the error.
  */
 export class InvalidPathError extends BaseError {
-  path: string | Array<string>;
+  /** @type {string|string[]} */
+  path;
 
-  constructor(path: string | Array<string>, message?: string) {
-    super(message || `Invalid path: ${Array.isArray(path) ? path.join('.') : path}`)
+  /**
+   * Creates a new instance of `InvalidPathError` for when an invalid path or
+   * paths were supplied
+   *
+   * @param {string|string[]} path the invalid paths supplied
+   * @param {string?} message an optional error message to replace the default
+   */
+  constructor(path, message) {
+    super(
+      message ??
+      `Invalid path: ${Array.isArray(path) ? path.join('.') : path}`
+    )
     this.path = path
   }
 
+  /**
+   * @returns {string} a nicely formatted string variant of this error instance
+   */
   toString() {
     return (
       `${this.constructor.name}: ${this.message} (path: ` +
@@ -22,6 +37,4 @@ export class InvalidPathError extends BaseError {
   }
 }
 
-export default {
-  InvalidPathError
-}
+export default InvalidPathError

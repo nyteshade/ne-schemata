@@ -1,4 +1,4 @@
-// @flow
+// @ts-check
 
 // Internal shorthand for the magic toString() function
 const _toString = Object.prototype.toString
@@ -46,7 +46,7 @@ export const isFn = obj => Function.name === getType(obj)
  * prototype chain. The `actual` getter attempts to convert type names back
  * to their evaluated types.
  */
-export function protoChain(object: mixed): Array<string> {
+export function protoChain(object: unknown): Array<string> {
   if (object === null || object === undefined) { return [getType(object)] }
 
   let chain = [ Object.getPrototypeOf(object) ]

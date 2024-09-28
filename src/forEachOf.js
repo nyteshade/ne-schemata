@@ -1,4 +1,4 @@
-// @flow
+// @ts-check
 
 import {
   getNamedType,
@@ -13,23 +13,23 @@ import {
 } from 'graphql'
 
 export type ForEachOfResolver = (
-  type: mixed,
+  type: unknown,
   typeName: string,
   typeDirectives: Array<GraphQLDirective>,
   schema: GraphQLSchema,
-  context: mixed
+  context: unknown
 ) => void
 
 export type ForEachFieldResolver = (
-  type: mixed,
+  type: unknown,
   typeName: string,
   typeDirectives: Array<GraphQLDirective>,
-  field: mixed,
+  field: unknown,
   fieldName: string,
   fieldArgs: Array<GraphQLArgument>,
   fieldDirectives: Array<GraphQLDirective>,
   schema: GraphQLSchema,
-  context: mixed
+  context: unknown
 ) => void
 
 // Create constants for each of the types allowed, over which one might
@@ -49,6 +49,8 @@ const Masks = [
   ALL, TYPES, INTERFACES, UNIONS, ENUMS, SCALARS,
   ROOT_TYPES, INPUT_TYPES
 ]
+export type BitmaskedType =
+  ALL | TYPES | INTERFACES | ENUMS | UNIONS | SCALARS | ROOT_TYPES | INPUT_TYPES | HIDDEN
 
 // Create a mapping from the constant to the GraphQL type class.
 const TypeMap: Map<number, GraphQLType> = new Map()
@@ -70,11 +72,11 @@ TypeMap.set(SCALARS, GraphQLScalarType)
  *
  * The signature for the function callback is as follows:
  * (
- *   type: mixed,
+ *   type: unknown,
  *   typeName: string,
  *   typeDirectives: Array<GraphQLDirective>
  *   schema: GraphQLSchema,
- *   context: mixed,
+ *   context: unknown,
  * ) => void
  *
  * Where:
@@ -99,7 +101,7 @@ TypeMap.set(SCALARS, GraphQLScalarType)
 function forEachOf(
   schema: GraphQLSchema,
   fn: ForEachOfResolver,
-  context: mixed,
+  context: unknown,
   types: number = ALL
 ): GraphQLSchema {
   [
@@ -166,15 +168,15 @@ function forEachOf(
  * The signature for the callback function is as follows
  *
  * (
- *   type: mixed,
+ *   type: unknown,
  *   typeName: string,
  *   typeDirectives: Array<GraphQLDirective>,
- *   field: mixed,
+ *   field: unknown,
  *   fieldName: string,
  *   fieldArgs: Array<GraphQLArgument>,
  *   fieldDirectives: Array<GraphQLDirective>,
  *   schema: GraphQLSchema,
- *   context: mixed
+ *   context: unknown
  * ) => void
  *
  * Where
@@ -201,7 +203,7 @@ function forEachOf(
 function forEachField(
   schema: GraphQLSchema,
   fn: ForEachFieldResolver,
-  context: mixed,
+  context: unknown,
   types: number = ALL
 ): GraphQLSchema {
   forEachOf(

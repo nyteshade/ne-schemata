@@ -1,5 +1,8 @@
 "use strict";
 
-var _require = require('./GraphQLExtension'),
-  register = _require.register;
+const {
+  register
+} = require('./GraphQLExtension');
 register('.graphql');
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJyZWdpc3RlciIsInJlcXVpcmUiXSwic291cmNlcyI6WyIuLi9zcmMvcmVnaXN0ZXIuanMiXSwic291cmNlc0NvbnRlbnQiOlsiY29uc3QgeyByZWdpc3RlciB9ID0gcmVxdWlyZSgnLi9HcmFwaFFMRXh0ZW5zaW9uJylcblxucmVnaXN0ZXIoJy5ncmFwaHFsJylcblxuIl0sIm1hcHBpbmdzIjoiOztBQUFBLE1BQU07RUFBRUE7QUFBUyxDQUFDLEdBQUdDLE9BQU8sQ0FBQyxvQkFBb0IsQ0FBQztBQUVsREQsUUFBUSxDQUFDLFVBQVUsQ0FBQyIsImlnbm9yZUxpc3QiOltdfQ==
+//# sourceMappingURL=register.js.map

@@ -1,0 +1,1 @@
+{"version":3,"file":"register.js","names":["register","require"],"sources":["../src/register.js"],"sourcesContent":["const { register } = require('./GraphQLExtension')\n\nregister('.graphql')\n\n"],"mappings":";;AAAA,MAAM;EAAEA;AAAS,CAAC,GAAGC,OAAO,CAAC,oBAAoB,CAAC;AAElDD,QAAQ,CAAC,UAAU,CAAC","ignoreList":[]}

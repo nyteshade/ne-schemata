@@ -1,4 +1,4 @@
-// @flow
+// @ts-check
 
 import type { ResolverMap, EntryInspector, AsyncEntryInspector } from './types'
 import { ResolverMapStumble } from './errors'
@@ -214,7 +214,7 @@ export async function asyncWalkResolverMap(
  */
 export type ResolverProperty = {
   name: string,
-  value: mixed,
+  value: unknown,
   path: Array<string>,
   object: Object
 }

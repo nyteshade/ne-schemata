@@ -1,41 +1,13 @@
 "use strict";
 
-require("core-js/modules/es.array.is-array.js");
-require("core-js/modules/es.symbol.iterator.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
-require("core-js/modules/es.array.slice.js");
-require("core-js/modules/es.error.to-string.js");
-require("core-js/modules/es.date.to-string.js");
-require("core-js/modules/es.regexp.to-string.js");
-require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.array.from.js");
-require("core-js/modules/es.regexp.exec.js");
-require("core-js/modules/es.regexp.test.js");
-require("core-js/modules/es.error.cause.js");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = exports.RESOLVE_TYPE = exports.IS_TYPE_OF = exports.FIELD_DESCRIPTIONS = exports.DESCRIPTION = void 0;
+exports.default = exports.RESOLVE_TYPE = exports.IS_TYPE_OF = exports.FIELD_DESCRIPTIONS = exports.DESCRIPTION = void 0;
 exports.extractResolverInfo = extractResolverInfo;
-require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.symbol.description.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.object.entries.js");
-require("core-js/modules/es.reflect.has.js");
-require("core-js/modules/es.reflect.to-string-tag.js");
-require("core-js/modules/es.object.define-property.js");
-require("core-js/modules/es.array.for-each.js");
-require("core-js/modules/web.dom-collections.for-each.js");
-require("core-js/modules/es.array.push.js");
 var _typework = require("./typework");
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+// @ts-check
+
 /**
  * This constant type when applied to a ResolverMap object, will be picked up
  * by `extractResolverInfo` and be applied to the type on the executableSchema
@@ -43,7 +15,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  *
  * @type {Symbol}
  */
-var IS_TYPE_OF = exports.IS_TYPE_OF = Symbol["for"]('Resolver.isTypeOf');
+const IS_TYPE_OF = exports.IS_TYPE_OF = Symbol.for('Resolver.isTypeOf');
 
 /**
  * This constant type when applied to a ResolverMap object, will be picked up
@@ -52,7 +24,7 @@ var IS_TYPE_OF = exports.IS_TYPE_OF = Symbol["for"]('Resolver.isTypeOf');
  *
  * @type {Symbol}
  */
-var RESOLVE_TYPE = exports.RESOLVE_TYPE = Symbol["for"]('Resolver.resolveType');
+const RESOLVE_TYPE = exports.RESOLVE_TYPE = Symbol.for('Resolver.resolveType');
 
 /**
  * A programmatic way to define a description outside of SDL. This is handy
@@ -63,7 +35,7 @@ var RESOLVE_TYPE = exports.RESOLVE_TYPE = Symbol["for"]('Resolver.resolveType');
  *
  * @type {Symbol}
  */
-var DESCRIPTION = exports.DESCRIPTION = Symbol["for"]('Resolver.description');
+const DESCRIPTION = exports.DESCRIPTION = Symbol.for('Resolver.description');
 
 /**
  * Unlike `DESCRIPTION` which defines the description of the type, this symbol
@@ -73,7 +45,7 @@ var DESCRIPTION = exports.DESCRIPTION = Symbol["for"]('Resolver.description');
  *
  * @type {Symbol}
  */
-var FIELD_DESCRIPTIONS = exports.FIELD_DESCRIPTIONS = Symbol["for"]('Resolver.fieldDescriptions');
+const FIELD_DESCRIPTIONS = exports.FIELD_DESCRIPTIONS = Symbol.for('Resolver.fieldDescriptions');
 
 /**
  * Walks a resolvers object and returns an array of objects with specific properties.
@@ -82,17 +54,13 @@ var FIELD_DESCRIPTIONS = exports.FIELD_DESCRIPTIONS = Symbol["for"]('Resolver.fi
  * @param {boolean} [deleteFields=false] - Whether to delete fields that are collected.
  * @returns {Array} - The array of objects with specified properties.
  */
-function extractResolverInfo(resolvers) {
-  var deleteFields = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var result = [];
-  var _loop = function _loop() {
-    var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
-      type = _Object$entries$_i[0],
-      resolver = _Object$entries$_i[1];
-    var item = {
-      type: type
+function extractResolverInfo(resolvers, deleteFields = false) {
+  const result = [];
+  for (const [type, resolver] of Object.entries(resolvers)) {
+    const item = {
+      type
     };
-    var include = false;
+    let include = false;
 
     // Check for isTypeOf or __isTypeOf function
     if (resolver[IS_TYPE_OF] || resolver.__isTypeOf) {
@@ -116,9 +84,7 @@ function extractResolverInfo(resolvers) {
 
     // Check for description field
     if (resolver[DESCRIPTION]) {
-      item.description = typeof resolver[DESCRIPTION] === 'string' ? function () {
-        return resolver[DESCRIPTION];
-      } : resolver[DESCRIPTION];
+      item.description = typeof resolver[DESCRIPTION] === 'string' ? () => resolver[DESCRIPTION] : resolver[DESCRIPTION];
       include = true;
       if (deleteFields) {
         delete resolver[DESCRIPTION];
@@ -136,44 +102,39 @@ function extractResolverInfo(resolvers) {
 
     // Only add item to result if it has more than just the type property
     if (include) {
-      item.applyTo = function applyTo(schema) {
-        var overwrite = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      item.applyTo = function applyTo(schema, overwrite = false) {
         if (Reflect.has(schema._typeMap, this.type)) {
-          var resolveType = this.resolveType,
-            isTypeOf = this.isTypeOf,
-            description = this.description,
-            fieldDescriptions = this.fieldDescriptions;
-          var _type = schema._typeMap[this.type];
-          if (resolveType && Reflect.has(_type, 'resolveType')) {
-            if (!_type.resolveType || overwrite) {
-              _type.resolveType = resolveType;
+          let {
+            resolveType,
+            isTypeOf,
+            description,
+            fieldDescriptions
+          } = this;
+          let type = schema._typeMap[this.type];
+          if (resolveType && Reflect.has(type, 'resolveType')) {
+            if (!type.resolveType || overwrite) {
+              type.resolveType = resolveType;
             }
           }
-          if (isTypeOf && Reflect.has(_type, 'isTypeOf')) {
-            if (!_type.isTypeOf || overwrite) {
-              _type.isTypeOf = isTypeOf;
+          if (isTypeOf && Reflect.has(type, 'isTypeOf')) {
+            if (!type.isTypeOf || overwrite) {
+              type.isTypeOf = isTypeOf;
             }
           }
-          if (description && Reflect.has(_type, 'description')) {
-            if (!_type.description || overwrite) {
-              Object.defineProperty(_type, 'description', {
+          if (description && Reflect.has(type, 'description')) {
+            if (!type.description || overwrite) {
+              Object.defineProperty(type, 'description', {
                 get: description,
                 configurable: true,
                 enumerable: true
               });
             }
           }
-          if (fieldDescriptions && Reflect.has(_type, '_fields')) {
-            Object.entries(fieldDescriptions).forEach(function (_ref) {
-              var _type$_fields$field;
-              var _ref2 = _slicedToArray(_ref, 2),
-                field = _ref2[0],
-                description = _ref2[1];
-              if (!((_type$_fields$field = _type._fields[field]) !== null && _type$_fields$field !== void 0 && _type$_fields$field.description) || overwrite) {
-                var getter = (0, _typework.protoChain)(description).isa(Function) ? description : function () {
-                  return description;
-                };
-                Object.defineProperty(_type._fields[field], 'description', {
+          if (fieldDescriptions && Reflect.has(type, '_fields')) {
+            Object.entries(fieldDescriptions).forEach(([field, description]) => {
+              if (!type._fields[field]?.description || overwrite) {
+                const getter = (0, _typework.protoChain)(description).isa(Function) ? description : () => description;
+                Object.defineProperty(type._fields[field], 'description', {
                   get: getter,
                   configurable: true,
                   enumerable: true
@@ -185,18 +146,14 @@ function extractResolverInfo(resolvers) {
       };
       result.push(item);
     }
-  };
-  for (var _i = 0, _Object$entries = Object.entries(resolvers); _i < _Object$entries.length; _i++) {
-    _loop();
   }
   if (result.length) {
-    result.applyTo = function applyTo(schema) {
-      var overwrite = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      result.forEach(function (info) {
-        return info.applyTo(schema, overwrite);
-      });
+    result.applyTo = function applyTo(schema, overwrite = false) {
+      result.forEach(info => info.applyTo(schema, overwrite));
     };
   }
   return result;
 }
-var _default = exports["default"] = extractResolverInfo;
+var _default = exports.default = extractResolverInfo;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJfdHlwZXdvcmsiLCJyZXF1aXJlIiwiSVNfVFlQRV9PRiIsImV4cG9ydHMiLCJTeW1ib2wiLCJmb3IiLCJSRVNPTFZFX1RZUEUiLCJERVNDUklQVElPTiIsIkZJRUxEX0RFU0NSSVBUSU9OUyIsImV4dHJhY3RSZXNvbHZlckluZm8iLCJyZXNvbHZlcnMiLCJkZWxldGVGaWVsZHMiLCJyZXN1bHQiLCJ0eXBlIiwicmVzb2x2ZXIiLCJPYmplY3QiLCJlbnRyaWVzIiwiaXRlbSIsImluY2x1ZGUiLCJfX2lzVHlwZU9mIiwiaXNUeXBlT2YiLCJfX3Jlc29sdmVUeXBlIiwicmVzb2x2ZVR5cGUiLCJkZXNjcmlwdGlvbiIsInByb3RvQ2hhaW4iLCJpc2EiLCJmaWVsZERlc2NyaXB0aW9ucyIsImFwcGx5VG8iLCJzY2hlbWEiLCJvdmVyd3JpdGUiLCJSZWZsZWN0IiwiaGFzIiwiX3R5cGVNYXAiLCJkZWZpbmVQcm9wZXJ0eSIsImdldCIsImNvbmZpZ3VyYWJsZSIsImVudW1lcmFibGUiLCJmb3JFYWNoIiwiZmllbGQiLCJfZmllbGRzIiwiZ2V0dGVyIiwiRnVuY3Rpb24iLCJwdXNoIiwibGVuZ3RoIiwiaW5mbyIsIl9kZWZhdWx0IiwiZGVmYXVsdCJdLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy91dGlscy9yZXNvbHZlcndvcmsuanMiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gQHRzLWNoZWNrXG5cbmltcG9ydCB0eXBlIHsgUmVzb2x2ZXJJbmZvLCBSZXNvbHZlck1hcCB9IGZyb20gJy4uL3R5cGVzJ1xuaW1wb3J0IHsgcHJvdG9DaGFpbiB9IGZyb20gJy4vdHlwZXdvcmsnXG5cbi8qKlxuICogVGhpcyBjb25zdGFudCB0eXBlIHdoZW4gYXBwbGllZCB0byBhIFJlc29sdmVyTWFwIG9iamVjdCwgd2lsbCBiZSBwaWNrZWQgdXBcbiAqIGJ5IGBleHRyYWN0UmVzb2x2ZXJJbmZvYCBhbmQgYmUgYXBwbGllZCB0byB0aGUgdHlwZSBvbiB0aGUgZXhlY3V0YWJsZVNjaGVtYVxuICogdHlwZSdzIGBpc1R5cGVPZmAgcHJvcGVydHlcbiAqXG4gKiBAdHlwZSB7U3ltYm9sfVxuICovXG5leHBvcnQgY29uc3QgSVNfVFlQRV9PRiA9IFN5bWJvbC5mb3IoJ1Jlc29sdmVyLmlzVHlwZU9mJylcblxuLyoqXG4gKiBUaGlzIGNvbnN0YW50IHR5cGUgd2hlbiBhcHBsaWVkIHRvIGEgUmVzb2x2ZXJNYXAgb2JqZWN0LCB3aWxsIGJlIHBpY2tlZCB1cFxuICogYnkgYGV4dHJhY3RSZXNvbHZlckluZm9gIGFuZCBiZSBhcHBsaWVkIHRvIHRoZSB0eXBlIG9uIHRoZSBleGVjdXRhYmxlU2NoZW1hXG4gKiB0eXBlJ3MgYHJlc29sdmVUeXBlYCBwcm9wZXJ0eVxuICpcbiAqIEB0eXBlIHtTeW1ib2x9XG4gKi9cbmV4cG9ydCBjb25zdCBSRVNPTFZFX1RZUEUgPSBTeW1ib2wuZm9yKCdSZXNvbHZlci5yZXNvbHZlVHlwZScpXG5cbi8qKlxuICogQSBwcm9ncmFtbWF0aWMgd2F5IHRvIGRlZmluZSBhIGRlc2NyaXB0aW9uIG91dHNpZGUgb2YgU0RMLiBUaGlzIGlzIGhhbmR5XG4gKiB3aGVuIHByb3ZpZGVkIGFzIGEgZ2V0dGVyIG9uIHRoZSBzY2hlbWEncyB0eXBlIG9iamVjdC4gVGhlIGdldHRlciBnZXRzIGludm9rZWRcbiAqIGVhY2ggdGltZSB0aGUgZGVzY3JpcHRpb24gZmllbGQgaXMgYWNjZXNzZWQgYWxsb3dpbmcgZHluYW1pYyBjb250ZW50IHRvIGJlXG4gKiBwcmVzZW50ZWQgaW5zdGVhZCBvZiBzdGF0aWMgY29udGVudC4gTm90ZSB0aGF0IGxvbmcgcnVubmluZyBmdW5jdGlvbiB3b3JrXG4gKiBoZXJlIGNhbiBzbG93IGRvd24gYWxsIGl0ZW1zIHZpZXdpbmcgdGhlIGRlc2NyaXB0aW9uXG4gKlxuICogQHR5cGUge1N5bWJvbH1cbiAqL1xuZXhwb3J0IGNvbnN0IERFU0NSSVBUSU9OID0gU3ltYm9sLmZvcignUmVzb2x2ZXIuZGVzY3JpcHRpb24nKVxuXG4vKipcbiAqIFVubGlrZSBgREVTQ1JJUFRJT05gIHdoaWNoIGRlZmluZXMgdGhlIGRlc2NyaXB0aW9uIG9mIHRoZSB0eXBlLCB0aGlzIHN5bWJvbFxuICogc2hvdWxkIGFsd2F5cyBwb2ludCB0byBhbiBvYmplY3Qgd2hvc2Uga2V5cyBhcmUgdGhlIGZpZWxkIG5hbWVzIGFuZCB3aG9zZVxuICogdmFsdWVzIGFyZSB0aGUgZGVzY3JpcHRpb25zLiBTdHJpbmcgY29uc3RhbnQgdmFsdWVzIHdpbGwgYmUgY29udmVydGVkIHRvIGFcbiAqIGZ1bmN0aW9uIHRoYXQgcmV0dXJucyB0aGUgY29uc3RhbnQuXG4gKlxuICogQHR5cGUge1N5bWJvbH1cbiAqL1xuZXhwb3J0IGNvbnN0IEZJRUxEX0RFU0NSSVBUSU9OUyA9IFN5bWJvbC5mb3IoJ1Jlc29sdmVyLmZpZWxkRGVzY3JpcHRpb25zJylcblxuLyoqXG4gKiBXYWxrcyBhIHJlc29sdmVycyBvYmplY3QgYW5kIHJldHVybnMgYW4gYXJyYXkgb2Ygb2JqZWN0cyB3aXRoIHNwZWNpZmljIHByb3BlcnRpZXMuXG4gKlxuICogQHBhcmFtIHtPYmplY3R9IHJlc29sdmVycyAtIFRoZSByZXNvbHZlcnMgb2JqZWN0IHRvIHdhbGsuXG4gKiBAcGFyYW0ge2Jvb2xlYW59IFtkZWxldGVGaWVsZHM9ZmFsc2VdIC0gV2hldGhlciB0byBkZWxldGUgZmllbGRzIHRoYXQgYXJlIGNvbGxlY3RlZC5cbiAqIEByZXR1cm5zIHtBcnJheX0gLSBUaGUgYXJyYXkgb2Ygb2JqZWN0cyB3aXRoIHNwZWNpZmllZCBwcm9wZXJ0aWVzLlxuICovXG5leHBvcnQgZnVuY3Rpb24gZXh0cmFjdFJlc29sdmVySW5mbyhcbiAgcmVzb2x2ZXJzOiBSZXNvbHZlck1hcCxcbiAgZGVsZXRlRmllbGRzOiBib29sZWFuID0gZmFsc2Vcbik6IEFycmF5PFJlc29sdmVySW5mbz4ge1xuICBjb25zdCByZXN1bHQgPSBbXTtcblxuICBmb3IgKGNvbnN0IFt0eXBlLCByZXNvbHZlcl0gb2YgT2JqZWN0LmVudHJpZXMocmVzb2x2ZXJzKSkge1xuICAgIGNvbnN0IGl0ZW0gPSB7IHR5cGUgfTtcbiAgICBsZXQgaW5jbHVkZSA9IGZhbHNlXG5cbiAgICAvLyBDaGVjayBmb3IgaXNUeXBlT2Ygb3IgX19pc1R5cGVPZiBmdW5jdGlvblxuICAgIGlmIChyZXNvbHZlcltJU19UWVBFX09GXSB8fCByZXNvbHZlci5fX2lzVHlwZU9mKSB7XG4gICAgICBpdGVtLmlzVHlwZU9mID0gcmVzb2x2ZXJbSVNfVFlQRV9PRl0gfHwgcmVzb2x2ZXIuX19pc1R5cGVPZjtcbiAgICAgIGluY2x1ZGUgPSB0cnVlXG4gICAgICBpZiAoZGVsZXRlRmllbGRzKSB7XG4gICAgICAgIGRlbGV0ZSByZXNvbHZlcltJU19UWVBFX09GXTtcbiAgICAgICAgZGVsZXRlIHJlc29sdmVyLl9faXNUeXBlT2Y7XG4gICAgICB9XG4gICAgfVxuXG4gICAgLy8gQ2hlY2sgZm9yIHJlc29sdmVUeXBlIG9yIF9fcmVzb2x2ZVR5cGUgZnVuY3Rpb25cbiAgICBpZiAocmVzb2x2ZXJbUkVTT0xWRV9UWVBFXSB8fCByZXNvbHZlci5fX3Jlc29sdmVUeXBlKSB7XG4gICAgICBpdGVtLnJlc29sdmVUeXBlID0gcmVzb2x2ZXJbUkVTT0xWRV9UWVBFXSB8fCByZXNvbHZlci5fX3Jlc29sdmVUeXBlO1xuICAgICAgaW5jbHVkZSA9IHRydWVcbiAgICAgIGlmIChkZWxldGVGaWVsZHMpIHtcbiAgICAgICAgZGVsZXRlIHJlc29sdmVyW1JFU09MVkVfVFlQRV07XG4gICAgICAgIGRlbGV0ZSByZXNvbHZlci5fX3Jlc29sdmVUeXBlO1xuICAgICAgfVxuICAgIH1cblxuICAgIC8vIENoZWNrIGZvciBkZXNjcmlwdGlvbiBmaWVsZFxuICAgIGlmIChyZXNvbHZlcltERVNDUklQVElPTl0pIHtcbiAgICAgIGl0ZW0uZGVzY3JpcHRpb24gPSB0eXBlb2YgcmVzb2x2ZXJbREVTQ1JJUFRJT05dID09PSAnc3RyaW5nJ1xuICAgICAgICA/ICgpID0+IHJlc29sdmVyW0RFU0NSSVBUSU9OXVxuICAgICAgICA6IHJlc29sdmVyW0RFU0NSSVBUSU9OXTtcbiAgICAgIGluY2x1ZGUgPSB0cnVlXG4gICAgICBpZiAoZGVsZXRlRmllbGRzKSB7XG4gICAgICAgIGRlbGV0ZSByZXNvbHZlcltERVNDUklQVElPTl07XG4gICAgICB9XG4gICAgfVxuXG4gICAgLy8gQ2hlY2sgZm9yIHRoZSBmaWVsZCBkZXNjcmlwdGlvbnMgZmllbGRcbiAgICBpZiAoXG4gICAgICByZXNvbHZlcltGSUVMRF9ERVNDUklQVElPTlNdICYmXG4gICAgICBwcm90b0NoYWluKHJlc29sdmVyW0ZJRUxEX0RFU0NSSVBUSU9OU10pLmlzYShPYmplY3QpXG4gICAgKSB7XG4gICAgICBpdGVtLmZpZWxkRGVzY3JpcHRpb25zID0gcmVzb2x2ZXJbRklFTERfREVTQ1JJUFRJT05TXVxuICAgICAgaW5jbHVkZSA9IHRydWVcbiAgICAgIGlmIChkZWxldGVGaWVsZHMpIHtcbiAgICAgICAgZGVsZXRlIHJlc29sdmVyW0ZJRUxEX0RFU0NSSVBUSU9OU107XG4gICAgICB9XG4gICAgfVxuXG4gICAgLy8gT25seSBhZGQgaXRlbSB0byByZXN1bHQgaWYgaXQgaGFzIG1vcmUgdGhhbiBqdXN0IHRoZSB0eXBlIHByb3BlcnR5XG4gICAgaWYgKGluY2x1ZGUpIHtcbiAgICAgIGl0ZW0uYXBwbHlUbyA9IGZ1bmN0aW9uIGFwcGx5VG8oc2NoZW1hLCBvdmVyd3JpdGUgPSBmYWxzZSkge1xuICAgICAgICBpZiAoUmVmbGVjdC5oYXMoc2NoZW1hLl90eXBlTWFwLCB0aGlzLnR5cGUpKSB7XG4gICAgICAgICAgbGV0IHsgcmVzb2x2ZVR5cGUsIGlzVHlwZU9mLCBkZXNjcmlwdGlvbiwgZmllbGREZXNjcmlwdGlvbnMgfSA9IHRoaXNcbiAgICAgICAgICBsZXQgdHlwZSA9IHNjaGVtYS5fdHlwZU1hcFt0aGlzLnR5cGVdXG5cbiAgICAgICAgICBpZiAocmVzb2x2ZVR5cGUgJiYgUmVmbGVjdC5oYXModHlwZSwgJ3Jlc29sdmVUeXBlJykpIHtcbiAgICAgICAgICAgIGlmICghdHlwZS5yZXNvbHZlVHlwZSB8fCBvdmVyd3JpdGUpIHtcbiAgICAgICAgICAgICAgdHlwZS5yZXNvbHZlVHlwZSA9IHJlc29sdmVUeXBlXG4gICAgICAgICAgICB9XG4gICAgICAgICAgfVxuXG4gICAgICAgICAgaWYgKGlzVHlwZU9mICYmIFJlZmxlY3QuaGFzKHR5cGUsICdpc1R5cGVPZicpKSB7XG4gICAgICAgICAgICBpZiAoIXR5cGUuaXNUeXBlT2YgfHwgb3ZlcndyaXRlKSB7XG4gICAgICAgICAgICAgIHR5cGUuaXNUeXBlT2YgPSBpc1R5cGVPZlxuICAgICAgICAgICAgfVxuICAgICAgICAgIH1cblxuICAgICAgICAgIGlmIChkZXNjcmlwdGlvbiAmJiBSZWZsZWN0Lmhhcyh0eXBlLCAnZGVzY3JpcHRpb24nKSkge1xuICAgICAgICAgICAgaWYgKCF0eXBlLmRlc2NyaXB0aW9uIHx8IG92ZXJ3cml0ZSkge1xuICAgICAgICAgICAgICBPYmplY3QuZGVmaW5lUHJvcGVydHkodHlwZSwgJ2Rlc2NyaXB0aW9uJywge1xuICAgICAgICAgICAgICAgIGdldDogZGVzY3JpcHRpb24sXG4gICAgICAgICAgICAgICAgY29uZmlndXJhYmxlOiB0cnVlLFxuICAgICAgICAgICAgICAgIGVudW1lcmFibGU6IHRydWVcbiAgICAgICAgICAgICAgfSlcbiAgICAgICAgICAgIH1cbiAgICAgICAgICB9XG5cbiAgICAgICAgICBpZiAoZmllbGREZXNjcmlwdGlvbnMgJiYgUmVmbGVjdC5oYXModHlwZSwgJ19maWVsZHMnKSkge1xuICAgICAgICAgICAgT2JqZWN0LmVudHJpZXMoZmllbGREZXNjcmlwdGlvbnMpLmZvckVhY2goKFtmaWVsZCwgZGVzY3JpcHRpb25dKSA9PiB7XG4gICAgICAgICAgICAgIGlmICghdHlwZS5fZmllbGRzW2ZpZWxkXT8uZGVzY3JpcHRpb24gfHwgb3ZlcndyaXRlKSB7XG4gICAgICAgICAgICAgICAgY29uc3QgZ2V0dGVyID0gcHJvdG9DaGFpbihkZXNjcmlwdGlvbikuaXNhKEZ1bmN0aW9uKVxuICAgICAgICAgICAgICAgICAgPyBkZXNjcmlwdGlvblxuICAgICAgICAgICAgICAgICAgOiAoKSA9PiBkZXNjcmlwdGlvblxuXG4gICAgICAgICAgICAgICAgT2JqZWN0LmRlZmluZVByb3BlcnR5KHR5cGUuX2ZpZWxkc1tmaWVsZF0sICdkZXNjcmlwdGlvbicsIHtcbiAgICAgICAgICAgICAgICAgIGdldDogZ2V0dGVyLFxuICAgICAgICAgICAgICAgICAgY29uZmlndXJhYmxlOiB0cnVlLFxuICAgICAgICAgICAgICAgICAgZW51bWVyYWJsZTogdHJ1ZVxuICAgICAgICAgICAgICAgIH0pXG4gICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH0pXG4gICAgICAgICAgfVxuICAgICAgICB9XG4gICAgICB9XG5cbiAgICAgIHJlc3VsdC5wdXNoKGl0ZW0pO1xuICAgIH1cbiAgfVxuXG4gIGlmIChyZXN1bHQubGVuZ3RoKSB7XG4gICAgcmVzdWx0LmFwcGx5VG8gPSBmdW5jdGlvbiBhcHBseVRvKHNjaGVtYSwgb3ZlcndyaXRlID0gZmFsc2UpIHtcbiAgICAgIHJlc3VsdC5mb3JFYWNoKGluZm8gPT4gaW5mby5hcHBseVRvKHNjaGVtYSwgb3ZlcndyaXRlKSlcbiAgICB9XG4gIH1cblxuICByZXR1cm4gcmVzdWx0O1xufVxuXG5leHBvcnQgZGVmYXVsdCBleHRyYWN0UmVzb2x2ZXJJbmZvXG4iXSwibWFwcGluZ3MiOiI7Ozs7Ozs7QUFHQSxJQUFBQSxTQUFBLEdBQUFDLE9BQUE7QUFIQTs7QUFLQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNPLE1BQU1DLFVBQVUsR0FBQUMsT0FBQSxDQUFBRCxVQUFBLEdBQUdFLE1BQU0sQ0FBQ0MsR0FBRyxDQUFDLG1CQUFtQixDQUFDOztBQUV6RDtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNPLE1BQU1DLFlBQVksR0FBQUgsT0FBQSxDQUFBRyxZQUFBLEdBQUdGLE1BQU0sQ0FBQ0MsR0FBRyxDQUFDLHNC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
+//# sourceMappingURL=resolverwork.js.map

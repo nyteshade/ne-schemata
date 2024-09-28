@@ -1,3 +1,4 @@
+import { describe, it, expect, at, beforeEach } from 'vitest'
 import { at, atNicely } from '../dist'
 
 describe('at function', () => {

@@ -1,14 +1,12 @@
-// @flow
+// @ts-check
 
 import { inline, dropLowest } from 'ne-tag-fns'
-import { BaseError } from '../BaseError'
+import BaseError from './BaseError.js'
 import { inspect } from 'util'
-import PrettyError from 'pretty-error'
 
-import type { ResolverResultsPatcher } from '../ExtendedResolver'
+import type { ResolverResultsPatcher } from '../types'
 
 const isFn = o => /Function\]/.test(Object.prototype.toString.call(o))
-const pe = new PrettyError()
 
 /**
  * The `ResolverResultsPatcherError` can occur as the `ExtendedResolver` is
@@ -23,26 +21,26 @@ export class ResolverResultsPatcherError extends BaseError {
   /**
    * The `ResolverResultsPatcher` function that failed.
    *
-   * @type {Function}
+   * @type {ResolverResultsPatcher}
    */
-  patcher: ResolverResultsPatcher
+  patcher;
 
   /**
    * The `this` value passed to the function as it was executed. Note that
    * this value is irrelevant if the function passed was a big arrow function
    *
-   * @type {mixed}
+   * @type {unknown}
    */
-  context: mixed
+  context;
 
   /**
    * The `results` value before the internal patcher that failed was thrown.
    * This does not include the results of the erroring function in question as
    * no value was ever reached before the exception was thrown (in theory)
    *
-   * @type {mixed}
+   * @type {unknown}
    */
-  results: mixed
+  results;
 
   /**
    * Creates a new instance of `ResolverResultsPatcherError`.
@@ -50,19 +48,15 @@ export class ResolverResultsPatcherError extends BaseError {
    * @constructor
    *
    * @param {string|Error} error the actual thrown error or error message
-   * @param {Function} patcher the function called during the time of the error
-   * @param {mixed} context the `this` arg applied to the call when the error
+   * @param {ResolverResultsPatcher} patcher the function called during the
+   * time of the error
+   * @param {unknown} context the `this` arg applied to the call when the error
    * occurred; use `resolverResultsPatcherError.wasBigArrowFunction` to check
    * if the `this` arg would have had any results
-   * @param {mixed} results the final results from the `ExtendedResolver`
+   * @param {unknown} results the final results from the `ExtendedResolver`
    * execution that were passed to the patcher function
    */
-  constructor(
-    error: Error | string,
-    patcher: ResolverResultsPatcher,
-    context: mixed,
-    results: mixed
-  ) {
+  constructor(error, patcher, context, results) {
     super(error)
 
     this.patcher = patcher
@@ -76,7 +70,7 @@ export class ResolverResultsPatcherError extends BaseError {
    *
    * @return {string} a string denoting the purpose/cause of this error class
    */
-  toString(): string {
+  toString() {
     return dropLowest`
       The patcher function failed to execute against the results of the
       'ExtendedResolver' execution. The patcher function had a name of
@@ -89,17 +83,17 @@ export class ResolverResultsPatcherError extends BaseError {
       ${inspect(this.results, {colors: true, depth: 8})}
 
       Original Stack Trace
-      ${pe.render(this.error)}
+      ${this.error.toString()}
 
     `
   }
 
   /**
    * Modify the `valueOf()` function to mirror the `toString()` functionality
-   * 
+   *
    * @return {string} an identical string to `.toString()`
    */
-  valueOf(): string {
+  valueOf() {
     return this.toString()
   }
 
@@ -114,7 +108,7 @@ export class ResolverResultsPatcherError extends BaseError {
    * pre-bound function; false if the `context` value should have been passed
    * successfully to the execution context
    */
-  get wasBigArrowFunction(): boolean {
+  get wasBigArrowFunction() {
     const patcher = this.patcher
 
     if (patcher && isFn(patcher)) {

@@ -2,12 +2,17 @@
   "env": {
     "node": true
   },
-  "parser": "@babel/eslint-parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:ft-flow/recommended",
+  ],
+  "parser": "hermes-eslint",
   "parserOptions": {
     "ecmaVersion": 9,
     "sourceType": "module"
   },
-  "plugins": ["import", "flowtype"],
+  "plugins": ["ft-flow"],
+  "root": true,
   "rules": {
     "brace-style": [1, "stroustrup", { "allowSingleLine": true }],
     "indent": [1, 2]

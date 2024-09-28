@@ -1,4 +1,4 @@
-// @flow
+// @ts-check
 
 import type { ResolverInfo, ResolverMap } from '../types'
 import { protoChain } from './typework'

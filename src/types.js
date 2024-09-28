@@ -1,5 +1,7 @@
+// @ts-check
+
 import type { Schemata } from './Schemata'
-import type { Source, GraphQLSchema, ASTNode } from 'graphql'
+import { Source, GraphQLSchema, ASTNode } from 'graphql'
 
 /**
  * The ResolverInfo type declares the properties that will likely
@@ -149,9 +151,9 @@ export type ResolverMap = { [string]: Function | ResolverMap }
  * @type {ResolverArgs}
  */
 export type ResolverArgs = {
-  source: mixed,
-  args: mixed,
-  context: mixed,
+  source: unknown,
+  args: unknown,
+  context: unknown,
   info: GraphQLResolveInfo
 }
 
@@ -264,7 +266,7 @@ export type SchemataConfigUnion = ExtendedResolverMapConfig | Schemata
  *
  * @type {AsyncFunction}
  */
-export type ResolverResultsPatcher = (results: mixed) => Promise<mixed>
+export type ResolverResultsPatcher = (results: unknown) => Promise<mixed>
 
 /**
  * An `EntryInspector` is a function passed to `walkResolverMap` that is

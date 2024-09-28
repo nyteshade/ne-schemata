@@ -1,4 +1,6 @@
-// @flow
+// @ts-check
+// $FlowFixMe[prop-missing]
+// $FlowFixMe[incompatible-call]
 
 import { inline } from 'ne-tag-fns'
 import { inspect } from 'util'

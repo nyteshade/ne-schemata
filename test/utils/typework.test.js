@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest'
 import { getType, isFn, protoChain } from '../../dist/utils';
 
 describe('getType', () => {

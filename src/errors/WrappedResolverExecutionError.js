@@ -1,14 +1,10 @@
-// @flow
+// @ts-check
 
 import { inline, dropLowest } from 'ne-tag-fns'
-import { BaseError } from '../BaseError'
+import BaseError from './BaseError.js'
 import { inspect } from 'util'
-import PrettyError from 'pretty-error'
 
-import type { ExtendedResolver } from '../ExtendedResolver'
-
-const isFn = o => /Function\]/.test(Object.prototype.toString.call(o))
-const pe = new PrettyError()
+const isFn = (o) => /Function\]/.test(Object.prototype.toString.call(o))
 
 /**
  * ExtendedResolvers wrap several functions including the original GraphQL
@@ -31,31 +27,31 @@ export class WrappedResolverExecutionError extends BaseError {
    *
    * @type {number}
    */
-  index: number
+  index;
 
   /**
    * The arguments passed to the function in question that failed.
    *
-   * @type {Array<mixed>}
+   * @type {unknown[]}
    */
-  args: Array<mixed>
+  args;
 
   /**
    * The `this` value passed to the function as it was executed. Note that
    * this value is irrelevant if the function passed was a big arrow function
    *
-   * @type {mixed}
+   * @type {unknown}
    */
-  context: mixed
+  context;
 
   /**
    * The `results` value before the internal resolver that failed was thrown.
    * This does not include the results of the erroring function in question as
    * no value was ever reached before the exception was thrown (in theory)
    *
-   * @type {mixed}
+   * @type {unknown}
    */
-  results: mixed
+  results
 
   /**
    * Creates a new error instance of `WrappedResolverExecutionError`. The
@@ -67,18 +63,11 @@ export class WrappedResolverExecutionError extends BaseError {
    * @param {Error|string} error the error thrown at the time of the problem
    * @param {ExtendedResolver} resolver the `ExtendedResolver` instance
    * @param {number} index the index of the wrapped resolver that threw up
-   * @param {Array<mixed>} args the arguments passed to the function at the time
-   * @param {mixed} context the `thisArg` set on the function call at the time
-   * @param {mixed} results the results up to the time of failure
+   * @param {unknown[]} args the arguments passed to the function at the time
+   * @param {unknown} context the `thisArg` set on the function call at the time
+   * @param {unknown} results the results up to the time of failure
    */
-  constructor(
-    error: Error | string,
-    resolver: ExtendedResolver,
-    index: number,
-    args: Array<mixed>,
-    context: mixed,
-    results: mixed
-  ) {
+  constructor(error, resolver, index, args, context, results) {
     super(error)
 
     this.resolver = resolver
@@ -94,9 +83,9 @@ export class WrappedResolverExecutionError extends BaseError {
    *
    * @return {string} a string denoting the purpose/cause of this error class
    */
-  toString(): string {
+  toString() {
     let fn: Function = (
-      this.resolver && 
+      this.resolver &&
       this.resolver.order &&
       this.resolver.order[this.index]
     )
@@ -106,7 +95,7 @@ export class WrappedResolverExecutionError extends BaseError {
       index ${this.index}. The function had a name of '${fn && fn.name}'.
 
       Was the function likely a big arrow function? ${
-        (this.wasBigArrowFunction 
+        (this.wasBigArrowFunction
           ? '\x1b[33mtrue\x1b[0m'
           : '\x1b[31mfalse\x1b[0m'
         )
@@ -122,16 +111,16 @@ export class WrappedResolverExecutionError extends BaseError {
       ${inspect(this.results, {colors: true, depth: 8})}
 
       Original Stack Trace
-      ${pe.render(this.error)}
+      ${this.error.toString()}
     `
   }
 
   /**
    * Modify the `valueOf()` function to mirror the `toString()` functionality
-   * 
+   *
    * @return {string} an identical string to `.toString()`
    */
-  valueOf(): string {
+  valueOf() {
     return this.toString()
   }
 
@@ -140,16 +129,12 @@ export class WrappedResolverExecutionError extends BaseError {
    * big arrow function. This means the function was pre-bound and the
    * `context` set at the time of execution would have been ignored.
    *
-   * @function wasBigArrowFunction
-   *
-   * @return {boolean} true if the failed function resolver was a big arrow or
-   * pre-bound function; false if the `context` value should have been passed
-   * successfully to the execution context
+   * @type {boolean}
    */
-  get wasBigArrowFunction(): boolean {
+  get wasBigArrowFunction() {
     const resolver = (
-      this.resolver && 
-      this.resolver.order && 
+      this.resolver &&
+      this.resolver.order &&
       this.resolver.order[this.index]
     )
 

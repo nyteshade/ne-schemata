@@ -1,7 +1,7 @@
-// @flow
+// @ts-check
 
 import { inline } from 'ne-tag-fns'
-import { BaseError } from '../BaseError'
+import BaseError from './BaseError.js';
 
 /**
  * An error that can occur while walking a resolver map. ResolverMap types
@@ -13,18 +13,22 @@ import { BaseError } from '../BaseError'
  * @class ResolverMapStumble
  */
 export class ResolverMapStumble extends BaseError {
-  /** A context object can be anything that adds more info about the problem */
-  context: any
+  /**
+   * A context object can be anything that adds more info about the problem
+   *
+   * @type {any}
+   */
+  context;
 
   /**
    * Creates a new instance of ResolverMapStumble
    *
    * @param {Error|string} error - the error or message to wrap this instance
    * around
-   * @param {any} context - any additional information that helps describe or
+   * @param {any?} context - any additional information that helps describe or
    * provide enlightenment around the problem at hand.
    */
-  constructor(error: Error | string, context?: any) {
+  constructor(error, context) {
     super(error)
     if (context) {
       this.context = context
@@ -36,7 +40,7 @@ export class ResolverMapStumble extends BaseError {
    *
    * @return {string} a string denoting the purpose/cause of this error class
    */
-  toString(): string {
+  toString() {
     return inline`
       This Error represents a scenario wherein while walking a resolver map
       object, a key was found not to point to either a nested resolver map or
