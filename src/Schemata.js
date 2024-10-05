@@ -1,7 +1,9 @@
 // @ts-check
 
-const debug_log = console.log.bind(console)
-const debug_trace = console.trace.bind(console)
+import { default as debug } from 'debug'
+
+const debug_log = debug('Schemata:log')
+const debug_trace = debug('Schemata:trace')
 
 import {
   readdir,
@@ -70,7 +72,7 @@ import { asyncTryCatch } from './utils'
 import { extractResolverInfo } from './utils/resolverwork'
 import { ExtendedResolverMap } from './ExtendedResolverMap'
 import { ExtendedResolver } from './ExtendedResolver'
-import { inline } from 'ne-tag-fns'
+import { inline, dedent } from 'ne-tag-fns'
 import { mergeResolvers, ResolverProperty } from './walkResolverMap'
 import merge from 'deepmerge'
 import Util from 'util'
@@ -1015,8 +1017,7 @@ export class Schemata extends String {
    */
   buildResolvers(flattenRootResolversOrFirstParam, ...extendWith) {
     let schemata = Schemata.from(this.sdl, this.resolvers)
-    let resolvers = merge(
-      {},
+    let resolvers = merge({},
       stripResolversFromSchema(schemata.schema) || schemata.resolvers || {}
     )
 
@@ -1044,13 +1045,22 @@ export class Schemata extends String {
               }
             }
             catch (error) {
-              debug_log(inline`
+              debug_log(dedent`
                 [buildResolvers()] Falling back to \`astFieldByName()\`
-              `)
-              debug_trace(
-                inline`
+                  rootType  %O
+                  field     %O
+                  resolvers %O
+              `, rootType, field, resolvers)
+              debug_trace(dedent`
                 [buildResolvers()] Falling back to \`astFieldByName()\` due to
+                  rootType  %O
+                  field     %O
+                  resolvers %O
+                  error     %O
               `,
+                rootType,
+                field,
+                resolvers,
                 error
               )
 

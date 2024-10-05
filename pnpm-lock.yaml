@@ -11,15 +11,27 @@ importers:
       '@graphql-tools/utils':
         specifier: ^10.5.4
         version: 10.5.4(graphql@16.9.0)
+      '@nejs/basic-extensions':
+        specifier: ^2.15.0
+        version: 2.15.0
+      '@nejs/extension':
+        specifier: ^2.20.0
+        version: 2.20.0
       core-js:
         specifier: ^3.38.1
         version: 3.38.1
       debug:
         specifier: ^4.3.7
         version: 4.3.7
+      debug-logger:
+        specifier: ^0.4.1
+        version: 0.4.1
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       ne-tag-fns:
         specifier: ^0.7.0
         version: 0.7.0
@@ -60,6 +72,9 @@ importers:
       htmlparser2:
         specifier: ^9.1.0
         version: 9.1.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       renderkid:
         specifier: ^3.0.0
         version: 3.0.0
@@ -918,6 +933,14 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
+  '@nejs/basic-extensions@2.15.0':
+    resolution: {integrity: sha512-xgxWqs/s+sf4EiWuCFYZD/eATLuwW72IFFlaWxZwMqnt0hC/mKErCNyHu3oOQdOYU0n0+MXQiHIGt+jjvHlK/g==}
+    engines: {node: '>=20'}
+
+  '@nejs/extension@2.20.0':
+    resolution: {integrity: sha512-ywSTvUb1kwiNnuM8oeXvvQdTJxecJLj/zwoxD2RIj16AEZpFzKoVGeXkZdp9tycud0LvTt/hR0s2ofomdeeYIw==}
+    engines: {node: '>=16'}
+
   '@nicolo-ribaudo/chokidar-2@2.1.8-no-fsevents.3':
     resolution: {integrity: sha512-s88O1aVtXftvp5bCPB7WnmXc5IwOZZ7YPuwNPt+GtOOXpPvad1LfbmjYv+qII7zP6RU2QGnqve27dnLycEnyEQ==}
 
@@ -1199,6 +1222,17 @@ packages:
   css-what@6.1.0:
     resolution: {integrity: sha512-HTUrgRJ7r4dsZKU6GjmpfRK1O76h97Z8MfS1G0FozR+oF2kG6Vfe8JE6zwrkbxigziPHinCJ+gCPjA9EaBDtRw==}
     engines: {node: '>= 6'}
+
+  debug-logger@0.4.1:
+    resolution: {integrity: sha512-bLX6pxuWO6KMXBRk6vpLgHqWXiuLbKp8kLL/wNEA4rgU8wsNLaw3UNz0NfOi1bcN0JwjFwSfxhldzU5Bc6P5RQ==}
+
+  debug@2.6.9:
+    resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
 
   debug@4.3.7:
     resolution: {integrity: sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==}
@@ -1538,6 +1572,9 @@ packages:
 
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
+
+  ms@2.0.0:
+    resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
@@ -1884,6 +1921,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
 snapshots:
 
@@ -2872,6 +2912,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
+  '@nejs/basic-extensions@2.15.0':
+    dependencies:
+      '@nejs/extension': 2.20.0
+      zod: 3.23.8
+
+  '@nejs/extension@2.20.0': {}
+
   '@nicolo-ribaudo/chokidar-2@2.1.8-no-fsevents.3':
     optional: true
 
@@ -3147,6 +3194,16 @@ snapshots:
       nth-check: 2.1.1
 
   css-what@6.1.0: {}
+
+  debug-logger@0.4.1:
+    dependencies:
+      debug: 2.6.9
+    transitivePeerDependencies:
+      - supports-color
+
+  debug@2.6.9:
+    dependencies:
+      ms: 2.0.0
 
   debug@4.3.7:
     dependencies:
@@ -3503,6 +3560,8 @@ snapshots:
     dependencies:
       brace-expansion: 1.1.11
 
+  ms@2.0.0: {}
+
   ms@2.1.3: {}
 
   nanoid@3.3.7: {}
@@ -3809,3 +3868,5 @@ snapshots:
   yallist@3.1.1: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@3.23.8: {}

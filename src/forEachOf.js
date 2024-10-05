@@ -12,25 +12,29 @@ import {
   GraphQLSchema,
 } from 'graphql'
 
-export type ForEachOfResolver = (
-  type: unknown,
-  typeName: string,
-  typeDirectives: Array<GraphQLDirective>,
-  schema: GraphQLSchema,
-  context: unknown
-) => void
+/**
+ * @typedef {(
+ *   type: unknown,
+ *   typeName: string,
+ *   typeDirectives: Array<GraphQLDirective>,
+ *   schema: GraphQLSchema,
+ *   context: unknown
+ * ) => void} ForEachOfResolver
+ */
 
-export type ForEachFieldResolver = (
-  type: unknown,
-  typeName: string,
-  typeDirectives: Array<GraphQLDirective>,
-  field: unknown,
-  fieldName: string,
-  fieldArgs: Array<GraphQLArgument>,
-  fieldDirectives: Array<GraphQLDirective>,
-  schema: GraphQLSchema,
-  context: unknown
-) => void
+ /**
+  * @typedef {(
+  *   type: unknown,
+  *   typeName: string,
+  *   typeDirectives: Array<GraphQLDirective>,
+  *   field: unknown,
+  *   fieldName: string,
+  *   fieldArgs: Array<GraphQLArgument>,
+  *   fieldDirectives: Array<GraphQLDirective>,
+  *   schema: GraphQLSchema,
+  *   context: unknown
+  *  ) => void} ForEachFieldResolver
+  */
 
 // Create constants for each of the types allowed, over which one might
 // iterate. These can be bitmasked to include multiple types; i.e. for both
@@ -90,20 +94,16 @@ TypeMap.set(SCALARS, GraphQLScalarType)
  *                      passed to the call to `makeExecutableSchema()`
  *                      or `graphql()`
  *
- * @param {Function} fn a function with a signature defined above
- * @param {mixed} context usually an object but any mixed value the denotes
+ * @param {GraphQLSchema} schema the schema to parse
+ * @param {ForEachOfResolver} fn a function with a signature defined above
+ * @param {unknown} context usually an object but any mixed value the denotes
  * some shared context as is used with the schema during normal runtime.
- * @param {Number} types a bitmask of one or more of the constants defined
+ * @param {number} types a bitmask of one or more of the constants defined
  * above. These can be OR'ed together and default to TYPES.
  * @return {GraphQLSchema} a new schema is generated from this SDL, iterated
  * over and returned.
  */
-function forEachOf(
-  schema: GraphQLSchema,
-  fn: ForEachOfResolver,
-  context: unknown,
-  types: number = ALL
-): GraphQLSchema {
+function forEachOf(schema, fn, context, types = ALL) {
   [
     GraphQLObjectType, GraphQLInterfaceType, GraphQLEnumType,
     GraphQLUnionType, GraphQLScalarType
@@ -196,16 +196,11 @@ function forEachOf(
  *                      to the call to `makeExecutableSchema()` or `graphql()`
  *
  * @param {GraphQLSchema} schema
- * @param {Function} fn a function with a signature defined above
- * @param {mixed} context usually an object but any mixed value the denotes
+ * @param {ForEachFieldResolver} fn a function with a signature defined above
+ * @param {unknown} context usually an object but any mixed value the denotes
  * some shared context as is used with the schema during normal runtime.
  */
-function forEachField(
-  schema: GraphQLSchema,
-  fn: ForEachFieldResolver,
-  context: unknown,
-  types: number = ALL
-): GraphQLSchema {
+function forEachField(schema, fn, context, types = ALL) {
   forEachOf(
     schema,
     (type, typeName, _, context, directives) => {

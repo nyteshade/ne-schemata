@@ -45,14 +45,11 @@ export const FIELD_DESCRIPTIONS = Symbol.for('Resolver.fieldDescriptions')
 /**
  * Walks a resolvers object and returns an array of objects with specific properties.
  *
- * @param {Object} resolvers - The resolvers object to walk.
+ * @param {ResolverMap} resolvers - The resolvers object to walk.
  * @param {boolean} [deleteFields=false] - Whether to delete fields that are collected.
- * @returns {Array} - The array of objects with specified properties.
+ * @returns {ResolverInfo[]} - The array of objects with specified properties.
  */
-export function extractResolverInfo(
-  resolvers: ResolverMap,
-  deleteFields: boolean = false
-): Array<ResolverInfo> {
+export function extractResolverInfo(resolvers, deleteFields = false) {
   const result = [];
 
   for (const [type, resolver] of Object.entries(resolvers)) {

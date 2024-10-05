@@ -13,14 +13,9 @@ import at from './propAt'
  * intrinsic value.
  *
  * @method DefaultEntryInspector
- * @type {Function}
+ * @type {EntryInspector}
  */
-export const DefaultEntryInspector: EntryInspector = (
-  key,
-  value,
-  path,
-  map
-) => {
+export const DefaultEntryInspector = (key, value, path, map) => {
   return { [key]: value }
 }
 
@@ -32,14 +27,9 @@ export const DefaultEntryInspector: EntryInspector = (
  * therefore has some intrinsic value.
  *
  * @method DefaultEntryInspector
- * @type {Function}
+ * @type {AsyncEntryInspector}
  */
-export const DefaultAsyncEntryInspector: AsyncEntryInspector = async (
-  key,
-  value,
-  path,
-  map
-) => {
+export const DefaultAsyncEntryInspector = async (key, value, path, map) => {
   return { [key]: value }
 }
 
@@ -52,21 +42,19 @@ export const DefaultAsyncEntryInspector: AsyncEntryInspector = async (
  * @method walkResolverMap
  *
  * @param {ResolverMap} object an object conforming to type `ResolverMap`
- * @param {boolean} wrap defaults to true. An entry whose value is neither a
- * function nor an object will be wrapped in a function returning the value. If
- * false is supplied here, a `ResolverMapStumble` error will be thrown instead
- * @param {Array<string>} path as `walkResolverMap` calls itself recursively,
+ * @param {EntryInspector} [inspector=DefaultEntryInspector] the inspector that
+ * is used to walk the file
+ * @param {boolean} [wrap=true] defaults to true. An entry whose value is
+ * neither a function nor an object will be wrapped in a function returning
+ * the value. If false is supplied here, a `ResolverMapStumble` error will
+ * be thrown instead
+ * @param {string[]} path as `walkResolverMap` calls itself recursively,
  * path is appended to and added as a parameter to determine where in the tree
  * the current execution is working
  * @return {ResolverMap} upon successful completion, a `ResolverMap` object,
  * modified as specified, will be returned instead.
  */
-export function walkResolverMap(
-  object: ResolverMap,
-  inspector: EntryInspector = DefaultEntryInspector,
-  wrap: boolean = true,
-  path: Array<string> = []
-): ResolverMap {
+export function walkResolverMap(object, inspector, wrap, path): ResolverMap {
   let product = {}
 
   path.reduce((prev, cur) => {
@@ -127,24 +115,26 @@ export function walkResolverMap(
  * @method asyncWalkResolverMap
  *
  * @param {ResolverMap} object an object conforming to type `ResolverMap`
+ * @param {AsyncEntryInspector} [inspector=DefaultAsyncEntryInspector] the
+ * inspector callback
  * @param {boolean} wrap defaults to true. An entry whose value is neither a
  * function nor an object will be wrapped in a function returning the value. If
  * false is supplied here, a `ResolverMapStumble` error will be thrown instead
- * @param {Array<string>} path as `walkResolverMap` calls itself recursively,
+ * @param {string[]} path as `walkResolverMap` calls itself recursively,
   * path is appended to and added as a parameter to determine where in the tree
   * the current execution is working
- * @param {Array<error>} skips if supplied, this array will have an appended
+ * @param {Error[]} skips if supplied, this array will have an appended
  * error for each sub async walk error caught.
  * @return {ResolverMap} upon successful completion, a `ResolverMap` object,
  * modified as specified, will be returned instead.
  */
 export async function asyncWalkResolverMap(
-  object: ResolverMap,
-  inspector: AsyncEntryInspector = DefaultAsyncEntryInspector,
-  wrap: boolean = true,
-  path: Array<string> = [],
-  skips: Array<error>
-): ResolverMap {
+  object,
+  inspector = DefaultAsyncEntryInspector,
+  wrap = true,
+  path = [],
+  skips
+) {
   let product = {}
 
   path.reduce((prev, cur) => {
@@ -209,37 +199,27 @@ export async function asyncWalkResolverMap(
  * property's name, value, the path to reach it within the object, and the
  * object itself.
  *
- * @flow
- * @type {ResolverProperty}
+ * @typedef {{
+ *   name: string,
+ *   value: unknown,
+ *   path: Array<string>,
+ *   object: Object
+ * }} ResolverProperty
  */
-export type ResolverProperty = {
-  name: string,
-  value: unknown,
-  path: Array<string>,
-  object: Object
-}
 
 /**
  * Merges two resolver objects recursively. In case of conflicting keys, the
  * provided `conflictResolver` function is called to determine the
  * resulting value.
  *
- * @flow
  * @param {Object} existingResolvers - The original set of resolvers.
  * @param {Object} newResolvers - The set of new resolvers to be merged into
  * the existing ones.
- * @param {function} conflictResolver - A function that resolves conflicts
+ * @param {Function} conflictResolver - A function that resolves conflicts
  * between existing and new resolver properties.
  * @returns {Object} The merged set of resolvers.
  */
-export function mergeResolvers(
-  existingResolvers: Object,
-  newResolvers: Object,
-  conflictResolver: (
-    existing: ResolverProperty,
-    conflict: ResolverProperty
-  ) => mixed = (e,c) => c.value
-) {
+export function mergeResolvers(existingResolvers, newResolvers, conflictResolver) {
   // Recursive function to walk and merge the resolver maps
   const walkAndMerge = (current, incoming, path = []) => {
     for (const key of Object.keys(incoming)) {

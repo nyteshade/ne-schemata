@@ -1,5 +1,4 @@
 import { Schemata } from './Schemata'
-import jestTransformer from './jestTransformer'
 
 export * from './Schemata'
 export * from './dynamicImport'
@@ -39,11 +38,6 @@ const SDL = Schemata
 export {
   // Exported Schemata.js types
   Schemata,
-
-  // An object containing a `.process` function used with jest in order to
-  // simulate require/import extension in the highly mocked jest test
-  // environment.
-  jestTransformer,
 
   // For backwards compatibility
   SDL,

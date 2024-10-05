@@ -19,15 +19,17 @@ export class BaseError extends Error {
    *
    * @type {Error}
    */
-  error: Error
+  error;
 
   /**
    * Creates a new BaseError type that wraps either an existing error or
    * uses this error instantiation with the given error message.
    *
    * @constructor
+   * @param {Error | string} error the error or message used to create an
+   * instance
    */
-  constructor(error: Error | string) {
+  constructor(error) {
     super(error.message || error, error?.fileName, error?.lineNumber)
 
     this.error = error instanceof String ? this : error
@@ -63,7 +65,7 @@ export class BaseError extends Error {
    * All BaseError children will show `[object <class name>]` as their internal
    * class naming when used with `Object.prototype.toString.call` or `apply`.
    *
-   * @type {String}
+   * @type {string}
    */
   get [Symbol.toStringTag]() {
     return this.constructor.name

@@ -4,7 +4,7 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:ft-flow/recommended",
+    "plugin:ft-flow/recommended"
   ],
   "parser": "hermes-eslint",
   "parserOptions": {

@@ -41,9 +41,9 @@ export const DoNotSet = Symbol.for('DoNotSet')
  * arrays and functions, should work in this manner.
  * @param {string|string[]} path a period denoted path (numeric indicies
  * are allowed) or an array of individual strings. See above for more details
- * @param {unknown} setTo (optional) if this value is supplied, the path accessed
- * will be modified to this value before it is returned
- * @param {boolean} playNice (optional) by default if one tries to access a
+ * @param {unknown} [setTo=DoNotSet] (optional) if this value is supplied, the
+ * path accessed will be modified to this value before it is returned
+ * @param {boolean} [playNice=false] (optional) by default if one tries to access a
  * path that fails somewhere in the middle and results in accessing a property
  * on an undefined or null value then an exception is thrown. Passing true here
  * will cause the function to simply return undefined.
@@ -51,12 +51,7 @@ export const DoNotSet = Symbol.for('DoNotSet')
  * invalid access was requested. Otherwise an error is thrown if try to deeply
  * reach into a space where no value exists.
  */
-export function at(
-  object: Object,
-  path: string | string[],
-  setTo?: unknown = DoNotSet,
-  playNice?: boolean = false
-): unknown {
+export function at(object, path, setTo = DoNotSet, playNice = false) {
   if (typeof object !== 'object' || object === null || object === undefined) {
     throw new TypeError(`The first argument must be an object`)
   }
@@ -118,15 +113,11 @@ export function at(
  * arrays and functions, should work in this manner.
  * @param {string|string[]} path a period denoted path (numeric indicies
  * are allowed) or an array of individual strings. See above for more details
- * @param {unknown} setTo (optional) if this value is supplied, the path accessed
+ * @param {unknown?} setTo (optional) if this value is supplied, the path accessed
  * will be modified to this value before it is returned
  * @return {unknown} either the requested value or undefined
  */
-export function atNicely(
-  object: Object,
-  path: string | string[],
-  setTo?: unknown
-): unknown {
+export function atNicely(object, path, setTo) {
   return at(object, path, setTo, true)
 }
 

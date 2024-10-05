@@ -38,15 +38,14 @@ export const isFn = obj => Function.name === getType(obj)
  * @flow
  * @param {mixed} object - The input value for which the prototype chain is
  * desired.
- * @returns {Array<string> & { isa: Function, actual: Array<any> }} An
- * array of constructor names
- *          with appended `isa` method and `actual` getter.
+ * @returns {string[] & { isa: Function, actual: Array<any> }} An
+ * array of constructor names with appended `isa` method and `actual` getter.
  *
  * @note The `isa` method allows checking if a given type name is in the
  * prototype chain. The `actual` getter attempts to convert type names back
  * to their evaluated types.
  */
-export function protoChain(object: unknown): Array<string> {
+export function protoChain(object) {
   if (object === null || object === undefined) { return [getType(object)] }
 
   let chain = [ Object.getPrototypeOf(object) ]
