@@ -1,5 +1,5 @@
 {
-  "name": "@nyteshade/ne-schemata",
+  "name": "@nejs/schemata",
   "version": "3.6.1",
   "description": "GraphQL IDL/Schemata String class to make working with GraphQL easier",
   "exports": {
