@@ -32,9 +32,11 @@ Biggest selling points of working with the Schemata class
 
 ## Recent Breaking Changes
 
+### 4.0.0
+The package has been renamed to `@nejs/schemata` in coordination with several projects. Reliance on flow-type has been removed in favor of using pure JavaScript with types documeted in jsdoc comment blocks.
+
 ### 2.4.0, 2.4.1 -> 3.0.1
-2.4.0 and 2.4.1 are both actually breaking changes. Tests have been updated and version
-updated appropriately for 3.0.0. The breaking changes are as follows:
+2.4.0 and 2.4.1 are both actually breaking changes. Tests have been updated and version updated appropriately for 3.0.0. The breaking changes are as follows:
 
 ```js
 // Previously

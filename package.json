@@ -1,6 +1,6 @@
 {
   "name": "@nejs/schemata",
-  "version": "3.6.1",
+  "version": "4.0.0",
   "description": "GraphQL IDL/Schemata String class to make working with GraphQL easier",
   "exports": {
     ".": "./dist/index.js",
