@@ -36,6 +36,7 @@
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-flow": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
+    "@nejs/jsdoc-react-theme": "^2.1.2",
     "babel-plugin-syntax-hermes-parser": "^0.23.1",
     "eslint": "^9.11.1",
     "flow-bin": "^0.247.0",
