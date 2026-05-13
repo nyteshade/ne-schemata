@@ -7,7 +7,7 @@ const {
   gql,
   Schemata,
   walkResolverMap,
-} = await import('./dist/index.js')
+} = await import('./src/index.mjs')
 
 const graphql = await import('graphql')
 const { parse, print, printSchema } = graphql

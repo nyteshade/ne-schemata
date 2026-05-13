@@ -385,7 +385,7 @@ describe('testing Schemata', () => {
         contrivances: ContrivedType
       }
     `,
-      { ContrivedType: lScalarFn },
+      { ContrivedScalar: lScalarFn },
     )
 
     let rSchemata = Schemata.from(
@@ -396,7 +396,7 @@ describe('testing Schemata', () => {
         moreContrivances: ContrivedScalar
       }
     `,
-      { ContrivedType: rScalarFn },
+      { ContrivedScalar: rScalarFn },
     )
 
     lSchemata.mergeSDL(rSchemata, {

@@ -1,13 +1,12 @@
 import { describe, it, expect } from 'vitest'
 
-// Note: .graphql file imports require the register.cjs hook or a custom loader
-// import {
-//   astNode,
-//   resolvers,
-//   schema,
-//   sdl,
-//   typeDefs
-// } from './gql/person.mjs'
+import {
+  astNode,
+  resolvers,
+  schema,
+  sdl,
+  typeDefs
+} from './gql/person.mjs'
 
 import { Schemata } from '../src/index.mjs'
 

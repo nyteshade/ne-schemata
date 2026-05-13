@@ -36,6 +36,7 @@ const {
   GraphQLObjectType,
   GraphQLScalarType,
   GraphQLSchema,
+  isSpecifiedScalarType,
   parse,
   printSchema,
   printType,
@@ -1174,21 +1175,38 @@ export class Schemata extends String {
         schema,
         context
       ) => {
-        // Ensure the path to the type in question exists before continuing
-        // onward
-        (r[typeName] = r[typeName] || {})[fieldName] =
-          (r[typeName][fieldName] || {})
+        // Skip hidden/built-in types (those starting with __)
+        if (typeName.startsWith('__')) return
 
+        r[typeName] = r[typeName] || {}
         r[typeName][fieldName] = field.resolve || defaultFieldResolver
       }
     )
 
-    interim.resolvers = r
+    // Apply flatten or extend semantics, mirroring buildResolvers but without
+    // re-stripping the schema (which would drop the defaultFieldResolver
+    // entries we just collected).
+    if (typeof flattenRootResolversOrFirstParam === 'boolean') {
+      if (flattenRootResolversOrFirstParam) {
+        for (let rootType of ['Query', 'Mutation', 'Subscription']) {
+          if (r[rootType]) {
+            for (let field of Object.keys(r[rootType])) {
+              r[field] = r[rootType][field]
+            }
+            delete r[rootType]
+          }
+        }
+      }
+    }
+    else if (flattenRootResolversOrFirstParam) {
+      r = merge(r, flattenRootResolversOrFirstParam)
+    }
 
-    return interim.buildResolvers(
-      flattenRootResolversOrFirstParam,
-      ...extendWith
-    )
+    for (let item of extendWith) {
+      r = merge(r, item || {})
+    }
+
+    return r
   }
 
   /**
@@ -2454,19 +2472,22 @@ export function stripResolversFromSchema(schema) {
   forEachOf(
     schema,
     (type, typeName, typeDirectives, _schema, context) => {
-      resolvers[typeName] = resolvers[typeName] || {}
-
       // Handle type-level resolution (isTypeOf for objects, resolveType for unions/interfaces)
       if (type.isTypeOf && typeof type.isTypeOf === 'function') {
+        resolvers[typeName] = resolvers[typeName] || {}
         resolvers[typeName].__isTypeOf = type.isTypeOf
       }
 
       if (type.resolveType && typeof type.resolveType === 'function') {
+        resolvers[typeName] = resolvers[typeName] || {}
         resolvers[typeName].__resolveType = type.resolveType
       }
 
-      // Handle scalar types with their configuration
-      if (type instanceof GraphQLScalarType) {
+      // Handle scalar types with their configuration. Skip built-in
+      // specified scalars (String, Int, Float, Boolean, ID) since their
+      // serialize/parseValue/parseLiteral are always non-default and would
+      // otherwise pollute every resolver map with noise.
+      if (type instanceof GraphQLScalarType && !isSpecifiedScalarType(type)) {
         const scalarConfig = {
           name: type.name,
           description: type.description,

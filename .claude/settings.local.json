@@ -1,128 +1,134 @@
 {
-  "hooks" : {
-    "PostCompact" : [
+  "permissions": {
+    "allow": [
+      "Bash(npx vitest *)",
+      "Bash(node *)"
+    ]
+  },
+  "hooks": {
+    "PostCompact": [
       {
-        "hooks" : [
+        "matcher": "",
+        "hooks": [
           {
-            "command" : "~/.fina/hooks/fina-session-start.sh",
-            "statusMessage" : "Re-orienting after compaction...",
-            "timeout" : 10,
-            "type" : "command"
+            "type": "command",
+            "command": "~/.fina/hooks/fina-session-start.sh",
+            "timeout": 10,
+            "statusMessage": "Re-orienting after compaction..."
           }
-        ],
-        "matcher" : ""
+        ]
       }
     ],
-    "PostToolUse" : [
+    "PostToolUse": [
       {
-        "hooks" : [
+        "matcher": "Bash",
+        "hooks": [
           {
-            "command" : "~/.fina/hooks/fina-post-commit.sh",
-            "if" : "Bash(git commit*)",
-            "statusMessage" : "Recording milestone...",
-            "timeout" : 10,
-            "type" : "command"
+            "type": "command",
+            "command": "~/.fina/hooks/fina-post-commit.sh",
+            "if": "Bash(git commit*)",
+            "timeout": 10,
+            "statusMessage": "Recording milestone..."
           }
-        ],
-        "matcher" : "Bash"
+        ]
       }
     ],
-    "PreCompact" : [
+    "PreCompact": [
       {
-        "hooks" : [
+        "matcher": "",
+        "hooks": [
           {
-            "command" : "~/.fina/hooks/fina-pre-compact.sh",
-            "statusMessage" : "Saving session baton before compaction...",
-            "timeout" : 10,
-            "type" : "command"
+            "type": "command",
+            "command": "~/.fina/hooks/fina-pre-compact.sh",
+            "timeout": 10,
+            "statusMessage": "Saving session baton before compaction..."
           }
-        ],
-        "matcher" : ""
+        ]
       }
     ],
-    "PreToolUse" : [
+    "PreToolUse": [
       {
-        "hooks" : [
+        "matcher": "Read",
+        "hooks": [
           {
-            "command" : "~/.fina/hooks/fina-pre-read.sh",
-            "statusMessage" : "Checking Fina knowledge...",
-            "timeout" : 5,
-            "type" : "command"
+            "type": "command",
+            "command": "~/.fina/hooks/fina-pre-read.sh",
+            "timeout": 5,
+            "statusMessage": "Checking Fina knowledge..."
           }
-        ],
-        "matcher" : "Read"
+        ]
       },
       {
-        "hooks" : [
+        "matcher": "Bash",
+        "hooks": [
           {
-            "command" : "~/.fina/hooks/fina-pre-pr.sh",
-            "if" : "Bash(gh pr create*)",
-            "statusMessage" : "Preparing work summary...",
-            "timeout" : 10,
-            "type" : "command"
+            "type": "command",
+            "command": "~/.fina/hooks/fina-pre-pr.sh",
+            "if": "Bash(gh pr create*)",
+            "timeout": 10,
+            "statusMessage": "Preparing work summary..."
           }
-        ],
-        "matcher" : "Bash"
+        ]
       },
       {
-        "hooks" : [
+        "matcher": "mcp__DAST-Orch__create_pull_request",
+        "hooks": [
           {
-            "command" : "~/.fina/hooks/fina-pre-pr.sh",
-            "statusMessage" : "Preparing work summary...",
-            "timeout" : 10,
-            "type" : "command"
+            "type": "command",
+            "command": "~/.fina/hooks/fina-pre-pr.sh",
+            "timeout": 10,
+            "statusMessage": "Preparing work summary..."
           }
-        ],
-        "matcher" : "mcp__DAST-Orch__create_pull_request"
+        ]
       },
       {
-        "hooks" : [
+        "matcher": "",
+        "hooks": [
           {
-            "command" : "~/.fina/hooks/fina-pre-tool-use.sh",
-            "statusMessage" : "Heartbeating session...",
-            "timeout" : 10,
-            "type" : "command"
+            "type": "command",
+            "command": "~/.fina/hooks/fina-pre-tool-use.sh",
+            "timeout": 10,
+            "statusMessage": "Heartbeating session..."
           }
-        ],
-        "matcher" : ""
+        ]
       }
     ],
-    "SessionEnd" : [
+    "SessionEnd": [
       {
-        "hooks" : [
+        "matcher": "",
+        "hooks": [
           {
-            "command" : "~/.fina/hooks/fina-session-end.sh",
-            "statusMessage" : "Closing Fina session...",
-            "timeout" : 10,
-            "type" : "command"
+            "type": "command",
+            "command": "~/.fina/hooks/fina-session-end.sh",
+            "timeout": 10,
+            "statusMessage": "Closing Fina session..."
           }
-        ],
-        "matcher" : ""
+        ]
       }
     ],
-    "SessionStart" : [
+    "SessionStart": [
       {
-        "hooks" : [
+        "matcher": "",
+        "hooks": [
           {
-            "command" : "~/.fina/hooks/fina-session-start.sh",
-            "statusMessage" : "Loading project context from Fina...",
-            "timeout" : 10,
-            "type" : "command"
+            "type": "command",
+            "command": "~/.fina/hooks/fina-session-start.sh",
+            "timeout": 10,
+            "statusMessage": "Loading project context from Fina..."
           }
-        ],
-        "matcher" : ""
+        ]
       }
     ],
-    "Stop" : [
+    "Stop": [
       {
-        "hooks" : [
+        "matcher": "",
+        "hooks": [
           {
-            "command" : "~/.fina/hooks/fina-stop.sh",
-            "timeout" : 3,
-            "type" : "command"
+            "type": "command",
+            "command": "~/.fina/hooks/fina-stop.sh",
+            "timeout": 3
           }
-        ],
-        "matcher" : ""
+        ]
       }
     ]
   }

@@ -1,65 +1,65 @@
 {
-  "name": "@nejs/schemata",
-  "version": "4.0.0",
-  "description": "GraphQL IDL/Schemata String class to make working with GraphQL easier",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./src/index.mjs",
-      "require": "./dist/index.cjs"
+    "name": "@nejs/schemata",
+    "version": "4.0.0",
+    "description": "GraphQL IDL/Schemata String class to make working with GraphQL easier",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./src/index.mjs",
+            "require": "./dist/index.cjs"
+        },
+        "./classes": {
+            "import": "./src/ExtendedResolver.mjs"
+        },
+        "./utils": {
+            "import": "./src/utils/index.mjs"
+        },
+        "./errors": {
+            "import": "./src/errors/index.mjs"
+        },
+        "./register": {
+            "require": "./src/register.cjs"
+        }
     },
-    "./classes": {
-      "import": "./src/ExtendedResolver.mjs"
+    "main": "./src/index.mjs",
+    "module": "./src/index.mjs",
+    "repository": "https://github.com/nyteshade/ne-schemata",
+    "scripts": {
+        "test": "vitest",
+        "repl": "node repl.bootstrap.mjs",
+        "build": "npm run build:cjs",
+        "build:cjs": "babel src --out-dir dist --out-file-extension .cjs --config-file ./babel.cjs.config.json"
     },
-    "./utils": {
-      "import": "./src/utils/index.mjs"
+    "engines": {
+        "node": ">=20.0.0"
     },
-    "./errors": {
-      "import": "./src/errors/index.mjs"
+    "keywords": [
+        "SDL",
+        "IDL",
+        "AST",
+        "utility",
+        "GraphQLSchema",
+        "GraphQL"
+    ],
+    "author": "Brielle Harrison",
+    "license": "MIT",
+    "devDependencies": {
+        "@babel/cli": "^7.25.6",
+        "@babel/core": "^7.25.2",
+        "@babel/preset-env": "^7.25.4",
+        "eslint": "^9.11.1",
+        "graphql": "^16.9.0",
+        "vitest": "^2.1.1"
     },
-    "./register": {
-      "require": "./src/register.cjs"
+    "peerDependencies": {
+        "graphql": "^16"
+    },
+    "dependencies": {
+        "@graphql-tools/utils": "^10.5.4",
+        "@nejs/basic-extensions": "^2.15.0",
+        "@nejs/extension": "^2.20.0",
+        "debug": "^4.3.7",
+        "deepmerge": "^4.3.1",
+        "ne-tag-fns": "^0.7.0"
     }
-  },
-  "main": "./src/index.mjs",
-  "module": "./src/index.mjs",
-  "repository": "https://github.com/nyteshade/ne-schemata",
-  "scripts": {
-    "test": "vitest",
-    "repl": "node repl.bootstrap.mjs",
-    "build": "npm run build:cjs",
-    "build:cjs": "babel src --out-dir dist --out-file-extension .cjs --config-file ./babel.cjs.config.json"
-  },
-  "engines": {
-    "node": ">=20.0.0"
-  },
-  "keywords": [
-    "SDL",
-    "IDL",
-    "AST",
-    "utility",
-    "GraphQLSchema",
-    "GraphQL"
-  ],
-  "author": "Brielle Harrison",
-  "license": "MIT",
-  "devDependencies": {
-    "@babel/cli": "^7.25.6",
-    "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.4",
-    "eslint": "^9.11.1",
-    "graphql": "^16.9.0",
-    "vitest": "^2.1.1"
-  },
-  "peerDependencies": {
-    "graphql": "^16"
-  },
-  "dependencies": {
-    "@graphql-tools/utils": "^10.5.4",
-    "@nejs/basic-extensions": "^2.15.0",
-    "@nejs/extension": "^2.20.0",
-    "debug": "^4.3.7",
-    "deepmerge": "^4.3.1",
-    "ne-tag-fns": "^0.7.0"
-  }
 }
